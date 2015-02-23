@@ -9,13 +9,13 @@ import java.sql.SQLClientInfoException;
 import org.disl.meta.PhysicalSchema
 import org.junit.Test
 
-class MsqlSchema extends PhysicalSchema {
+class MssqlSchema extends PhysicalSchema {
 	String host
 	int port=1433
 	String databaseName
 	String instance
 	
-	MsqlSchema() {
+	MssqlSchema() {
 		jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
 	}
 	
@@ -23,9 +23,12 @@ class MsqlSchema extends PhysicalSchema {
 		"jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};instance=${getInstance()};user=${getUser()};password=${getPassword()};"
 	}
 	
-	public Sql getSql() {
+	@Override
+	protected Sql createSql() {
 		//Pass username & password to jdbcUrl to prevent SSO error when ntlmauth.dll is not on path.
-		Sql.newInstance(getJdbcUrl(),getJdbcDriver());
+		def sql=Sql.newInstance(getJdbcUrl(),getJdbcDriver());
+		sql.getConnection().setAutoCommit(false)
+		sql	
 	}
 
 }

@@ -15,7 +15,7 @@ class TestCreateOrReplaceTable {
 	}
 
 	static class TESTING_TABLE extends Table {
-		String  schema=Contexts.L0
+		String  schema="L2"
 		Pattern pattern=new CreateOrReplaceTable(table: this)
 
 		KEY TT_KEY
@@ -23,10 +23,6 @@ class TestCreateOrReplaceTable {
 	
 	TESTING_TABLE t=MetaFactory.create(TESTING_TABLE)
 
-	@Before
-	public void init() {
-		Context.set(Contexts.DEV)
-	}
 
 
 	@Test

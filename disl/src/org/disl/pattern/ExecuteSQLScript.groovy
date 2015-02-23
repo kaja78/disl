@@ -14,21 +14,22 @@ public class ExecuteSQLScript extends Step {
 	def sql;
 
 	Sql getSql() {
-		if (sql==null) {
-			return null;
-		}
-
 		if (sql instanceof Closure) {
 			return sql.call();
 		}
-
 		sql
 	}
 
 	@Override
 	public void execute() {
+		try {
 		code.split(commandSeparator).each {
 			executeSqlStatement(it)
+		}
+		getSql().commit()
+		} catch (Exception e) {
+			getSql().rollback()
+			throw e
 		}
 	}
 

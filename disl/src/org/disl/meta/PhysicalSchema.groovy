@@ -8,9 +8,19 @@ public class PhysicalSchema {
 	String jdbcDriver
 	String jdbcUrl
 	String schema
-	
+	Sql sql
 	
 	public Sql getSql(){
-		Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
+		if (sql==null) {
+			sql=createSql()						
+		}
+		sql
 	}
+
+	protected createSql() {
+		def sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
+		sql.getConnection().setAutoCommit(false)
+		sql
+	}
+
 }
