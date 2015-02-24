@@ -10,7 +10,7 @@ import org.disl.meta.Table
 abstract class TablePattern extends Pattern {
 	Table table
 
-		protected Closure<Sql> getSql() {
-			return {Context.getSql(getTable().getSchema())}
-		}
+	protected Closure<Sql> getSql() {
+		return {Context.getSql(getTable().getSchema())}
+	}
 }

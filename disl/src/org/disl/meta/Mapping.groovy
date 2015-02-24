@@ -1,12 +1,16 @@
 package org.disl.meta
 
-import javax.management.InstanceOfQueryExp;
+import java.lang.reflect.Field
+
+import org.disl.pattern.Pattern
 
 
-class Mapping  extends MappingSource implements Initializable {
+
+abstract class Mapping  extends MappingSource implements Initializable {
 		
 	List columns=[]
 	List<MappingSource> sources=[]
+
 	String filter="1=1"
 	String groupBy
 	
@@ -28,7 +32,7 @@ class Mapping  extends MappingSource implements Initializable {
 		initNullProperties()
 		initSourceAliases()
 		initColumnAliases()
-		initJoins()
+		initMapping()
 	}
 	
 	void initNullProperties() {
@@ -36,6 +40,7 @@ class Mapping  extends MappingSource implements Initializable {
 	}
 	
 	void initNullProperty(String key) {
+		
 		MetaProperty property=this.metaClass.properties.find {it.name.equals(key)}
 		def properyValue=MetaFactory.create(property.type)
 		this[key]=properyValue
@@ -43,11 +48,11 @@ class Mapping  extends MappingSource implements Initializable {
 
 	
 	void initColumnAliases() {
-		getPropertyNamesByType(ColumnMapping).each { initPropertyAlias(it)}
+		getFieldsByType(ColumnMapping).each { initAlias(it)}
 	}
 	
-	void initPropertyAlias(String property) {
-		getProperty(property).alias=property
+	void initAlias(Field field) {
+		this[field.name].alias=field.name
 	}
 	
 	void initSourceAliases() {
@@ -61,9 +66,7 @@ class Mapping  extends MappingSource implements Initializable {
 		}
 	}
 	
-	void initJoins(){
-		//Empty hook.
-	}
+	abstract void initMapping();
 	
 	public void from (MappingSource source) {
 		sources.add(source)
@@ -139,6 +142,10 @@ class Mapping  extends MappingSource implements Initializable {
 		getColumns().each {"${it}"}.join(",\n			")
 	}
 	
+	Collection<String> getTargetColumnNames() {
+		getColumns().collect({it.alias})
+	}
+	
 	String getGroupByClause() {
 		if  (groupBy!=null) {
 			return """GROUP BY
@@ -146,5 +153,7 @@ class Mapping  extends MappingSource implements Initializable {
 		}
 		return ""
 	}
+	
+
 	
 }

@@ -11,11 +11,11 @@ class TestMapping extends Mapping {
 	TestTable s2
 	
 	ColumnMapping A=e {"$s1.A"} 
-	ColumnMapping C=e "C"
+	ColumnMapping c=e "C"
 	ColumnMapping B=a {repeat(s2.B,3)}
 	
 	
-	void initJoins() {
+	void initMapping() {
 		from s1
 		innerJoin s2 on "$s1.A=$s2.A"
 		
@@ -29,9 +29,9 @@ class TestMapping extends Mapping {
 		TestMapping m=MetaFactory.create(TestMapping)
 		assertEquals ("""	/*Mapping TestMapping*/
 		SELECT
-			s1.A as a,
+			s1.A as A,
 			C as c,
-			REPEAT(s2.B,3) as b
+			REPEAT(s2.B,3) as B
 		FROM
 			TestTable s1,
 			INNER JOIN TestTable s2  ON (s1.A=s2.A)
