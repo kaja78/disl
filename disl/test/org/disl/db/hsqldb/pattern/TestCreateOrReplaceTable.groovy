@@ -16,7 +16,7 @@ class TestCreateOrReplaceTable {
 
 	static class TESTING_TABLE extends Table {
 		String  schema="L2"
-		Pattern pattern=new CreateOrReplaceTable(table: this)
+		Pattern pattern=new CreateOrReplaceTablePattern(table: this)
 
 		KEY TT_KEY
 	}

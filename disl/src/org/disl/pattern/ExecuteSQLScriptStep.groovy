@@ -7,7 +7,7 @@ import org.disl.meta.Base
 import org.junit.Assert
 import org.junit.Test
 
-public class ExecuteSQLScript extends Step {
+public class ExecuteSQLScriptStep extends Step {
 	boolean ignoreErrors=false;
 	String commandSeparator=";";
 	int updatedRowCount;

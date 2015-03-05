@@ -3,7 +3,7 @@ package org.disl.pattern;
 
 
 public abstract class Pattern implements Executable {
-	abstract List<Step> getSteps()
+	abstract Collection<Step> getSteps()
 	
 	@Override
 	public void execute() {

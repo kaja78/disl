@@ -12,7 +12,7 @@ class TestTruncateInsertMapping {
 	
 	
 	class TestMapping extends TableMapping {
-		Pattern pattern=new TruncateInsertMapping(mapping: this)
+		Pattern pattern=new TruncateInsertPattern(mapping: this)
 		String schema="L2"
 		
 		TEST_TABLE target

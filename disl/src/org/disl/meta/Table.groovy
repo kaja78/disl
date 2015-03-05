@@ -5,9 +5,10 @@ import java.lang.reflect.Field
 import org.disl.pattern.Pattern
 
 
-abstract class Table extends MappingSource implements Initializable {
+class Table extends MappingSource implements Initializable {
 	String schema
 	List columns=[]
+	String description
 	Pattern pattern
 	
 	protected Column c(String name) {

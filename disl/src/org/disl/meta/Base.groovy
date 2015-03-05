@@ -5,8 +5,13 @@ import java.lang.reflect.Field;
 
 class Base {
 	
+	String name
+	
 	public String getName() {
-		this.getClass().getSimpleName()
+		if (name==null) {
+			return this.getClass().getSimpleName()
+		}
+		name
 	}
 	
 	public String toString() {

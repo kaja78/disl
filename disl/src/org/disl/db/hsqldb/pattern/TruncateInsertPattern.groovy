@@ -2,11 +2,11 @@ package org.disl.db.hsqldb.pattern
 
 import java.util.List;
 
-import org.disl.pattern.ExecuteSQLScript;
+import org.disl.pattern.ExecuteSQLScriptStep;
 import org.disl.pattern.MappingPattern;
 import org.disl.pattern.Step;
 
-class TruncateInsertMapping extends MappingPattern {
+class TruncateInsertPattern extends MappingPattern {
 	
 	@Override
 	public List<Step> getSteps() {
@@ -14,16 +14,16 @@ class TruncateInsertMapping extends MappingPattern {
 				insertStep];
 	}
 	
-	protected ExecuteSQLScript getTruncateTableStep() {
-		new ExecuteSQLScript(
+	protected ExecuteSQLScriptStep getTruncateTableStep() {
+		new ExecuteSQLScriptStep(
 				name: "Truncate target table",
 				pattern: "TRUNCATE TABLE ${mapping.target.name}",
 				sql: sql
 			)
 	}
 	
-	protected ExecuteSQLScript getInsertStep() {
-		new ExecuteSQLScript(
+	protected ExecuteSQLScriptStep getInsertStep() {
+		new ExecuteSQLScriptStep(
 				name: "Insert into target table",
 				pattern: """/
 INSERT INTO ${mapping.target.name}
