@@ -53,7 +53,6 @@ class TestMapping extends Mapping {
 			s1.A=s1.A
 		GROUP BY
 			s1.A,C
-	/*End of mapping TestMapping*/
-""".toString(),m.getSQLQuery())
+	/*End of mapping TestMapping*/""".toString(),m.getSQLQuery())
 	}
 }

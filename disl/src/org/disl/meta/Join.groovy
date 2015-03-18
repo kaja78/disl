@@ -9,36 +9,33 @@ public abstract class Join {
 
 	public static class NONE extends Join {
 		public String getFromClause()  {
-			if (source.sourceAlias!=null) {
-				return "$source.name $source.sourceAlias"
-			}
-			return "$source.name"
+			"$source.refference"
 		}
 	}
 	public static class INNER extends Join {
 		public String getFromClause() {
-			"INNER JOIN $source.name $source.sourceAlias  ON ($condition)"
+			"INNER JOIN $source.refference  ON ($condition)"
 		}
 	}
 	public static class LEFT extends Join {
 		public String getFromClause() {
-			"LEFT OUTER JOIN $source.name $source.sourceAlias  ON ($condition)"
+			"LEFT OUTER JOIN $source.refference  ON ($condition)"
 		}
 	}
 	public static class RIGHT extends Join{
 		public String getFromClause() {
-			"RIGHT OUTER JOIN $source.name $source.sourceAlias  ON ($condition)"
+			"RIGHT OUTER JOIN $source.refference  ON ($condition)"
 		}
 	}
 	public static class FULL extends Join{
 		public String getFromClause() {
-			"FULL OUTER JOIN $source.name $source.sourceAlias  ON ($condition)"
+			"FULL OUTER JOIN $source.refference  ON ($condition)"
 		}
 	}
 	
-	public static class CARTESIAN extends NONE{
+	public static class CARTESIAN extends Join{
 		public String getFromClause() {
-			",${super.getFromClause()}"
+			",$source.refference"
 		}
 	}
 	class UNION{

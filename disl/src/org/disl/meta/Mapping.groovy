@@ -15,6 +15,14 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	String groupBy
 	
 	protected Mapping(){}
+	
+	@Override
+	public String getRefference() {
+		if (sourceAlias!=null) {
+			return "(\n${getSQLQuery()}) $sourceAlias"
+		}
+		return "(${getSQLQuery()})"
+	}
 
 	Closure getFilter() {
 		return {"1=1"}
@@ -158,8 +166,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		WHERE
 			${filter}
 		${getGroupByClause()}
-	/*End of mapping $name*/
-"""
+	/*End of mapping $name*/"""
 	}
 	
 	String getQueryColumnList() {

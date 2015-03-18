@@ -7,10 +7,11 @@ import org.junit.After;
 import org.junit.Test;
 
 
-class MappingSource extends Base {
+abstract class MappingSource extends Base {
 	String sourceAlias
 	Join join=new Join.NONE(source:this)	
 
+	public abstract String getRefference();
 	
 	public String toString() {
 		join.fromClause

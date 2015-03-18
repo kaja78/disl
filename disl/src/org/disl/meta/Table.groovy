@@ -14,7 +14,14 @@ class Table extends MappingSource implements Initializable {
 	List uniqueKeys=[]
 	List foreignKeys=[]
 	
-	
+	@Override
+	public String getRefference() {
+		if (sourceAlias!=null) {
+			return "$name $sourceAlias"
+		}
+		return "$name"
+	}
+
 	protected Column c(String name) {
 		createColumn(name)
 	}
