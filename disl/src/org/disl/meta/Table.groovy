@@ -10,6 +10,10 @@ class Table extends MappingSource implements Initializable {
 	List columns=[]
 	String description
 	Pattern pattern
+	List primaryKeyColumns=[]
+	List uniqueKeys=[]
+	List foreignKeys=[]
+	
 	
 	protected Column c(String name) {
 		createColumn(name)
@@ -32,11 +36,17 @@ class Table extends MappingSource implements Initializable {
 	@Override
 	public void init() {
 		initColumns()
+		initConstraints()
+		
 		
 	}
 	
 	protected void initColumns() {
 		getFieldsByType(Column).each {initColumn(it)}		
+	}
+	
+	protected void initConstraints() {
+		getClass().getFields().findAll({it.getAnnotation(UniqueKey)!=null})
 	}
 	
 	protected void initColumn(Field f) {
@@ -55,12 +65,20 @@ class Table extends MappingSource implements Initializable {
 		if (desc!=null) {
 			column.setDescription(desc.value())
 		}
-		
-		//TODO: Constraints
 	}
 	
 	public Iterable<String> getColumnDefinitions() {
 		columns.collect {it.columnDefinition}
 	}
+
+	class UniqueKeyMeta {
+		String name
+		List columns=[]
+	}	
 	
+	class ForeignKeyMeta {
+		String name
+		Table targetTable
+		String targetColumn
+	}
 }

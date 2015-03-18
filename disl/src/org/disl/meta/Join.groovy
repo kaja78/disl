@@ -20,19 +20,25 @@ public abstract class Join {
 			"INNER JOIN $source.name $source.sourceAlias  ON ($condition)"
 		}
 	}
-	class LEFT{
+	public static class LEFT extends Join {
 		public String getFromClause() {
-
+			"LEFT OUTER JOIN $source.name $source.sourceAlias  ON ($condition)"
 		}
 	}
-	class RIGHT{
+	public static class RIGHT extends Join{
 		public String getFromClause() {
-
+			"RIGHT OUTER JOIN $source.name $source.sourceAlias  ON ($condition)"
 		}
 	}
-	class FULL{
+	public static class FULL extends Join{
 		public String getFromClause() {
-
+			"FULL OUTER JOIN $source.name $source.sourceAlias  ON ($condition)"
+		}
+	}
+	
+	public static class CARTESIAN extends NONE{
+		public String getFromClause() {
+			",${super.getFromClause()}"
 		}
 	}
 	class UNION{

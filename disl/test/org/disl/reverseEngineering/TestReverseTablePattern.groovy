@@ -3,13 +3,14 @@ package org.disl.reverseEngineering
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestDimensionTable
 import org.junit.Test
+import static org.junit.Assert.*
 
 class TestReverseTablePattern {
 
 	def pattern=new ReverseTablePattern(
-		table: MetaFactory.create(TestDimensionTable),
-		outputDir: new File("build/test"),
-		packageName: "l2")
+	table: MetaFactory.create(TestDimensionTable),
+	outputDir: new File("build/test"),
+	packageName: "l2")
 
 	@Test
 	public void testSimulate() {
@@ -18,14 +19,13 @@ class TestReverseTablePattern {
 
 	@Test
 	public void testExecute() {
-		pattern.execute()
-		assert new File("build/test/l2/TestDimensionTable.groovy").getText()=="""\
+		String expectedContent="""\
 package l2
 
 import org.disl.meta.*
 
 @Description(\"""null\""")
-class TestDimensionTable {
+class TestDimensionTable extends Table {
 		@Description(\"""Surrogate key.\""")
 		Column KEY
 
@@ -35,5 +35,7 @@ class TestDimensionTable {
 		@Description(\"""Dimension name.\""")
 		Column NAME		
 }"""
+		pattern.execute()
+		assertEquals(expectedContent,new File("build/test/l2/TestDimensionTable.groovy").getText())
 	}
 }

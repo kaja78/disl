@@ -77,6 +77,30 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		source		
 	}
 	
+	public MappingSource leftOuterJoin (MappingSource source) {
+		source.join=new Join.LEFT(source:source)
+		sources.add(source)
+		source
+	}
+	
+	public MappingSource rightOuterJoin (MappingSource source) {
+		source.join=new Join.RIGHT(source:source)
+		sources.add(source)
+		source
+	}
+
+	public MappingSource fullOuterJoin (MappingSource source) {
+		source.join=new Join.FULL(source:source)
+		sources.add(source)
+		source
+	}
+	
+	public MappingSource cartesianJoin (MappingSource source) {
+		source.join=new Join.CARTESIAN(source:source)
+		sources.add(source)
+		source
+	}
+	
 	public void where(String condition) {
 		filter=condition
 	}
@@ -130,7 +154,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		SELECT
 			${getQueryColumnList()}
 		FROM
-			${getSources().each({it}).join(",\n			")}
+			${getSources().each({it}).join("\n			")}
 		WHERE
 			${filter}
 		${getGroupByClause()}
