@@ -1,13 +1,17 @@
 package org.disl.meta
 
+import static org.junit.Assert.*
+import groovy.sql.Sql
+
 import java.lang.reflect.Field
 
-import org.disl.pattern.Pattern
+import org.junit.Before
+import org.junit.Test
 
 
 
 abstract class Mapping  extends MappingSource implements Initializable {
-		
+	abstract String getSchema()
 	List columns=[]
 	List<MappingSource> sources=[]
 
@@ -36,6 +40,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		return {null}
 	}
 	
+	@Before
 	public void init() {
 		initNullProperties()
 		initSourceAliases()
@@ -170,7 +175,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	}
 	
 	String getQueryColumnList() {
-		getColumns().each {"${it}"}.join(",\n			")
+		getColumns().collect {"${it.getMappingExpression()}"}.join(",\n			")
 	}
 	
 	Collection<String> getTargetColumnNames() {
@@ -183,6 +188,22 @@ abstract class Mapping  extends MappingSource implements Initializable {
 			${groupBy}"""
 		}
 		return ""
+	}
+	
+	@Test
+	public void testValidateMapping() {
+		validate()
+	}
+	
+	/**
+	 * Validate sql query in database. This is processed by preparing jdbc statement containing mapping sql query.
+	 * */
+	public void validate() {
+		getSql().getConnection().prepareStatement(getSQLQuery()).close()
+	}
+	
+	public Sql getSql() {
+		Context.getSql(getSchema())
 	}
 	
 

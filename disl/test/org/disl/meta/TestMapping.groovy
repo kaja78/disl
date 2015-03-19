@@ -5,9 +5,12 @@ import static org.junit.Assert.*
 
 import org.disl.meta.Join.CARTESIAN;
 import org.disl.meta.Join.RIGHT;
+import org.junit.Before;
 import org.junit.Test
 
+
 class TestMapping extends Mapping {
+	String schema="L2"
 	
 	TestTable s1
 	TestTable s2
@@ -31,28 +34,32 @@ class TestMapping extends Mapping {
 		
 		where "$s1.A=$s1.A"
 		
-		groupBy "$s1.A,C"		
+		groupBy "$s1.A,C,${repeat(s2.B,3)}"		
+	}
+	
+	@Before
+	void createTestTable() {
+		MetaFactory.create(TestTable).execute()
 	}
 	
 	@Test
 	void testGetSQLQuery() {
-		TestMapping m=MetaFactory.create(TestMapping)
 		assertEquals ("""	/*Mapping TestMapping*/
 		SELECT
 			s1.A as A,
 			C as c,
 			REPEAT(s2.B,3) as B
 		FROM
-			TestTable s1
-			INNER JOIN TestTable s2  ON (s1.A=s2.A)
-			LEFT OUTER JOIN TestTable s3  ON (s2.A=s3.A)
-			RIGHT OUTER JOIN TestTable s4  ON (s2.A=s4.A)
-			FULL OUTER JOIN TestTable s5  ON (s2.A=s5.A)
-			,TestTable s6
+			PUBLIC.TestTable s1
+			INNER JOIN PUBLIC.TestTable s2  ON (s1.A=s2.A)
+			LEFT OUTER JOIN PUBLIC.TestTable s3  ON (s2.A=s3.A)
+			RIGHT OUTER JOIN PUBLIC.TestTable s4  ON (s2.A=s4.A)
+			FULL OUTER JOIN PUBLIC.TestTable s5  ON (s2.A=s5.A)
+			,PUBLIC.TestTable s6
 		WHERE
 			s1.A=s1.A
 		GROUP BY
-			s1.A,C
-	/*End of mapping TestMapping*/""".toString(),m.getSQLQuery())
+			s1.A,C,REPEAT(s2.B,3)
+	/*End of mapping TestMapping*/""".toString(),getSQLQuery())
 	}
 }

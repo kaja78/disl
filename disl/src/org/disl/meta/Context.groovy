@@ -26,8 +26,8 @@ public class Context {
 
 
 	public static void setContextName(String contextName) {
-		if (!contextName.equals(contextName.get()) {
-			contextName.set(contextName)
+		if (!contextName.equals(Context.contextName.get()) {
+			Context.contextName.set(contextName)
 			context.set(null)
 		}
 	}
@@ -43,8 +43,15 @@ public class Context {
 		context.get()
 	}
 
-	public static Sql getSql(String schemaName) {
-		getContext().getPhysicalSchema(schemaName).getSql()
+	public static Sql getSql(String logicalSchemaName) {
+		getContext().getPhysicalSchema(logicalSchemaName).getSql()
+	}
+	
+	public static String getPhysicalSchemaName(String logicalSchemaName) {
+		if (logicalSchemaName==null) {
+			return null
+		}
+		return getContext().getPhysicalSchema(logicalSchemaName).getSchema()
 	}
 
 	public PhysicalSchema getPhysicalSchema(String schemaName) {

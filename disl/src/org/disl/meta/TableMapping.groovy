@@ -5,7 +5,6 @@ import org.disl.pattern.Pattern;
 abstract class TableMapping extends Mapping{
 	abstract Table getTarget()
 	abstract Pattern getPattern()
-	abstract String getSchema()
 	
 	public void simulate() {
 		getPattern().simulate()

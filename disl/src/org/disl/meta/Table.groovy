@@ -3,6 +3,7 @@ package org.disl.meta
 import java.lang.reflect.Field
 
 import org.disl.pattern.Pattern
+import org.junit.Before
 
 
 class Table extends MappingSource implements Initializable {
@@ -15,11 +16,20 @@ class Table extends MappingSource implements Initializable {
 	List foreignKeys=[]
 	
 	@Override
-	public String getRefference() {
+	public String getRefference() {		
+		String ownerPrefix=""
+		String alias=""
+		
+		String owner=Context.getPhysicalSchemaName(getSchema())
+		if (owner!=null) {
+			ownerPrefix="${owner}."
+		} 
+	
+		
 		if (sourceAlias!=null) {
-			return "$name $sourceAlias"
+			alias=" ${sourceAlias}"
 		}
-		return "$name"
+		return "${ownerPrefix}${name}${alias}"
 	}
 
 	protected Column c(String name) {
@@ -40,6 +50,7 @@ class Table extends MappingSource implements Initializable {
 		getPattern().simulate()
 	}
 	
+	@Before
 	@Override
 	public void init() {
 		initColumns()
@@ -71,6 +82,11 @@ class Table extends MappingSource implements Initializable {
 		Description desc=f.getAnnotation(Description)
 		if (desc!=null) {
 			column.setDescription(desc.value())
+		}
+		
+		DataType dataType=f.getAnnotation(DataType)
+		if (dataType!=null) {
+			column.setDataType(dataType.value())
 		}
 	}
 	

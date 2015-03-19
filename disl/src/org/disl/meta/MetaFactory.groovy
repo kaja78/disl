@@ -5,7 +5,7 @@ import groovy.io.FileType
 import java.lang.reflect.Modifier
 
 class MetaFactory {
-	static Object create(Class type) {
+	static <T> T create(Class<T> type) {
 		def instance=type.newInstance();
 		if (instance instanceof Initializable) {
 			instance.init();
