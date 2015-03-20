@@ -30,6 +30,8 @@ import org.disl.meta.*
 
 @Description(\"""$table.description\""")
 class $table.name extends Table {
+		String schema="$table.schema"
+
 $columnDefinitions		
 }"""
 	}
