@@ -26,6 +26,8 @@ import org.disl.meta.*
 
 @Description(\"""null\""")
 class TestDimensionTable extends Table {
+		String schema="L2"
+
 		@Description(\"""Surrogate key.\""")
 		Column KEY
 
