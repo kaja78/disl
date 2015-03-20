@@ -4,6 +4,7 @@ import static org.junit.Assert.*
 import groovy.sql.Sql
 
 import java.lang.reflect.Field
+import java.sql.SQLException
 
 import org.junit.Before
 import org.junit.Test
@@ -199,7 +200,11 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	 * Validate sql query in database. This is processed by preparing jdbc statement containing mapping sql query.
 	 * */
 	public void validate() {
-		getSql().getConnection().prepareStatement(getSQLQuery()).close()
+		try {
+			getSql().getConnection().prepareStatement("select * from (${getSQLQuery()}) where 1=2").execute()			
+		} catch (SQLException e) {		
+			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${getSQLQuery()}")
+		}		
 	}
 	
 	public Sql getSql() {
