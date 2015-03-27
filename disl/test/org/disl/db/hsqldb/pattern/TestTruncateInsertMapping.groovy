@@ -28,6 +28,8 @@ class TestTruncateInsertMapping {
 	}
 	
 	class TEST_TABLE extends Table {
+		String schema="L2"
+		
 		Column A
 		Column B
 	}

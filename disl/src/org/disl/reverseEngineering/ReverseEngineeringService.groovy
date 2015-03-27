@@ -22,7 +22,7 @@ class ReverseEngineeringService {
 		reverseTablePattern.setOutputDir(outputDir)
 		ResultSet res=sql.getConnection().getMetaData().getTables(null, schemaPattern, tablePattern, tableTypes)
 		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
-		def tables=collectRows(res,{new Table(name: it.TABLE_NAME,description: it.REMARKS, schema:logicalSchemaName)})
+		def tables=collectRows(res,{new ReverseEngineeredTable(name: it.TABLE_NAME,description: it.REMARKS, schema:logicalSchemaName)})
 		res.close()
 		tables.each {
 			Table t=it
@@ -44,5 +44,9 @@ class ReverseEngineeringService {
 	protected void eachRow(ResultSet res,Closure eachRowClosure) {
 		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
 		gRes.eachRow eachRowClosure
+	}
+	
+	private static class ReverseEngineeredTable extends Table {
+		String schema
 	}
 }

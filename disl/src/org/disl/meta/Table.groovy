@@ -6,30 +6,36 @@ import org.disl.pattern.Pattern
 import org.junit.Before
 
 
-class Table extends MappingSource implements Initializable {
-	String schema
+abstract class Table extends MappingSource implements Initializable {
+	public abstract String getSchema()
+	
 	List columns=[]
-	String description
-	Pattern pattern
+	String description	
 	List primaryKeyColumns=[]
 	List uniqueKeys=[]
 	List foreignKeys=[]
+	Pattern pattern
 	
 	@Override
 	public String getRefference() {		
-		String ownerPrefix=""
-		String alias=""
-		
-		String owner=Context.getPhysicalSchemaName(getSchema())
-		if (owner!=null) {
-			ownerPrefix="${owner}."
-		} 
-	
-		
+		String alias=""		
 		if (sourceAlias!=null) {
 			alias=" ${sourceAlias}"
-		}
-		return "${ownerPrefix}${name}${alias}"
+		}		
+		return "${fullName}${alias}"
+	}
+	
+	public String getFullName() {
+		String ownerPrefix=""		
+		String owner=getPhysicalSchema()
+		if (owner!=null) {
+			ownerPrefix="${owner}."
+		}		
+		"${ownerPrefix}${name}"
+	}
+	
+	public String getPhysicalSchema() {
+		Context.getPhysicalSchemaName(getSchema())
 	}
 
 	protected Column c(String name) {
