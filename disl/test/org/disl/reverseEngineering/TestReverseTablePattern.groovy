@@ -10,6 +10,7 @@ class TestReverseTablePattern {
 	def pattern=new ReverseTablePattern(
 	table: MetaFactory.create(TestDimensionTable),
 	outputDir: new File("build/test"),
+	parentClassName: "AbstractL2Table", 
 	packageName: "l2")
 
 	@Test
@@ -25,8 +26,7 @@ package l2
 import org.disl.meta.*
 
 @Description(\"""null\""")
-class TestDimensionTable extends Table {
-		String schema="L2"
+class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Surrogate key.\""")
 		Column KEY

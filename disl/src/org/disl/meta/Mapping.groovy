@@ -12,7 +12,7 @@ import org.junit.Test
 
 
 abstract class Mapping  extends MappingSource implements Initializable {
-	abstract String getSchema()
+	public abstract String getSchema()
 	List columns=[]
 	List<MappingSource> sources=[]
 

@@ -13,6 +13,7 @@ import org.junit.Test
 class ReverseTablePattern extends Pattern {
 	File outputDir=new File("src")
 	String packageName
+	String parentClassName
 	Table table
 
 	@Override
@@ -29,8 +30,7 @@ package $packageName
 import org.disl.meta.*
 
 @Description(\"""$table.description\""")
-class $table.name extends Table {
-		String schema="$table.schema"
+class $table.name extends ${parentClassName} {
 
 $columnDefinitions		
 }"""
