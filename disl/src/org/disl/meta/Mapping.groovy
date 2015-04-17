@@ -201,7 +201,9 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	 * */
 	public void validate() {
 		try {
-			getSql().getConnection().prepareStatement("select * from (${getSQLQuery()}) where 1=2").execute()			
+			def sqlStatement = "select * from (${getSQLQuery()}) where 1=2"
+			println sqlStatement
+			getSql().getConnection().prepareStatement(sqlStatement).execute()			
 		} catch (SQLException e) {		
 			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${getSQLQuery()}")
 		}		
