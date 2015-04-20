@@ -46,7 +46,7 @@ ${sqlQuery}
 	}
 
 	public static void assertEquals(expectedExpression,actualExpression) {
-		assert evaluate(expectedExpression)==evaluate(actualExpression)
+		Assert.assertEquals(evaluate(expectedExpression),evaluate(actualExpression))
 	}
 
 	@Test
