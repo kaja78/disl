@@ -15,6 +15,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	public abstract String getSchema()
 	List columns=[]
 	List<MappingSource> sources=[]
+	List<SetOperation> setOperations=[]
 
 	String filter="1=1"
 	String groupBy
@@ -122,6 +123,24 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	public void groupBy(String clause) {
 		groupBy=clause
 	}
+	
+	public void union(Mapping source) {
+		setOperations.add(new SetOperation.UNION(source: source))
+	}
+	
+	public void unionAll(MappingSource source) {
+		setOperations.add(new SetOperation.UNION_ALL(source: source))
+	}
+	
+	public void minus(MappingSource source) {
+		setOperations.add(new SetOperation.MINUS(source: source))
+	
+	}
+	
+	public void intersect(MappingSource source) {
+		setOperations.add(new SetOperation.INTERSECT(source: source))
+	
+	}
 
 	
 
@@ -171,7 +190,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 			${getSources().each({it}).join("\n			")}
 		WHERE
 			${filter}
-		${getGroupByClause()}
+		${getGroupByClause()}${getSetOperationClause()}
 	/*End of mapping $name*/"""
 	}
 	
@@ -187,6 +206,13 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		if  (groupBy!=null) {
 			return """GROUP BY
 			${groupBy}"""
+		}
+		return ""
+	}
+	
+	String getSetOperationClause() {
+		if (setOperations.size()>0) {
+			return "\n\t"+setOperations.collect {it.getSetOperationClause()}.join("\n\t")
 		}
 		return ""
 	}

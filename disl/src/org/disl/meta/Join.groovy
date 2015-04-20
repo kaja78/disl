@@ -38,24 +38,4 @@ public abstract class Join {
 			",$source.refference"
 		}
 	}
-	class UNION{
-		public String getFromClause() {
-
-		}
-	}
-	class UNION_ALL{
-		public String getFromClause() {
-
-		}
-	}
-	class INTERSECT{
-		public String getFromClause() {
-
-		}
-	}
-	class MINUS{
-		public String getFromClause() {
-
-		}
-	}
 }
