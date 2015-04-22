@@ -153,7 +153,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	}
 
 	ExpressionColumnMapping createExpressionColumnMapping(expression) {
-		addColumnMapping new ExpressionColumnMapping(expression)
+		addColumnMapping new ExpressionColumnMapping(expression: expression,parent: this)
 	}
 	
 	ColumnMapping addColumnMapping(columnMapping) {		
@@ -169,7 +169,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	}
 
 	AggregateColumnMapping createAggregateColumnMapping(aggregateFunction) {
-		addColumnMapping new AggregateColumnMapping(aggregateFunction)
+		addColumnMapping new AggregateColumnMapping(expression: aggregateFunction,parent: this)
 	}
 	
 	MappingSource src(Class<?> sourceType,Class<Join> joinType=Join.NONE,Closure condition={null}) {
