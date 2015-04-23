@@ -11,4 +11,9 @@ abstract class MappingPattern extends Pattern {
 	protected Closure<Sql> getSql() {
 		return {Context.getSql(getMapping().getSchema())}
 	}
+	
+	@Override
+	public String toString() {
+		"${this.getClass().getSimpleName()}(${getMapping().getName()})}"
+	}
 }

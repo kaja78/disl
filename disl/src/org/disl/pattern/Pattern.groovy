@@ -7,8 +7,10 @@ public abstract class Pattern implements Executable {
 	
 	@Override
 	public void execute() {
+		long timestamp=System.currentTimeMillis();
 		println "Executing pattern $this:"
-		steps.each {it.execute()}		
+		steps.each {it.execute()}
+		println "${this} executed in ${System.currentTimeMillis()-timestamp} ms"		
 	}
 	
 	@Override

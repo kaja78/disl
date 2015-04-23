@@ -13,4 +13,9 @@ abstract class TablePattern extends Pattern {
 	protected Closure<Sql> getSql() {
 		return {Context.getSql(getTable().getSchema())}
 	}
+	
+	@Override
+	public String toString() {
+		"${this.getClass().getSimpleName()}(${getTable().getName()})}"
+	}
 }
