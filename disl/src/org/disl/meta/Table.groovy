@@ -2,11 +2,12 @@ package org.disl.meta
 
 import java.lang.reflect.Field
 
+import org.disl.pattern.Executable;
 import org.disl.pattern.Pattern
 import org.junit.Before
 
 
-abstract class Table extends MappingSource implements Initializable {
+abstract class Table extends MappingSource implements Initializable, Executable {
 	public abstract String getSchema()
 	
 	List columns=[]
