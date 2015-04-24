@@ -16,6 +16,6 @@ abstract class TablePattern extends Pattern {
 	
 	@Override
 	public String toString() {
-		"${this.getClass().getSimpleName()}(${getTable().getName()})}"
+		"${this.getClass().getSimpleName()}(${getTable().getName()})"
 	}
 }

@@ -30,9 +30,4 @@ CREATE TABLE ${table.name} (
 			 sql: sql)
 		}
 
-	@Override
-	public String toString() {
-		return "${super.toString()}(table: ${table.name})";
-	}
-
 }
