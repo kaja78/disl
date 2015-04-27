@@ -14,33 +14,32 @@ public class Context {
 	Map<String,PhysicalSchema> schemaMap=new HashMap<String, PhysicalSchema>();
 
 
-	protected static ThreadLocal<Context> contextName=new ThreadLocal<String>() {
+	private final static ThreadLocal<String> localContextName=new ThreadLocal<String>() {
 		@Override
 		protected String initialValue() {
 			CONTEXT_DEFAULT
 		}
 	};
 
-	protected static ThreadLocal<Context> context=new ThreadLocal<Context>();
-
-
-
-	public static void setContextName(String contextName) {
-		if (!contextName.equals(Context.contextName.get()) {
-			Context.contextName.set(contextName)
-			context.set(null)
+	private final static ThreadLocal<Context> localContext=new ThreadLocal<Context>();
+	
+	public static void setContextName(String newName) {
+		String currentContextName=localContextName.get()
+		if (!newName.equals(currentContextName)) {
+			localContextName.set(newName)
+			localContext.set(null)
 		}
 	}
 
 	public static String getContextName() {
-		contextName.get()
+		localContextName.get()
 	}
 
 	public static Context getContext() {
-		if (context.get()==null) {
-			context.set(new Context(name: getContextName()))
+		if (localContext.get()==null) {
+			localContext.set(new Context(name: getContextName()))
 		}
-		context.get()
+		localContext.get()
 	}
 
 	public static Sql getSql(String logicalSchemaName) {
@@ -64,6 +63,9 @@ public class Context {
 	protected void createSchema(String schemaName) {
 		Properties config=getConfig()
 		String schemaType=config[schemaName]
+		if (schemaType==null) {
+			throw new RuntimeException("schemaType not defined for schema $schemaName in context ${Context.getContextName()}");
+		}
 		String schemaClassName="org.disl.db.${schemaType.toLowerCase()}.${schemaType}Schema"
 		PhysicalSchema schema=Class.forName(schemaClassName).newInstance()
 		Map schemaProperties=config.findAll {it.key.startsWith("${schemaName}.")}
