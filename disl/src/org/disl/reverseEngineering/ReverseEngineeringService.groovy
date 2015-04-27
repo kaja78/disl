@@ -21,7 +21,7 @@ class ReverseEngineeringService {
 	public Collection<Table> reverseSchemaTables(String targetPackage,String tablePattern=null,File outputDir=new File(SRC_FOLDER),String[] tableTypes=null,String parentClassName=getAbstractParentTableClassSimpleName(targetPackage)){
 		Sql sql=Context.getSql(getLogicalSchemaName())
 		String schemaFilterPattern=Context.getContext().getPhysicalSchema(getLogicalSchemaName()).getSchema()
-		checkAbstractParentTableExist(targetPackage)
+		checkAbstractParentTableExist(targetPackage,outputDir)
 		reverseTablePattern.setPackageName(targetPackage)
 		reverseTablePattern.setOutputDir(outputDir)
 		reverseTablePattern.setParentClassName(parentClassName)
