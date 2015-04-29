@@ -21,16 +21,17 @@ class MetaFactory {
 	 * MetaFactory.createAll("bin","com.yourDw",Table).each({it.generate})
 	 * */
 	static Collection createAll(String traversePath,String rootPackage,Class assignableType) {
-		def typesToCreate=findTypes(traversePath,{it.getName().startsWith(rootPackage) && assignableType.isAssignableFrom(it) && !Modifier.isAbstract(it.getModifiers())})
+		def typesToCreate=findTypes(traversePath,rootPackage,{assignableType.isAssignableFrom(it) && !Modifier.isAbstract(it.getModifiers())})
 		typesToCreate.collect {create(it)}
 	}
 
-	private static Collection<Class> findTypes(String traversePath,Closure classFilter) {
-		File traverseDir = new File(traversePath)
+	private static Collection<Class> findTypes(String traversePath,String rootPackage,Closure classFilter) {
+		File rootDir = new File(traversePath)
+		File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
 		def filterClassFiles = ~/.*\.class$/
 		def types=[]
 		traverseDir.traverse (type: FileType.FILES, nameFilter: filterClassFiles){
-			String classFile=it.absolutePath.substring(traverseDir.absolutePath.length()+1)
+			String classFile=it.absolutePath.substring(rootDir.absolutePath.length()+1)
 			String className=classFile.substring(0,classFile.length()-6).replace('\\', '.')
 			def type=Class.forName(className)
 			types.add(type)
