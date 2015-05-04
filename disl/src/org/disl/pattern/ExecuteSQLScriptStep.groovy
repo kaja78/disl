@@ -33,18 +33,19 @@ public class ExecuteSQLScriptStep extends Step {
 		}
 	}
 
-	protected executeSqlStatement(String it) {
+	protected executeSqlStatement(String sqlCommand) {
+		if (''.equals(sqlCommand.trim())) {
+			return
+		}
 		try {
-			updatedRowCount=getSql().executeUpdate(it)
+			updatedRowCount=getSql().executeUpdate(sqlCommand)
 		} catch (Exception e) {
 			if (!ignoreErrors) {
-				throw new RuntimeException("Error executing ${this}. SQL statement: $it",e)
+				throw new RuntimeException("Error executing ${this}. SQL statement: $sqlCommand",e)
 			}
 		}
 	}
-
-
-
+	
 	@Test
 	void testName() {
 		def element=new Base()
