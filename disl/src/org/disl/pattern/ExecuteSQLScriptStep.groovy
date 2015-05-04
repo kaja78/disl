@@ -33,7 +33,7 @@ public class ExecuteSQLScriptStep extends Step {
 		}
 	}
 
-	private executeSqlStatement(String it) {
+	protected executeSqlStatement(String it) {
 		try {
 			updatedRowCount=getSql().executeUpdate(it)
 		} catch (Exception e) {

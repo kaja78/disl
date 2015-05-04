@@ -25,7 +25,7 @@ package l2
 
 import org.disl.meta.*
 
-@Description(\"""null\""")
+@Description(\"""This is testing dimension.\""")
 class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Surrogate key.\""")

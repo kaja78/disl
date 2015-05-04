@@ -3,7 +3,7 @@ package org.disl.pattern;
 
 public class Step implements Executable{	
 	String name;
-	def pattern;
+	def pattern='';
 	
 	String getCode() {
 		if (pattern instanceof Closure) {

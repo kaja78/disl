@@ -12,9 +12,9 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 	
 	List columns=[]
 	String description	
-	List primaryKeyColumns=[]
+	List<Column> primaryKeyColumns=[]
 	List uniqueKeys=[]
-	List foreignKeys=[]
+	List<ForeignKeyMeta> foreignKeys=[]
 	Pattern pattern
 	
 	@Override
@@ -63,6 +63,11 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		initColumns()
 		initConstraints()
 		
+		Description desc=this.getClass().getAnnotation(Description)
+		if (desc!=null) {
+			description=desc.value()
+		}
+		
 		
 	}
 	
@@ -95,19 +100,34 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		if (dataType!=null) {
 			column.setDataType(dataType.value())
 		}
+		
+		PrimaryKey primaryKey=f.getAnnotation(PrimaryKey)
+		if (primaryKey!=null) {
+			primaryKeyColumns.add(column)
+		}
+		
+		ForeignKey foreignKey=f.getAnnotation(ForeignKey)
+		if (foreignKey!=null) {
+			foreignKeys.add(new ForeignKeyMeta(
+				sourceColumn: column.name,
+				targetTable: MetaFactory.create(foreignKey.targetTable()),
+				targetColumn: foreignKey.targetColumn()
+				))
+		}
 	}
 	
 	public Iterable<String> getColumnDefinitions() {
 		columns.collect {it.columnDefinition}
 	}
-
-	class UniqueKeyMeta {
+	
+	static class UniqueKeyMeta {
 		String name
 		List columns=[]
 	}	
 	
-	class ForeignKeyMeta {
+	static class ForeignKeyMeta {
 		String name
+		String sourceColumn 
 		Table targetTable
 		String targetColumn
 	}
