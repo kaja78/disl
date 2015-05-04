@@ -25,6 +25,9 @@ public class Step implements Executable{
 	
 	@Override
 	public String toString() {
-		return "$name (${this.getClass().getSimpleName()})";
+		if (getName()==null) {
+			return this.getClass().getSimpleName()
+		}
+		return "${this.getName()} (${this.getClass().getSimpleName()})";
 	}
 }
