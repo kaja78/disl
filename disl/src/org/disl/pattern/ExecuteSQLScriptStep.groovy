@@ -54,13 +54,6 @@ public class ExecuteSQLScriptStep extends Step {
 	}
 	
 	@Test
-	void testName() {
-		def element=new Base()
-		pattern="DROP ${element.name}"
-		Assert.assertEquals("DROP Base", code)
-	}
-	
-	@Test
 	void testGetCommands() {
 		def p=new ExecuteSQLScriptStep(commandSeparator: BACKSLASH_NEW_LINE,pattern: "A;B")
 		Assert.assertEquals(1, p.getCommands().size())

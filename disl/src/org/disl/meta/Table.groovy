@@ -10,8 +10,9 @@ import org.junit.Before
 abstract class Table extends MappingSource implements Initializable, Executable {
 	public abstract String getSchema()
 	
-	List columns=[]
-	String description	
+	List columns=[]	
+	String description
+	List<IndexMeta> indexes=[]
 	List<Column> primaryKeyColumns=[]
 	List uniqueKeys=[]
 	List<ForeignKeyMeta> foreignKeys=[]
@@ -68,7 +69,13 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 			description=desc.value()
 		}
 		
-		
+		Collection<Index> inds=this.getClass().getAnnotations().findAll {Index.class.equals(it.annotationType())}
+		inds.each {initIndex(it)}		
+	}
+	
+	protected void initIndex(Index index) {
+		IndexMeta indexMeta=new IndexMeta(columns: index.columns().collect({this[it]}))
+		indexes.add(indexMeta)
 	}
 	
 	protected void initColumns() {
@@ -130,5 +137,13 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		String sourceColumn 
 		Table targetTable
 		String targetColumn
+	}
+	
+	static class IndexMeta {
+		List<Column> columns
+		
+		public List<String> getColumnNames() {
+			return columns.collect({it.name})
+		}
 	}
 }

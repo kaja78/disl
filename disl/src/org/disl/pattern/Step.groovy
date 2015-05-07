@@ -6,10 +6,10 @@ public class Step implements Executable{
 	def pattern='';
 	
 	String getCode() {
-		if (pattern instanceof Closure) {
-			pattern.call();
+		if (getPattern() instanceof Closure) {
+			getPattern().call();
 		}
-		pattern;		
+		getPattern();		
 	}
 	
 	@Override
@@ -23,11 +23,15 @@ public class Step implements Executable{
 		throw new UnsupportedOperationException();		
 	}
 	
+	public String getName() {
+		if (name==null) {
+			return this.getClass().getSimpleName() 
+		}
+		return name
+	}
+	
 	@Override
 	public String toString() {
-		if (getName()==null) {
-			return this.getClass().getSimpleName()
-		}
-		return "${this.getName()} (${this.getClass().getSimpleName()})";
+		return getName()
 	}
 }
