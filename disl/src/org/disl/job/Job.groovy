@@ -10,7 +10,12 @@ class Job implements Executable {
 
 	public Job addType(Class<Executable> type) {
 		this.jobEntries.add(MetaFactory.create(type))
-		this
+		return this
+	}
+	
+	public Job addTypes(List<Class<Executable>> types) {
+		types.each({addType(it)})
+		return this
 	}
 	
 	public Job addAll(List<Executable> jobEntries) {
