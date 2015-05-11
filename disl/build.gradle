@@ -1,0 +1,10 @@
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+
+repositories { mavenCentral() }
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.3.10'
+	compile 'junit:junit:4.12'
+	testCompile 'org.hsqldb:hsqldb:2.3.2'
+}
