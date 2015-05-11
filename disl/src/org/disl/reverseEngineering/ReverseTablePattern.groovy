@@ -4,7 +4,6 @@ package org.disl.reverseEngineering
 import org.disl.meta.Column
 import org.disl.meta.MetaFactory
 import org.disl.meta.Table
-import org.disl.meta.TestDimensionTable
 import org.disl.pattern.FileOutputStep
 import org.disl.pattern.Pattern
 import org.disl.pattern.Step
