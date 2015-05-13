@@ -45,12 +45,16 @@ public class ExecuteSQLScriptStep extends Step {
 			return
 		}
 		try {
-			updatedRowCount=getSql().executeUpdate(sqlCommand)
+			executeSqlStatementInternal(sqlCommand)
 		} catch (Exception e) {
 			if (!ignoreErrors) {
 				throw new RuntimeException("Error executing ${this}. SQL statement: $sqlCommand",e)
 			}
 		}
+	}
+
+	protected void executeSqlStatementInternal(String sqlCommand) {
+		updatedRowCount=getSql().executeUpdate(sqlCommand)
 	}
 	
 	@Test
