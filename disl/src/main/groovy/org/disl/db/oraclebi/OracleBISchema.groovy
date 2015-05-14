@@ -14,6 +14,6 @@ class OracleBISchema extends PhysicalSchema {
 	
 	public String getJdbcUrl() {
 		"jdbc:oraclebi://${getHost()}:${getPort()}/"
-	}
+	}	
 	
 }

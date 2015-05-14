@@ -37,7 +37,7 @@ public class ExecuteSQLScriptStep extends Step {
 	}
 	
 	protected Collection<String> getCommands() {
-		return code.split(commandSeparator)
+		return code.split(getCommandSeparator())
 	}
 
 	protected executeSqlStatement(String sqlCommand) {
@@ -47,7 +47,7 @@ public class ExecuteSQLScriptStep extends Step {
 		try {
 			executeSqlStatementInternal(sqlCommand)
 		} catch (Exception e) {
-			if (!ignoreErrors) {
+			if (!isIgnoreErrors()) {
 				throw new RuntimeException("Error executing ${this}. SQL statement: $sqlCommand",e)
 			}
 		}

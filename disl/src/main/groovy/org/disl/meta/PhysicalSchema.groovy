@@ -11,8 +11,8 @@ public class PhysicalSchema {
 	Sql sql
 	
 	public Sql getSql(){
-		if (sql==null) {
-			sql=createSql()						
+		if (sql==null || (sql.connection!=null && sql.connection.isClosed())) {
+			sql=createSql()	
 		}
 		sql
 	}
@@ -21,6 +21,14 @@ public class PhysicalSchema {
 		def sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
 		sql.getConnection().setAutoCommit(false)
 		sql
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		if (sql!=null) {
+			sql.close()
+			sql=null
+		}
 	}
 
 }
