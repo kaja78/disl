@@ -1,8 +1,8 @@
 package org.disl.pattern
 
-import junit.framework.Assert
+import static groovy.test.GroovyAssert.*
 
-import org.disl.meta.Base;
+import org.disl.meta.Base
 import org.junit.Test
 
 class TestPattern  {
@@ -11,7 +11,7 @@ class TestPattern  {
 	public void testSimulate() {
 		Pattern testingPattern=new TestingPattern(element:new Base());		
 		testingPattern.simulate();
-		Assert.assertEquals("DROP \nBase", testingPattern.steps[0].code)
+		assertEquals("DROP \nBase", testingPattern.steps[0].code)
 		
 		
 	}
