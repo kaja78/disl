@@ -1,6 +1,8 @@
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 
+sourceCompatibility = 1.7
+
 repositories { mavenCentral() }
 
 dependencies {
