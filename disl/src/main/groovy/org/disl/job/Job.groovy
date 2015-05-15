@@ -45,19 +45,16 @@ class Job implements Executable {
 	}
 	
 	public synchronized void traceStatus() {
-		println "*****************************************************************"
+		println "********************************************************************************"
 		jobEntries.each({println it})
-		println "*****************************************************************"
+		println "********************************************************************************"
 	}
 	
 	static class JobEntry implements Executable {
-		static final int NEW=0
-		static final int RUNNING=1
-		static final int FINISHED=2
-		static final int ERROR=3
+		
 		
 		Executable executable
-		int status=NEW
+		Status status=Status.NEW
 		long createdTime=System.currentTimeMillis()
 		long startTime
 		long finishTime
@@ -66,14 +63,14 @@ class Job implements Executable {
 		
 		void execute() {
 			try {
-				status=RUNNING
+				status=Status.RUNNING
 				startTime=System.currentTimeMillis()
 				executable.execute()
 				finishTime=System.currentTimeMillis()
-				status=FINISHED
+				status=Status.FINISHED
 			} catch (Exception e) {
 				finishTime=System.currentTimeMillis()
-				status=ERROR
+				status=Status.ERROR
 				exception=e
 				throw e
 			}
@@ -90,8 +87,18 @@ class Job implements Executable {
 		String toString() {
 			String name=executable.toString().padRight(50).toString().substring(0,50)
 			String dur=duration.toString().padLeft(10).toString().substring(0,10)
-			return "* ${name} * ${status} * ${duration} *"			
+			String stat=status.toString().padLeft(10).toString().substring(0,10)
+			return "* ${name} * ${stat} * ${dur} *"			
+		}
+		
+		static enum Status {
+			NEW,
+			RUNNING,
+			FINISHED,
+			ERROR
 		}
 		
 	}
+	
+	
 }
