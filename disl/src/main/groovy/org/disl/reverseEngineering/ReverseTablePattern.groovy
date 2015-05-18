@@ -42,6 +42,7 @@ $columnDefinitions
 	String getColumnDefinitionCode(Column column) {
 		"""\
 		@Description(\"""$column.description\""")
+		@DataType("$column.dataType")
 		Column $column.name"""
 	}
 }

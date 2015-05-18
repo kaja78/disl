@@ -11,7 +11,7 @@ import org.junit.Test
 
 class OracleSchema extends PhysicalSchema {
 	String host
-	int port=1521
+	String port=1521
 	String databaseName
 	
 	OracleSchema() {

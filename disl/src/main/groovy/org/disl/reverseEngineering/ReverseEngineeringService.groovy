@@ -5,11 +5,13 @@ import groovy.sql.GroovyResultSetProxy
 import groovy.sql.Sql
 
 import java.sql.ResultSet
+import java.sql.SQLType
+import java.sql.Types;
 
 import org.disl.meta.Column
 import org.disl.meta.Context
 import org.disl.meta.Table
-import org.junit.Assert;
+import org.junit.Assert
 import org.junit.Test
 
 class ReverseEngineeringService {
@@ -18,27 +20,44 @@ class ReverseEngineeringService {
 	String logicalSchemaName
 	ReverseTablePattern reverseTablePattern=new ReverseTablePattern()
 	
-	public Collection<Table> reverseSchemaTables(String targetPackage,String tablePattern=null,File outputDir=new File(SRC_FOLDER),String[] tableTypes=null,String parentClassName=getAbstractParentTableClassSimpleName(targetPackage)){
+	public Collection<Table> reverseSchemaTables(String targetPackage,String tablePattern=null,String sourceSchemaFilterPattern=null,File outputDir=new File(SRC_FOLDER),String[] tableTypes=null,String parentClassName=getAbstractParentTableClassSimpleName(targetPackage)){
 		Sql sql=Context.getSql(getLogicalSchemaName())
-		String schemaFilterPattern=Context.getContext().getPhysicalSchema(getLogicalSchemaName()).getSchema()
+		if (sourceSchemaFilterPattern==null) { 
+			sourceSchemaFilterPattern=Context.getContext().getPhysicalSchema(getLogicalSchemaName()).getSchema()
+		}
 		checkAbstractParentTableExist(targetPackage,outputDir)
 		reverseTablePattern.setPackageName(targetPackage)
 		reverseTablePattern.setOutputDir(outputDir)
 		reverseTablePattern.setParentClassName(parentClassName)
-		ResultSet res=sql.getConnection().getMetaData().getTables(null, schemaFilterPattern, tablePattern, tableTypes)
+		ResultSet res=sql.getConnection().getMetaData().getTables(null, sourceSchemaFilterPattern, tablePattern, tableTypes)
 		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
 		def tables=collectRows(res,{new ReverseEngineeredTable(name: it.TABLE_NAME,description: it.REMARKS, schema:logicalSchemaName)})
 		res.close()
 		tables.each {
 			Table t=it
-			res=sql.getConnection().getMetaData().getColumns(null, schemaFilterPattern, t.getName(), null)
-			eachRow(res,{t.columns.add(new Column(name: it.COLUMN_NAME,description: it.REMARKS))})
+			res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, t.getName(), null)
+			eachRow(res,{t.columns.add(new Column(name: it.COLUMN_NAME,description: it.REMARKS,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE)))})
 			//TODO: Reverse data types, primary key, foreign keys
 			reverseTablePattern.setTable(t)
 			reverseTablePattern.execute()
 		}
 		res.close()		
 	}
+	
+	protected String getDataType(String dataTypeName,BigDecimal size, BigDecimal decimalDigits,BigDecimal sqlDataType) {
+		if (size==null || isIgnoreSize(sqlDataType.intValue())) {
+			return "${dataTypeName}"
+		}
+		if (decimalDigits==null) {
+			return "${dataTypeName}(${size})"
+		}
+		return "${dataTypeName}(${size},${decimalDigits})"
+}
+	boolean isIgnoreSize(int sqlType) {
+		List ignoredTypes=[Types.DATE,Types.TIME,Types.TIME_WITH_TIMEZONE,Types.TIMESTAMP_WITH_TIMEZONE]
+		return ignoredTypes.contains(sqlType)
+	}
+		
 	
 	protected void checkAbstractParentTableExist(String packageName,File outputDir=new File(SRC_FOLDER)) {
 		String abstractParentTableFileName=getAbstractParentTableClassSimpleName(packageName)
