@@ -33,8 +33,7 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		if (owner!=null) {
 			ownerPrefix="${owner}."
 		}		
-		//"${ownerPrefix}${name}"
-		"${name}@src"
+		"${ownerPrefix}${name}"
 	}
 	
 	public String getPhysicalSchema() {
