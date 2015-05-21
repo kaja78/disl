@@ -2,7 +2,7 @@ package org.disl.meta
 
 import java.lang.reflect.Field
 
-import org.disl.pattern.Executable;
+import org.disl.pattern.Executable
 import org.disl.pattern.Pattern
 import org.junit.Before
 
@@ -33,7 +33,8 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		if (owner!=null) {
 			ownerPrefix="${owner}."
 		}		
-		"${ownerPrefix}${name}"
+		//"${ownerPrefix}${name}"
+		"${name}@src"
 	}
 	
 	public String getPhysicalSchema() {
@@ -112,7 +113,12 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		if (primaryKey!=null) {
 			primaryKeyColumns.add(column)
 		}
-		
+
+		DefaultMapping defaultMapping=f.getAnnotation(DefaultMapping)
+		if (defaultMapping!=null) {
+			column.setDefaultMapping(defaultMapping.value())
+		}
+				
 		ForeignKey foreignKey=f.getAnnotation(ForeignKey)
 		if (foreignKey!=null) {
 			foreignKeys.add(new ForeignKeyMeta(
