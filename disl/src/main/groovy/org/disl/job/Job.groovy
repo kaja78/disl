@@ -44,6 +44,11 @@ class Job implements Executable {
 		jobEntries.each {it.simulate()}
 	}
 	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName()
+	}
+	
 	public synchronized void traceStatus() {
 		println "********************************************************************************"
 		jobEntries.each({println it})

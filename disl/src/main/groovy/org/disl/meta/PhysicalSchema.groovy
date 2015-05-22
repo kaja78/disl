@@ -8,25 +8,44 @@ public class PhysicalSchema {
 	String jdbcDriver
 	String jdbcUrl
 	String schema
-	Sql sql
+	SqlProxy sqlProxy
 	
 	public Sql getSql(){
-		if (sql==null || (sql.connection!=null && sql.connection.isClosed())) {
-			sql=createSql()	
+		if (sqlProxy==null || (sqlProxy.sql.connection!=null && sqlProxy.sql.connection.isClosed())) {
+			sqlProxy=createSqlProxy()	
 		}
-		sql
+		sqlProxy.sql
 	}
 
-	protected createSql() {
+	protected SqlProxy createSqlProxy() {
+		def sql=createSql()
+		return new SqlProxy(sql: sql)
+	}
+	
+	protected Sql createSql() {
 		def sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
 		sql.getConnection().setAutoCommit(false)
-		sql
+		return sql
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		if (sql!=null) {
 			sql.close()
+			sql=null
+		}
+	}
+	
+	static class SqlProxy {
+		Sql sql
+		
+		SqlProxy() {
+			addShutdownHook {close()}
+		}
+		void close() {
+			if (sql!=null) {
+				sql.close()
+			}
 			sql=null
 		}
 	}

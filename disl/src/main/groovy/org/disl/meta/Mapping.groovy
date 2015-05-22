@@ -187,7 +187,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		SELECT
 			${getQueryColumnList()}
 		FROM
-			${getSources().each({it}).join("\n			")}
+			${getSources().collect({it.fromClause}).join("\n			")}
 		WHERE
 			${filter}
 		${getGroupByClause()}${getSetOperationClause()}

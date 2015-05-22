@@ -1,5 +1,6 @@
 package org.disl.job
 
+import org.disl.meta.Context;
 import org.disl.pattern.Executable
 import org.junit.Test
 
@@ -9,12 +10,11 @@ class ParallelJob extends Job {
 
 	@Override
 	public void execute() {
-		JobThreadPool.instance.execute(this)
+		ParallelJobExecutor.instance.execute(this)
 	}
 
 	@Test
 	public void testExecute() {
-			
 		addAll([new TestingJob(),
 				new TestingJob(),
 				new TestingJob(),
@@ -35,7 +35,6 @@ class ParallelJob extends Job {
 	static class TestingExecutable implements Executable {
 		void execute() {
 			Thread.sleep(500)
-			println "executable done"
 		}
 		void simulate(){}
 	}

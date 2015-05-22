@@ -29,12 +29,15 @@ import org.disl.meta.*
 class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Surrogate key.\""")
+		@DataType("INTEGER")
 		Column KEY
 
 		@Description(\"""Natural key\""")
+		@DataType("INTEGER")
 		Column ID
 
 		@Description(\"""Dimension name.\""")
+		@DataType("VARCHAR(200)")
 		Column NAME		
 }"""
 		pattern.execute()

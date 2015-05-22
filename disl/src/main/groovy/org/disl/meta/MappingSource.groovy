@@ -14,7 +14,11 @@ abstract class MappingSource extends Base {
 	public abstract String getRefference();
 	
 	public String toString() {
-		join.fromClause
+		return getClass().getSimpleName()
+	}
+	
+	public String getFromClause() {
+		return join.fromClause
 	}
 	
 	public MappingSource on(String condition){
