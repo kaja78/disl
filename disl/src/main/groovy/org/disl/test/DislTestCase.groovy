@@ -1,42 +1,49 @@
 package org.disl.test
 
-import groovy.sql.Sql
+import static org.junit.Assert.*
 
+import groovy.sql.Sql
 import org.disl.db.hsqldb.HsqldbSchema
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class AssertSQL {
+class DislTestCase extends GroovyTestCase {
 
 	static Sql sql
 
-	protected static Sql getSql() {
+	protected Sql getSql() {
 		if (sql==null) {
-			sql=new HsqldbSchema().getSql()
-			sql.execute("CREATE TABLE DUAL (dummy char(1))")
-			sql.execute("INSERT INTO DUAL VALUES ('X')")
+			sql=createSql()
 		}
 		sql
 	}
+	
+	//TODO: Make abstract.
+	protected Sql createSql() {
+		def sql=new HsqldbSchema().getSql()
+		sql.execute("CREATE TABLE DUAL (dummy char(1))")
+		sql.execute("INSERT INTO DUAL VALUES ('X')")
+		return sql
+		
+	}
 
-	public static void assertTrue(expression) {
+	public void assertExpressionTrue(expression) {
 		assertRowCount(1, "select 1 from dual where ${expression}")
 	}
 
 	@Test
-	public void testAssertTrue() {
-		assertTrue("1=1")
+	public void testAssertExpressionTrue() {
+		assertExpressionTrue("1=1")
 	}
 
-	public static void assertRowCount(int expectedCount,String sqlQuery) {
+	public void assertRowCount(int expectedCount,String sqlQuery) {
 		int actualCount=getRowCount(sqlQuery)
-		Assert.assertEquals("""Invalid rowcount returned from query:
+		assertEquals("""Invalid rowcount returned from query:
 ${sqlQuery}
 """,expectedCount,actualCount,0)
 	}
 
-	public static int getRowCount(String sqlQuery) {
+	public int getRowCount(String sqlQuery) {
 		getSql().firstRow("select count(1) from (${sqlQuery})".toString()).find().value
 	}
 
@@ -45,24 +52,24 @@ ${sqlQuery}
 		assertRowCount(1, "select 1 from dual")
 	}
 
-	public static void assertEquals(expectedExpression,actualExpression) {
-		Assert.assertEquals(evaluate(expectedExpression),evaluate(actualExpression))
+	public void assertExpressionEquals(expectedExpression,actualExpression) {
+		assertEquals(evaluate(expectedExpression),evaluate(actualExpression))
 	}
 
 	@Test
-	public void testAssertEquals() {
-		assertEquals("1+1","2")
+	public void testAssertExpressionEquals() {
+		assertExpressionEquals("1+1","2")
 	}
 
-	public static void assertEquals(expectedExpression,actualExpression,List<Map> records) {
-		assert evaluate(expectedExpression)==evaluate(actualExpression,records)
+	public void assertExpressionEquals(expectedExpression,actualExpression,List<Map> records) {
+		assertEquals(evaluate(expectedExpression),evaluate(actualExpression,records))
 	}
 
-	public static String evaluate(expression) {
+	public String evaluate(expression) {
 		getSql().firstRow("select ${expression} from DUAL".toString()).find().value
 	}
 
-	public static String evaluate(expression,List<Map> records) {
+	public String evaluate(expression,List<Map> records) {
 		getSql().firstRow("select ${expression} from ${recordsToSubquery(records)}".toString()).find().value
 	}
 
@@ -75,7 +82,7 @@ ${sqlQuery}
 	}
 
 
-	private static String recordsToSubquery(List<Map> records) {
+	private String recordsToSubquery(List<Map> records) {
 		String joinCondition=""		
 		List aliases=findAliases(records)
 		boolean firstSource=true
@@ -93,7 +100,7 @@ where
 ${joinCondition}"""
 	}
 
-	private static List findAliases(List<Map> records) {
+	private List findAliases(List<Map> records) {
 		List aliases=[]
 		records[0].keySet().each {
 			String columnName=it.toString()
@@ -107,7 +114,7 @@ ${joinCondition}"""
 		return aliases
 	}
 
-	private static String mapToQuery(Map row, String sourceAlias, int index,boolean includeMissingSourceAliasColumns) {
+	protected String mapToQuery(Map row, String sourceAlias, int index,boolean includeMissingSourceAliasColumns) {
 		Map sourceAliasRow=row.findAll {
 			String key=it.key.toString()
 			return key.startsWith("${sourceAlias}.") || (includeMissingSourceAliasColumns && !key.contains('.'))
@@ -131,7 +138,7 @@ ${joinCondition}"""
 
 	@Test
 	public void testMapToSubQuery() {
-		Assert.assertEquals '''\
+		assertEquals '''\
 (select 1 as DUMMY_KEY,1 as a,2 as b from dual
 union all
 select 2 as DUMMY_KEY,2 as a,4 as b from dual
@@ -139,7 +146,7 @@ select 2 as DUMMY_KEY,2 as a,4 as b from dual
 where
 1=1
 AND SRC.DUMMY_KEY=SRC.DUMMY_KEY''',recordsToSubquery([["a":1,"b":2], ["a":2,"b":4]])
-		Assert.assertEquals '''\
+		assertEquals '''\
 (select 1 as DUMMY_KEY,1 as a from dual
 union all
 select 2 as DUMMY_KEY,2 as a from dual

@@ -11,7 +11,7 @@ public class PhysicalSchema {
 	SqlProxy sqlProxy
 	
 	public Sql getSql(){
-		if (sqlProxy==null || (sqlProxy.sql.connection!=null && sqlProxy.sql.connection.isClosed())) {
+		if (sqlProxy==null || (sqlProxy.sql.connection==null || sqlProxy.sql.connection.isClosed())) {
 			sqlProxy=createSqlProxy()	
 		}
 		sqlProxy.sql

@@ -1,10 +1,11 @@
 package org.disl.meta
-import static org.disl.test.AssertSQL.*;
+
+import org.disl.test.DislTestCase;
 import org.junit.Before
 import org.junit.Test
 
 
-class TestLibrary {
+class TestLibrary extends DislTestCase {
 
 	public static String repeat(expression, times) {
 		"REPEAT(${expression},${times})"
@@ -12,7 +13,7 @@ class TestLibrary {
 	
 	@Test
 	public void testTrim() {
-		assertEquals("'AA'", repeat("'A'",2))
+		assertExpressionEquals("'AA'", repeat("'A'",2))
 	}
 	
 }
