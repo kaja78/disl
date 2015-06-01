@@ -12,8 +12,4 @@ class HsqldbSchema extends PhysicalSchema {
 		user="sa"
 	}
 
-	@Test
-	void testSql() {
-		sql.execute("CREATE TABLE A (A CHAR(1))")
-	}
 }

@@ -1,7 +1,6 @@
 package org.disl.meta
 
-import org.disl.test.DislTestCase;
-import org.junit.Before
+import org.disl.test.DislTestCase
 import org.junit.Test
 
 

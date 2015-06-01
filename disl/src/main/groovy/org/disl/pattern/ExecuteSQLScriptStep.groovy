@@ -57,15 +57,4 @@ public class ExecuteSQLScriptStep extends Step {
 		updatedRowCount=getSql().executeUpdate(sqlCommand)
 	}
 	
-	@Test
-	void testGetCommands() {
-		def p=new ExecuteSQLScriptStep(commandSeparator: BACKSLASH_NEW_LINE,pattern: "A;B")
-		Assert.assertEquals(1, p.getCommands().size())
-		Assert.assertEquals("A;B", p.getCommands()[0])
-		p=new ExecuteSQLScriptStep(pattern: "A;B");
-		Assert.assertEquals(2, p.getCommands().size())
-		Assert.assertEquals("A", p.getCommands()[0])
-		Assert.assertEquals("B", p.getCommands()[1])
-		
-	}
 }

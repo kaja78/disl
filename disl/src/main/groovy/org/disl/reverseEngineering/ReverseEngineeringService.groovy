@@ -70,21 +70,6 @@ class ReverseEngineeringService {
 		f.write(getAbstractParentTableSourceCode(packageName))		
 	}
 	
-	@Test
-	public void TestGetAbstractParentTableSourceCode() {
-		String packageName="org.disl.l0"
-		String expectedCode="""\
-package org.disl.l0
-
-import org.disl.meta.Table
-
-public abstract class AbstractL0Table  extends Table {
-		String schema="L0"
-}
-"""
-		logicalSchemaName="L0"
-		Assert.assertEquals(expectedCode, getAbstractParentTableSourceCode('org.disl.l0'))
-	}
 	
 	public String getAbstractParentTableSourceCode(String packageName) {
 		"""\
@@ -96,11 +81,6 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 		String schema="${logicalSchemaName}"
 }
 """
-	}
-	
-	@Test
-	public void testGetAbstractParentTableFileName() {
-		Assert.assertEquals("AbstractL0Table", getAbstractParentTableClassSimpleName("org.disl.l0"))
 	}
 	
 	protected String getAbstractParentTableClassSimpleName(String packageName) {

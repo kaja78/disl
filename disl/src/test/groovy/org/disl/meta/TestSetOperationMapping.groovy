@@ -1,38 +1,46 @@
 package org.disl.meta
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*
 
-class TestSetOperationMapping extends Mapping {
+import org.disl.meta.TestMapping.TestingMapping
+import org.disl.test.DislTestCase
+import org.junit.Before
+import org.junit.Test
+
+class TestSetOperationMapping extends DislTestCase {
+
+	static class TestingSetOperationMapping extends Mapping {
 		String schema="L2"
-		
-		TestMapping subquery1
-		TestMapping subquery2
-		
-		ColumnMapping A=e {"$subquery1.A"} 
+
+		TestingMapping subquery1
+		TestingMapping subquery2
+
+		ColumnMapping A=e {"$subquery1.A"}
 		ColumnMapping c=e "C"
 		ColumnMapping B=e {"$subquery1.B"}
-		
+
 		@Override
 		public void initMapping() {
 			from subquery1
 			union subquery2
 		}
-		
-		@Before
-		void createTestTable() {
-			MetaFactory.create(TestTable).execute()
-		}
-		
-		@Test
-		void testGetSQLQuery() {
-			println getSQLQuery()
-		}
-		
-		@Test
-		void testGetSetOperationClause() {
-			assertEquals("""\n\tUNION 	/*Mapping TestMapping*/
+	}
+
+	TestingSetOperationMapping mapping=MetaFactory.create(TestingSetOperationMapping)
+	
+	@Before
+	void createTestTable() {
+		MetaFactory.create(TestTable).execute()
+	}
+
+	@Test
+	void testGetSQLQuery() {
+		println mapping.getSQLQuery()
+	}
+
+	@Test
+	void testGetSetOperationClause() {
+		assertEquals("""\n\tUNION 	/*Mapping TestingMapping*/
 		SELECT
 			s1.A as A,
 			C as c,
@@ -48,6 +56,6 @@ class TestSetOperationMapping extends Mapping {
 			s1.A=s1.A
 		GROUP BY
 			s1.A,C,REPEAT(s2.B,3)
-	/*End of mapping TestMapping*/""",getSetOperationClause())
-		}
+	/*End of mapping TestingMapping*/""",mapping.getSetOperationClause())
+	}
 }

@@ -1,14 +1,13 @@
 package org.disl.db.hsqldb.pattern
 
 import org.disl.meta.Column
-import org.disl.meta.Context
 import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.pattern.Pattern
-import org.junit.Before
+import org.disl.test.DislTestCase
 import org.junit.Test
 
-class TestCreateOrReplaceTable {
+class TestCreateOrReplaceTable extends DislTestCase {
 
 	static class KEY extends Column {
 		String dataType="DECIMAL"

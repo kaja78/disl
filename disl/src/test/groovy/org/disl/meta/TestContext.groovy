@@ -1,14 +1,15 @@
 package org.disl.meta
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.*
 
-import org.junit.Test;
+import org.disl.test.DislTestCase
+import org.junit.Test
 
-class TestContext {
+class TestContext extends DislTestCase {
 	@Test
 	void testGetContext() {
 		Context context=Context.getContext()
-		assert context.name=="default"		
+		assert context.name=="disl-test"		
 		assert context.getConfig()["L2"]=="Hsqldb"
 		assert context.getPhysicalSchema("L2").schema=="PUBLIC"
 	}
