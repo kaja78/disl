@@ -5,8 +5,7 @@ import groovy.sql.GroovyResultSetProxy
 import groovy.sql.Sql
 
 import java.sql.ResultSet
-import java.sql.SQLType
-import java.sql.Types;
+import java.sql.Types
 
 import org.disl.meta.Column
 import org.disl.meta.Context

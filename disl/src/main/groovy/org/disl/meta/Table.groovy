@@ -11,7 +11,7 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 	public abstract String getSchema()
 	
 	List columns=[]	
-	String description
+	String description=""
 	List<IndexMeta> indexes=[]
 	List<Column> primaryKeyColumns=[]
 	List uniqueKeys=[]

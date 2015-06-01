@@ -5,6 +5,7 @@ class Column {
 	Table parent
 	String description
 	String dataType
+	String defaultValue
 
 	Column(){}
 	
