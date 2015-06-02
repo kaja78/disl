@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.management.InstanceOfQueryExp;
 
 import org.disl.job.Job.JobEntry
+import org.disl.meta.Context;
 import org.disl.pattern.Executable
 
 @Singleton(lazy=true,strict=false)
@@ -92,9 +93,11 @@ class ParallelJobExecutor {
 	}
 	
 	Callable createCallable(Executable executable) {
+		String parentContext=Context.getContextName()
 		return new Callable() {
 			Object call() {
 				try {
+					Context.setContextName(parentContext)
 					executable.execute();
 				} catch (Exception e) {
 					e.printStackTrace();
