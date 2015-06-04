@@ -126,6 +126,11 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 				targetColumn: foreignKey.targetColumn()
 				))
 		}
+		
+		Nullable nullable=f.getAnnotation(Nullable) 
+		if (nullable!=null) {
+			column.setName(true)
+		}		
 	}
 	
 	public Iterable<String> getColumnDefinitions() {

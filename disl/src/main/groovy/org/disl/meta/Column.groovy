@@ -6,6 +6,7 @@ class Column {
 	String description
 	String dataType
 	String defaultValue
+	boolean nullable=false
 
 	Column(){}
 	
