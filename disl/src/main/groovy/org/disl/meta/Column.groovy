@@ -16,7 +16,14 @@ class Column {
 	}
 	
 	String getColumnDefinition() {
-		"${getName()} ${getDataType()}"
+		"${getName()} ${getDataType()}${getConstraint()}"
+	}
+	
+	String getConstraint() {
+		if (!isNullable()) {
+			return " NOT NULL"
+		}
+		return ""
 	}
 	
 	String toString(){
