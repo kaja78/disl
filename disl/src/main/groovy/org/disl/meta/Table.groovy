@@ -129,7 +129,7 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		
 		Nullable nullable=f.getAnnotation(Nullable) 
 		if (nullable!=null) {
-			column.setName(true)
+			column.setNullable(true)
 		}		
 	}
 	
