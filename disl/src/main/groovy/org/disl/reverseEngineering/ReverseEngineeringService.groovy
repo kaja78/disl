@@ -53,7 +53,7 @@ class ReverseEngineeringService {
 		return "${dataTypeName}(${size},${decimalDigits})"
 }
 	boolean isIgnoreSize(int sqlType) {
-		List ignoredTypes=[Types.DATE,Types.TIME]
+		List ignoredTypes=[Types.DATE,Types.TIME,Types.ROWID]
 		return ignoredTypes.contains(sqlType)
 	}
 		
