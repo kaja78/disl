@@ -46,19 +46,27 @@ class ReverseEngineeringService {
 		reverseTablePattern.setPackageName(targetPackage)
 		reverseTablePattern.setOutputDir(outputDir)
 		reverseTablePattern.setParentClassName(parentClassName)
-		ResultSet res=sql.getConnection().getMetaData().getTables(null, sourceSchemaFilterPattern, tablePattern, tableTypes)
-		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
-		def tables=collectRows(res,{new ReverseEngineeredTable(name: it.TABLE_NAME,description: it.REMARKS, schema:logicalSchemaName)})
-		res.close()
+		List<Table> tables=reverseEngineerTables(sql,tablePattern,tableTypes,sourceSchemaFilterPattern)
 		tables.each {
 			Table t=it
-			res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, t.getName(), null)
-			eachRow(res,{t.columns.add(new Column(name: it.COLUMN_NAME,description: it.REMARKS,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE)))})
-			//TODO: Reverse data types, primary key, foreign keys
 			reverseTablePattern.setTable(t)
 			reverseTablePattern.execute()
 		}
+		
+	}
+	
+	protected List<Table> reverseEngineerTables(Sql sql,String tablePattern, String tableTypes,String sourceSchemaFilterPattern) {
+		ResultSet res=sql.getConnection().getMetaData().getTables(null, sourceSchemaFilterPattern, tablePattern, tableTypes)
+		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
+		List<Table> tables=collectRows(res,{new ReverseEngineeredTable(name: it.TABLE_NAME,description: it.REMARKS, schema:logicalSchemaName, physicalSchema: it.TABLE_SCHEM)})
 		res.close()
+		tables.each {
+			Table table=it
+			res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getName(), null)
+			eachRow(res,{table.columns.add(new Column(name: it.COLUMN_NAME,description: it.REMARKS,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE)))})
+		}
+		res.close()
+		return tables
 	}
 
 	protected String getDataType(String dataTypeName,BigDecimal size, BigDecimal decimalDigits,BigDecimal sqlDataType) {
@@ -119,6 +127,7 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 
 	private static class ReverseEngineeredTable extends Table {
 		String schema
+		String physicalSchema
 	}
 
 	public void traceColumnMappings(Sql sql,String query) {
