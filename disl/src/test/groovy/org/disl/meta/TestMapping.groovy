@@ -42,6 +42,7 @@ class TestMapping extends DislTestCase {
 		ColumnMapping c=e "C"
 		ColumnMapping B=a {repeat(s2.B,3)}
 
+		SqlExpression CONSTANT=c 1
 
 		void initMapping() {
 			from s1
@@ -84,5 +85,12 @@ class TestMapping extends DislTestCase {
 		GROUP BY
 			s1.A,C,REPEAT(s2.B,3)
 	/*End of mapping TestingMapping*/""".toString(),mapping.getSQLQuery())
+	}
+	
+	@Test
+	void testConstant() {
+		TestingMapping mapping=MetaFactory.create(TestingMapping)
+		assertEquals("1",(String)mapping.CONSTANT)
+		assertEquals("1+1",(String)mapping.CONSTANT+1)
 	}
 }

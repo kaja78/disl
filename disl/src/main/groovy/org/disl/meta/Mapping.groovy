@@ -24,6 +24,8 @@ import groovy.sql.Sql
 import java.lang.reflect.Field
 import java.sql.SQLException
 
+import javax.management.InstanceOfQueryExp;
+
 import org.junit.Before
 import org.junit.Test
 
@@ -159,8 +161,14 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		setOperations.add(new SetOperation.INTERSECT(source: source))
 	
 	}
-
 	
+	SqlExpression c(Object constant) {
+		return createConstant(constant)
+	}
+
+	SqlExpression createConstant(Object constant) {
+		return new SqlExpression(expression:constant)
+	}
 
 		
 	/**

@@ -22,7 +22,7 @@ import javax.management.InstanceOfQueryExp;
 
 import org.codehaus.groovy.ast.expr.ClosureExpression;
 
-abstract class ColumnMapping {
+abstract class ColumnMapping extends SqlOperators {
 
 	Mapping parent
 	def expression

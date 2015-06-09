@@ -18,7 +18,25 @@
  */
 package org.disl.meta
 
-class Filter {
-	String expression
+import groovy.lang.Closure;
+
+import org.junit.Test;
+
+class SqlExpression extends SqlOperators {
+	Object expression
+
+	@Override
+	public String toString() {
+		getValue().toString()
+	}
 	
+	protected Object getValue() {
+		if (expression instanceof Closure) {
+			return expression.call()
+		}
+		return expression
+	}
+	
+
+
 }

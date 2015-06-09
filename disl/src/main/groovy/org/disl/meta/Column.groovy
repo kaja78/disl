@@ -18,7 +18,7 @@
  */
 package org.disl.meta
 
-class Column {
+class Column extends SqlOperators {
 	String name
 	Table parent
 	String description

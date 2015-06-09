@@ -39,8 +39,8 @@ abstract class MappingSource extends Base {
 		return join.fromClause
 	}
 	
-	public MappingSource on(String condition){
-		this.join.condition=condition
+	public MappingSource on(Object condition){
+		this.join.condition=condition.toString()
 		this
 	}
 
