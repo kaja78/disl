@@ -37,6 +37,10 @@ abstract class AbstractDislTestCase extends GroovyTestCase {
 	public void assertExpressionTrue(expression) {
 		assertRowCount(1, "select 1 from dual where ${expression}")
 	}
+	
+	public void assertExpressionFalse(expression) {
+		assertRowCount(0, "select 1 from dual where ${expression}")
+	}
 
 	public void assertRowCount(int expectedCount,String sqlQuery) {
 		int actualCount=getRowCount(sqlQuery)
