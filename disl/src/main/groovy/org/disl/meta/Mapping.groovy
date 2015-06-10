@@ -158,11 +158,10 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	}
 	
 	public void intersect(MappingSource source) {
-		setOperations.add(new SetOperation.INTERSECT(source: source))
-	
+		setOperations.add(new SetOperation.INTERSECT(source: source))	
 	}
 	
-	SqlExpression c(Object constant) {
+	SqlExpression constant(Object constant) {
 		return createConstant(constant)
 	}
 

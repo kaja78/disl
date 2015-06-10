@@ -42,7 +42,7 @@ class TestMapping extends DislTestCase {
 		ColumnMapping c=e "C"
 		ColumnMapping B=a {repeat(s2.B,3)}
 
-		SqlExpression CONSTANT=c 1
+		SqlExpression CONSTANT=constant 1
 
 		void initMapping() {
 			from s1
