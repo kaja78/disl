@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.test
 
@@ -45,13 +45,6 @@ class TestDislTestCase extends DislTestCase {
 		assert "2"==evaluate("sum(B.B)",[["A.A":6,"B.B":1], ["A.A":5,"B.B":1]])
 	}
 	
-	@Test
-	public void testMapToQuery() {
-		assert "select 1 as DUMMY_KEY,1 as A,2 as B from dual\n"==mapToQuery(["A.A":1,"B":2], "A",1, true)
-		assert "select 2 as DUMMY_KEY,1 as A from dual\n"==mapToQuery(["A.A":1,"B":2], "A", 2,false)
-	}
-
-
 	@Test
 	public void testMapToSubQuery() {
 		assertEquals '''\

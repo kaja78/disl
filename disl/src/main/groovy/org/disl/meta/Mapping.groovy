@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta
 
@@ -23,8 +23,6 @@ import groovy.sql.Sql
 
 import java.lang.reflect.Field
 import java.sql.SQLException
-
-import javax.management.InstanceOfQueryExp;
 
 import org.junit.Before
 import org.junit.Test
@@ -161,12 +159,15 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		setOperations.add(new SetOperation.INTERSECT(source: source))	
 	}
 	
-	SqlExpression constant(Object constant) {
-		return createConstant(constant)
+	SqlExpression constant(Object value) {		
+		return createConstant(value)
 	}
 
-	SqlExpression createConstant(Object constant) {
-		return new SqlExpression(expression:constant)
+	SqlExpression createConstant(Object value) {
+		if (value instanceof String || value instanceof GString) {
+			value="'${value}'"
+		}
+		return new SqlExpression(expression:value)
 	}
 
 		
@@ -176,7 +177,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	ExpressionColumnMapping e(expression) {
 		createExpressionColumnMapping(expression)
 	}
-
+	
 	ExpressionColumnMapping createExpressionColumnMapping(expression) {
 		addColumnMapping new ExpressionColumnMapping(expression: expression,parent: this)
 	}

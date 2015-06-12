@@ -16,22 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern
+package org.disl.db.oracle
 
-import groovy.sql.Sql
+import org.junit.Test
 
-import org.disl.meta.Context
-import org.disl.meta.TableMapping
+class TestOracleLookup extends GroovyTestCase {
+	OracleLookup l=new OracleLookup() {
+		List<Map> records=[[a:1,b:2], [a:2,b:4]]
+	}
 
-abstract class MappingPattern extends Pattern {
-	TableMapping mapping
-
-	protected Closure<Sql> getSql() {
-		return {Context.getSql(getMapping().getSchema())}
+	@Test
+	public void testMapToQuery() {
+		assert "select 1 as DUMMY_KEY,1 as A,2 as B from dual\n"==OracleLookup.mapToQuery(["A.A":1,"B":2], "A",1, true)
+		assert "select 2 as DUMMY_KEY,1 as A from dual\n"==OracleLookup.mapToQuery(["A.A":1,"B":2], "A", 2,false)
 	}
 	
-	@Override
-	public String toString() {
-		"${this.getClass().getSimpleName()}(${getMapping().getName()})}"
+	@Test
+	public void testGetRefference() {
+		assertEquals("""(select * from (select 1 as DUMMY_KEY,1 as a,2 as b from dual
+union all
+select 2 as DUMMY_KEY,2 as a,4 as b from dual
+) SRC
+where
+1=1
+AND SRC.DUMMY_KEY=SRC.DUMMY_KEY)""",l.getRefference())
 	}
 }

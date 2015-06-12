@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta
 
@@ -36,8 +36,17 @@ class Base {
 		getName()
 	}
 	
-	public List<Field> getFieldsByType(Class type) {
-		getClass().getDeclaredFields().findAll {type.isAssignableFrom(it.getType())}
+	public List<Field> getFieldsByType(Class matchType) {
+		getFieldsByType(this.getClass(), matchType);
+	}
+	
+	protected List<Field> getFieldsByType(Class type,Class matchType) {
+		List<Field> fields=[]
+		if (type.getSuperclass()!=null) {
+			fields.addAll(getFieldsByType(type.getSuperclass(),matchType))
+		}
+		fields.addAll(type.getDeclaredFields().findAll {matchType.isAssignableFrom(it.getType())})
+		return fields
 	}
 	
 	public List getPropertyValuesByType(Class type) {
