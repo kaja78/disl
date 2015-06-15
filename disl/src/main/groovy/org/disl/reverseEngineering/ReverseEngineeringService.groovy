@@ -22,6 +22,9 @@ import groovy.sql.GroovyResultSet
 import groovy.sql.GroovyResultSetProxy
 import groovy.sql.Sql
 
+import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.StringSelection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.ResultSetMetaData
@@ -129,6 +132,11 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 		String schema
 		String physicalSchema
 	}
+	
+	public void traceColumnMappings(Sql sql) {
+		String query=Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor)
+		traceColumnMappings(sql, query)
+	}
 
 	public void traceColumnMappings(Sql sql,String query) {
 		String selectList=query.substring(query.toUpperCase().indexOf("SELECT")+6,query.toUpperCase().indexOf("FROM"))
@@ -141,9 +149,23 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 		PreparedStatement stmt=sql.getConnection().prepareStatement(query)
 		ResultSetMetaData metadata=stmt.executeQuery().getMetaData()
 
-
+		StringBuffer sb=new StringBuffer()
 		for (int i=1;i<=metadata.columnCount;i++) {
-			println """ColumnMapping ${metadata.getColumnLabel(i)}=e {"${columnExpressions[i-1]}"}"""
+			sb.append("ColumnMapping ${metadata.getColumnLabel(i)}=e {${nvl(columnExpressions[i-1],metadata.getColumnLabel(i))}}\n")
 		}
+		
+		
+		StringSelection ss = new StringSelection(sb.toString());
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
+		
+		println sb.toString()
+		println "ColumnMappings stored in clipboard."
+	}
+	
+	protected String nvl(String s1,String s2) {
+		if (s1!=null) {
+			return s1
+		}
+		return s2
 	}
 }
