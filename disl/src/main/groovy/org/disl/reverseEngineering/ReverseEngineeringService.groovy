@@ -55,9 +55,8 @@ class ReverseEngineeringService {
 			reverseTablePattern.setTable(t)
 			reverseTablePattern.execute()
 		}
-		
 	}
-	
+
 	protected List<Table> reverseEngineerTables(Sql sql,String tablePattern, String tableTypes,String sourceSchemaFilterPattern) {
 		ResultSet res=sql.getConnection().getMetaData().getTables(null, sourceSchemaFilterPattern, tablePattern, tableTypes)
 		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
@@ -132,7 +131,7 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 		String schema
 		String physicalSchema
 	}
-	
+
 	public void traceColumnMappings(Sql sql) {
 		String query=Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor)
 		traceColumnMappings(sql, query)
@@ -141,7 +140,7 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 	public void traceColumnMappings(Sql sql,String query) {
 		String selectList=query.substring(query.toUpperCase().indexOf("SELECT")+6,query.toUpperCase().indexOf("FROM"))
 		List columnExpressions=getColumnExpressions(new StringBuffer(selectList))
-		
+
 		PreparedStatement stmt=sql.getConnection().prepareStatement(query)
 		ResultSetMetaData metadata=stmt.executeQuery().getMetaData()
 
@@ -149,15 +148,18 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 		for (int i=1;i<=metadata.columnCount;i++) {
 			sb.append("ColumnMapping ${metadata.getColumnLabel(i)}=e {${nvl(columnExpressions[i-1],metadata.getColumnLabel(i))}}\n")
 		}
-		
-		
+
+
 		StringSelection ss = new StringSelection(sb.toString());
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
-		
+
 		println sb.toString()
 		println "ColumnMappings stored in clipboard."
 	}
 
+	/**
+	 * Transform selectList into columnExpressions. Separate by commas not enclosed within parenthesis. Make uppercase evrything not within apostrophes.
+	 * */
 	protected List getColumnExpressions(StringBuffer selectList) {
 		char SEPARATOR_CHAR='~'
 		int bracketLevel=0
@@ -174,9 +176,9 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 				apostropheLevel++
 			} else if (apostropheLevel%2==0) {
 				selectList.setCharAt(i, actualChar.toUpperCase())
-			}			
+			}
 		}
-		
+
 		selectList.toString().split(new String(SEPARATOR_CHAR)).collect ({
 			String expression=it.trim()
 			if (expression.contains(" as ")) {
@@ -186,11 +188,8 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 			}
 			return expression
 		})
-		
-		
-			
 	}
-	
+
 	protected String nvl(String s1,String s2) {
 		if (s1!=null) {
 			return s1
