@@ -20,12 +20,13 @@ package org.disl.meta
 
 import java.lang.reflect.Field
 
+import org.disl.meta.IndexMeta.IndexOwner
 import org.disl.pattern.Executable
 import org.disl.pattern.Pattern
 import org.junit.Before
 
 
-abstract class Table extends MappingSource implements Initializable, Executable {
+abstract class Table extends MappingSource implements Initializable, Executable, IndexOwner {
 	public abstract String getSchema()
 	
 	List columns=[]	
@@ -87,13 +88,7 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 			description=desc.value()
 		}
 		
-		Collection<Index> inds=this.getClass().getAnnotations().findAll {Index.class.equals(it.annotationType())}
-		inds.each {initIndex(it)}		
-	}
-	
-	protected void initIndex(Index index) {
-		IndexMeta indexMeta=new IndexMeta(columns: index.columns().collect({this[it]}))
-		indexes.add(indexMeta)
+		IndexMeta.initIndexes(this)
 	}
 	
 	protected void initColumns() {
@@ -165,13 +160,5 @@ abstract class Table extends MappingSource implements Initializable, Executable 
 		String sourceColumn 
 		Table targetTable
 		String targetColumn
-	}
-	
-	static class IndexMeta {
-		List<Column> columns
-		
-		public List<String> getColumnNames() {
-			return columns.collect({it.name})
-		}
 	}
 }

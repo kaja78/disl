@@ -140,12 +140,8 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 
 	public void traceColumnMappings(Sql sql,String query) {
 		String selectList=query.substring(query.toUpperCase().indexOf("SELECT")+6,query.toUpperCase().indexOf("FROM"))
-		List columnExpressions=selectList.split(',').collect ({
-			if (it.contains(" as ")) {
-				return it.substring(0, it.lastIndexOf(" as ")).trim()
-			}
-			return it.trim()
-		})
+		List columnExpressions=getColumnExpressions(new StringBuffer(selectList))
+		
 		PreparedStatement stmt=sql.getConnection().prepareStatement(query)
 		ResultSetMetaData metadata=stmt.executeQuery().getMetaData()
 
@@ -160,6 +156,39 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 		
 		println sb.toString()
 		println "ColumnMappings stored in clipboard."
+	}
+
+	protected List getColumnExpressions(StringBuffer selectList) {
+		char SEPARATOR_CHAR='~'
+		int bracketLevel=0
+		int apostropheLevel=0
+		for (int i=0;i<selectList.size();i++) {
+			char actualChar=selectList.charAt(i)
+			if (actualChar=='(') {
+				bracketLevel++
+			} else if (actualChar==')') {
+				bracketLevel--
+			} else if (actualChar==',' && bracketLevel==0) {
+				selectList.setCharAt(i, SEPARATOR_CHAR)
+			} else if (actualChar=="'") {
+				apostropheLevel++
+			} else if (apostropheLevel%2==0) {
+				selectList.setCharAt(i, actualChar.toUpperCase())
+			}			
+		}
+		
+		selectList.toString().split(new String(SEPARATOR_CHAR)).collect ({
+			String expression=it.trim()
+			if (expression.contains(" as ")) {
+				return expression.substring(0, expression.lastIndexOf(" as "))
+			}  else if (!expression.endsWith(')') && expression.contains(' ')) {
+				return expression.substring(0,expression.lastIndexOf(' '))
+			}
+			return expression
+		})
+		
+		
+			
 	}
 	
 	protected String nvl(String s1,String s2) {
