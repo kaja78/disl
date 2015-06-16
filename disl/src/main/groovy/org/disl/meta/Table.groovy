@@ -20,7 +20,6 @@ package org.disl.meta
 
 import java.lang.reflect.Field
 
-import org.disl.meta.IndexMeta.IndexOwner
 import org.disl.pattern.Executable
 import org.disl.pattern.Pattern
 import org.junit.Before
