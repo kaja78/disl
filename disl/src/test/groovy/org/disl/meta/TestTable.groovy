@@ -22,7 +22,7 @@ import org.disl.pattern.Pattern
 import org.junit.Test
 
 
-@Index(columns=["A","B"])
+@Indexes(@Index(columns=["A","B"]))
 class TestTable extends Table {
 
 	Pattern pattern=new CreateOrReplaceTablePattern(table: this)
@@ -56,8 +56,8 @@ class TestTable extends Table {
 	void testGetIndexes() {
 		Collection indexes=getIndexes()
 		assert indexes!=null
-		assert indexes[0].columns[0].name=="A"
-		assert indexes[0].columns[1].name=="B"
+		assert indexes[0].columnNames[0]=="A"
+		assert indexes[0].columnNames[1]=="B"
 	}
 	
 	

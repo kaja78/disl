@@ -16,27 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta;
+package org.disl.meta
 
-import java.util.List;
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
 
-class IndexMeta {
-	List<String> columnNames
-	
-	public static initIndexes(IndexOwner object) {
-		Index index=object.getClass().getAnnotation(Index)
-		if (index!=null) {
-			initIndex(index,object)	
-		}
-
-		Indexes indexes=object.getClass().getAnnotation(Indexes)
-		if (indexes!=null) {
-			indexes.value().each {initIndex(it,object)}
-		}
-	}
-	
-	protected static void initIndex(Index index, IndexOwner object) {
-		IndexMeta indexMeta=new IndexMeta(columnNames: index.columns())
-		object.indexes.add(indexMeta)
-	}
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Indexes {
+	Index[] value()
 }
