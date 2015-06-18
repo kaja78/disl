@@ -25,15 +25,29 @@ import org.disl.pattern.Pattern
 import org.junit.Before
 
 
-abstract class Table extends MappingSource implements Initializable, Executable, IndexOwner {
+abstract class Table extends MappingSource implements  Executable, IndexOwner {
+	
+	private Object dumm=doEarlyInit()
+	
+	private Object doEarlyInit() {		
+		columns=[]		
+		description=""
+		indexes=[]
+		primaryKeyColumns=[]
+		uniqueKeys=[]
+		foreignKeys=[]
+		init()
+		return null
+	}
+	
 	public abstract String getSchema()
 	
-	List columns=[]	
-	String description=""
-	List<IndexMeta> indexes=[]
-	List<Column> primaryKeyColumns=[]
-	List uniqueKeys=[]
-	List<ForeignKeyMeta> foreignKeys=[]
+	List columns	
+	String description
+	List<IndexMeta> indexes
+	List<Column> primaryKeyColumns
+	List uniqueKeys
+	List<ForeignKeyMeta> foreignKeys
 	Pattern pattern
 	
 	@Override
@@ -76,8 +90,6 @@ abstract class Table extends MappingSource implements Initializable, Executable,
 		getPattern().simulate()
 	}
 	
-	@Before
-	@Override
 	public void init() {
 		initColumns()
 		initConstraints()

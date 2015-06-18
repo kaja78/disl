@@ -22,6 +22,7 @@ import static org.junit.Assert.*
 import groovy.sql.Sql
 
 import java.lang.reflect.Field
+import java.lang.reflect.Modifier;
 import java.sql.SQLException
 
 import org.junit.Before
@@ -30,6 +31,13 @@ import org.junit.Test
 
 
 abstract class Mapping  extends MappingSource implements Initializable {
+	private Object dummy=doEarlyInit()
+	
+	private Object doEarlyInit() {
+		initSourceAliases()
+		return null
+	}
+	
 	public abstract String getSchema()
 	List columns=[]
 	List<MappingSource> sources=[]
@@ -61,24 +69,10 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	}
 	
 	@Before
-	public void init() {
-		initNullProperties()
-		initSourceAliases()
+	public void init() {		
 		initColumnAliases()
 		initMapping()
 	}
-	
-	void initNullProperties() {
-		properties.findAll {it.value==null}.each {initNullProperty(it.key)}
-	}
-	
-	void initNullProperty(String key) {
-		
-		MetaProperty property=this.metaClass.properties.find {it.name.equals(key)}
-		def properyValue=MetaFactory.create(property.type)
-		this[key]=properyValue
-	}
-
 	
 	void initColumnAliases() {
 		getFieldsByType(ColumnMapping).each { initAlias(it)}
@@ -89,14 +83,14 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	}
 	
 	void initSourceAliases() {
-		getPropertyNamesByType(MappingSource).each {initPropertySourceAlias(it)}
+		getPropertyNamesByType(MappingSource).each {initSourceAlias(it)}
 	}
 	
-	void initPropertySourceAlias(String property) {
-		def p=getProperty(property)
-		if (p!=null) {
-			p.sourceAlias=property
-		}
+	void initSourceAlias(String property) {
+		MetaProperty metaProperty=metaClass.getProperties().find {it.name==property}
+		def p=MetaFactory.create(metaProperty.getType())
+		p.sourceAlias=property
+		this[property]=p
 	}
 	
 	abstract void initMapping();

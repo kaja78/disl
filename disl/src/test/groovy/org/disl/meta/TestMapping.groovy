@@ -38,7 +38,7 @@ class TestMapping extends DislTestCase {
 		TestTable s5
 		TestTable s6
 
-		ColumnMapping A=e {"$s1.A"}
+		ColumnMapping A=e s1.A
 		ColumnMapping c=e "C"
 		ColumnMapping B=a {repeat(s2.B,3)}
 
@@ -59,6 +59,7 @@ class TestMapping extends DislTestCase {
 		
 		@Before
 		void createTestTable() {
+			Context.setContextName("disl-test")
 			MetaFactory.create(TestTable).execute()
 		}
 	}
