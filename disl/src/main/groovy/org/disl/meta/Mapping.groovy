@@ -22,7 +22,6 @@ import static org.junit.Assert.*
 import groovy.sql.Sql
 
 import java.lang.reflect.Field
-import java.lang.reflect.Modifier;
 import java.sql.SQLException
 
 import org.junit.Before
@@ -31,22 +30,36 @@ import org.junit.Test
 
 
 abstract class Mapping  extends MappingSource implements Initializable {
+	
+	private String groupBy
 	private Object dummy=doEarlyInit()
+
+	List columns=[]
+	List<MappingSource> sources=[]
+	List<SetOperation> setOperations=[]
+	String filter="1=1"
+	
+	public abstract String getSchema()
+	
+	protected Mapping(){}
 	
 	private Object doEarlyInit() {
 		initSourceAliases()
 		return null
 	}
 	
-	public abstract String getSchema()
-	List columns=[]
-	List<MappingSource> sources=[]
-	List<SetOperation> setOperations=[]
-
-	String filter="1=1"
-	String groupBy
+	@Before
+	public void init() {
+		initColumnAliases()
+		initMapping()
+		if (getGroupBy()==null && getColumns().find({it instanceof AggregateColumnMapping})) {
+			groupBy()
+		}
+	}
 	
-	protected Mapping(){}
+	protected String getGroupBy() {
+		groupBy
+	}
 	
 	@Override
 	public String getRefference() {
@@ -56,22 +69,8 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		return "(${getSQLQuery()})"
 	}
 
-	Closure getFilter() {
-		return {"1=1"}
-	}
-	
-	Closure getGroupBy() {
-		return {null}
-	}
-	
 	Closure getHaving() {
 		return {null}
-	}
-	
-	@Before
-	public void init() {		
-		initColumnAliases()
-		initMapping()
 	}
 	
 	void initColumnAliases() {
@@ -130,6 +129,29 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	
 	public void where(String condition) {
 		filter=condition
+	}
+	
+	/**
+	 * Explicitly generate groupBy clause for all expression mappings.
+	 * */
+	public void groupBy() {
+		groupBy(getColumns().findAll {it instanceof ExpressionColumnMapping})
+	}
+	
+	public void groupBy(Object... expressions) {
+		ArrayList l=new ArrayList(expressions.length)
+		l.addAll(expressions)
+		groupBy(l)
+	}
+	
+	public void groupBy(List expressions) {
+		String clause=expressions.collect({
+			if (it instanceof ExpressionColumnMapping) {
+				it=it.mappingExpression
+			}
+			it.toString()
+		}).join(',')
+		groupBy(clause)
 	}
 	
 	public void groupBy(String clause) {
@@ -215,7 +237,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	}
 	
 	String getQueryColumnList() {
-		getColumns().collect {"${it.getMappingExpression()}"}.join(",\n			")
+		getColumns().collect {"${it.getAliasedMappingExpression()}"}.join(",\n			")
 	}
 	
 	Collection<String> getTargetColumnNames() {

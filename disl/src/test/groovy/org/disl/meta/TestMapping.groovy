@@ -40,8 +40,8 @@ class TestMapping extends DislTestCase {
 
 		ColumnMapping A=e s1.A
 		ColumnMapping c=e "C"
-		ColumnMapping B=a {repeat(s2.B,3)}
-
+		ColumnMapping B=e repeat(s2.B,3)
+		
 		SqlExpression CONSTANT=constant 1
 
 		void initMapping() {
@@ -51,10 +51,8 @@ class TestMapping extends DislTestCase {
 			rightOuterJoin s4 on "$s2.A=$s4.A"
 			fullOuterJoin s5 on "$s2.A=$s5.A"
 			cartesianJoin s6
-
 			where "$s1.A=$s1.A"
-
-			groupBy "$s1.A,C,${repeat(s2.B,3)}"
+			groupBy()
 		}
 		
 		@Before

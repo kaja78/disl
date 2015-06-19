@@ -35,11 +35,15 @@ abstract class ColumnMapping extends SqlOperators {
 		"${parent.getSourceAlias()}.${getAlias()}"
 	}
 	
+	String getAliasedMappingExpression() {
+		"$mappingExpression as $alias"
+	}
+	
 	String getMappingExpression() {
 		if (expression instanceof Closure) {
-			expression=expression.call()
+			return expression.call()
 		}
-		"$expression as $alias"
+		return expression
 	}
 	
 
