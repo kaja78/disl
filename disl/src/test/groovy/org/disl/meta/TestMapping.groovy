@@ -92,4 +92,17 @@ class TestMapping extends DislTestCase {
 		assertEquals("1",(String)mapping.CONSTANT)
 		assertEquals("1+1",(String)mapping.CONSTANT+1)
 	}
+	
+	@Test
+	void testGroupBy() {
+		TestingMapping mapping=MetaFactory.create(TestingMapping)
+		String value="value"
+		mapping.groupBy value
+		assertEquals(value,mapping.getGroupBy())
+		mapping.groupBy value,value
+		assertEquals("value,value",mapping.getGroupBy())
+		mapping.groupBy()
+		assertEquals("s1.A,C,REPEAT(s2.B,3)",mapping.getGroupBy())
+		
+	}
 }
