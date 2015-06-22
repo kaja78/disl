@@ -34,7 +34,7 @@ class Column extends SqlOperators {
 	}
 	
 	String getColumnDefinition() {
-		"${getName()} ${getDataType()}${getConstraint()}"
+		"${getName()} ${getDataType()}${getDefaultValueClause()}${getConstraint()}"
 	}
 	
 	String getConstraint() {
@@ -42,6 +42,14 @@ class Column extends SqlOperators {
 			return " NOT NULL"
 		}
 		return ""
+	}
+	
+	String getDefaultValueClause() {
+		if (getDefaultValue()==null) {
+			return ""
+		}
+		return " DEFAULT ${getDefaultValue()}"
+		
 	}
 	
 	String toString(){

@@ -27,7 +27,7 @@ class TestContext extends DislTestCase {
 	@Test
 	void testGetContext() {
 		Context context=Context.getContext()
-		assert context.name=="disl-test"		
+		assert context.getName().equals('disl-test')		
 		assert context.getConfig()["L2"]=="Hsqldb"
 		assert context.getPhysicalSchema("L2").schema=="PUBLIC"
 	}

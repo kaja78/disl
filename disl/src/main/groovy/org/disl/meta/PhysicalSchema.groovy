@@ -21,12 +21,31 @@ package org.disl.meta;
 import groovy.sql.Sql
 
 public class PhysicalSchema {
+	
+	String name
 	String user
 	String password
 	String jdbcDriver
 	String jdbcUrl
 	String schema
 	SqlProxy sqlProxy
+	
+	public void init() {
+		Context context=Context.getContext();
+		user=getSchemaProperty("user",user)
+		password=getSchemaProperty("password",password)
+		jdbcDriver=getSchemaProperty("jdbcDriver",jdbcDriver)
+		jdbcUrl=getSchemaProperty("jdbcUrl",jdbcUrl)
+		schema=getSchemaProperty("schema",schema)
+	}
+	
+	protected String getSchemaProperty(String key, String defaultValue) {
+		Context.getContext().getProperty("${name}.${key}",defaultValue)
+	}
+	
+	protected String getSchemaProperty(String key) {
+		Context.getContext().getProperty("${name}.${key}")
+	}
 	
 	public Sql getSql(){
 		if (sqlProxy==null || (sqlProxy.sql.connection==null || sqlProxy.sql.connection.isClosed())) {

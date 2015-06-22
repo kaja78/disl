@@ -40,7 +40,7 @@ public class Context {
 	};
 
 	private final static ThreadLocal<Context> localContext=new ThreadLocal<Context>();
-	
+
 	public static void setContextName(String newName) {
 		String currentContextName=localContextName.get()
 		if (!newName.equals(currentContextName)) {
@@ -63,7 +63,7 @@ public class Context {
 	public static Sql getSql(String logicalSchemaName) {
 		getContext().getPhysicalSchema(logicalSchemaName).getSql()
 	}
-	
+
 	public static String getPhysicalSchemaName(String logicalSchemaName) {
 		if (logicalSchemaName==null) {
 			return null
@@ -79,15 +79,14 @@ public class Context {
 	}
 
 	protected void createSchema(String schemaName) {
-		Properties config=getConfig()
-		String schemaType=config[schemaName]
+		String schemaType=getProperty(schemaName)
 		if (schemaType==null) {
 			throw new RuntimeException("schemaType not defined for schema $schemaName in context ${Context.getContextName()}");
 		}
 		String schemaClassName="org.disl.db.${schemaType.toLowerCase()}.${schemaType}Schema"
 		PhysicalSchema schema=Class.forName(schemaClassName).newInstance()
-		Map schemaProperties=config.findAll {it.key.startsWith("${schemaName}.")}
-		schemaProperties.each {String key,String value -> schema[key.substring(schemaName.length()+1)]=value}
+		schema.name=schemaName
+		schema.init()
 		schemaMap[schemaName]=schema
 	}
 
@@ -97,5 +96,21 @@ public class Context {
 			config.load(getClass().getResourceAsStream("/${name}.context.properties"))
 		}
 		config
+	}
+
+	public String getProperty(String key) {
+		Object systemProperty=System.getProperties().get(key)
+		if (systemProperty!=null) {
+			return systemProperty.toString()
+		}
+		return getConfig()[key]
+	}
+
+	public String getProperty(String key,String defaultValue) {
+		String value=getProperty(key)
+		if (value==null) {
+			value=defaultValue
+		}
+		return value
 	}
 }

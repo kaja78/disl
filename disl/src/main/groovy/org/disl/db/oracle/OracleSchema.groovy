@@ -31,20 +31,33 @@ class OracleSchema extends PhysicalSchema {
 	String host
 	String port=1521
 	String databaseName
-	
+
 	OracleSchema() {
 		jdbcDriver="oracle.jdbc.OracleDriver"
 	}
-	
+
+	@Override
+	public void init() {
+		super.init();
+		host=getSchemaProperty("host", host)
+		port=getSchemaProperty("port", port)
+		sid=getSchemaProperty("sid")
+		serviceName=getSchemaProperty("serviceName")
+	}
+
 	public String getJdbcUrl() {
 		"jdbc:oracle:thin:@${getHost()}:${getPort()}${getDatabaseName()}"
 	}
-	
+
 	public void setSid(String sid) {
-		setDatabaseName(":${sid}")
+		if (sid!=null) {
+			setDatabaseName(":${sid}")
+		}
 	}
-	
+
 	public void setServiceName(String serviceName) {
-		setDatabaseName("/${serviceName}")
+		if (serviceName!=null) {
+			setDatabaseName("/${serviceName}")
+		}
 	}
 }
