@@ -26,4 +26,5 @@ import java.lang.annotation.RetentionPolicy
 	String columnName()
 	String interval()
 	String defaultLessThan()
+	String subpartitioningClasue() default ""
 }

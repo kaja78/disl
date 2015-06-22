@@ -35,7 +35,11 @@ abstract class OracleTable extends Table {
 		
 		PartitionByRangeInterval anotation=this.getClass().getAnnotation(PartitionByRangeInterval)
 		if (anotation!=null) {
-			partitionByMeta=new PartitionByRangeIntervalMeta(columnName: anotation.columnName(), interval: anotation.interval(), defaultLessThan: anotation.defaultLessThan())
+			partitionByMeta=new PartitionByRangeIntervalMeta(
+					columnName: anotation.columnName(),
+					interval: anotation.interval(),
+					defaultLessThan: anotation.defaultLessThan(),
+					subpartitioningClause: anotation.subpartitioningClasue())
 			return;
 		}
 	}
@@ -50,11 +54,13 @@ abstract class OracleTable extends Table {
 		String columnName
 		String interval
 		String defaultLessThan
+		String subpartitioningClause
 
 
 		String getPartitionByClause(){
 			"""\
 PARTITION BY RANGE ($columnName) INTERVAL ($interval)
+${subpartitioningClause}
     (PARTITION P_DEFAULT VALUES LESS THAN ($defaultLessThan))"""
 		}
 	}
