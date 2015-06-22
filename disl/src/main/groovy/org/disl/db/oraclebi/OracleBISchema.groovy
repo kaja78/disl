@@ -23,11 +23,18 @@ import org.disl.meta.PhysicalSchema
 
 class OracleBISchema extends PhysicalSchema {
 	String host
-	int port=9703
+	String port=9703
 
 	
 	OracleBISchema() {
 		jdbcDriver="oracle.bi.jdbc.AnaJdbcDriver"
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		host=getSchemaProperty("host", host)
+		port=getSchemaProperty("port", port)
 	}
 	
 	public String getJdbcUrl() {
