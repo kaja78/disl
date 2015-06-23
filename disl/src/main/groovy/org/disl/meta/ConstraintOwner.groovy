@@ -16,14 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta
-
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
-import org.codehaus.groovy.classgen.Verifier.DefaultArgsAction;
+package org.disl.meta;
 
 
-@Retention(RetentionPolicy.RUNTIME)
-@interface UniqueKey {
-	String[] columns()
+public interface ConstraintOwner {
+
+	List<UniqueKeyMeta> getUniqueKeys();
 }

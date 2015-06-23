@@ -25,7 +25,7 @@ import org.disl.pattern.Pattern
 import org.junit.Before
 
 
-abstract class Table extends MappingSource implements  Executable, IndexOwner {
+abstract class Table extends MappingSource implements  Executable, IndexOwner, ConstraintOwner {
 	
 	private Object dumm=doEarlyInit()
 	
@@ -46,7 +46,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner {
 	String description
 	List<IndexMeta> indexes
 	List<Column> primaryKeyColumns
-	List uniqueKeys
+	List<UniqueKeyMeta> uniqueKeys
 	List<ForeignKeyMeta> foreignKeys
 	Pattern pattern
 	
@@ -100,6 +100,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner {
 		}
 		
 		IndexMeta.initIndexes(this)
+		UniqueKeyMeta.initUniqueKeys(this)
 	}
 	
 	protected void initColumns() {
@@ -151,20 +152,15 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner {
 				))
 		}
 		
-		Nullable nullable=f.getAnnotation(Nullable) 
-		if (nullable!=null) {
-			column.setNullable(true)
+		NotNull notNull=f.getAnnotation(NotNull) 
+		if (notNull!=null) {
+			column.setNotNull(true)
 		}		
 	}
 	
 	public Iterable<String> getColumnDefinitions() {
 		columns.collect {it.columnDefinition}
 	}
-	
-	static class UniqueKeyMeta {
-		String name
-		List columns=[]
-	}	
 	
 	static class ForeignKeyMeta {
 		String name

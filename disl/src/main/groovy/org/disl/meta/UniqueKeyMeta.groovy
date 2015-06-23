@@ -18,13 +18,27 @@
  */
 package org.disl.meta
 
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
-
-import org.codehaus.groovy.classgen.Verifier.DefaultArgsAction;
 
 
-@Retention(RetentionPolicy.RUNTIME)
-@interface Nullable {
+class UniqueKeyMeta {
+	
+	String[] columns=[]
 
+	public static void initUniqueKeys(ConstraintOwner owner) {
+		UniqueKeys uniqueKeys=owner.getClass().getAnnotation(UniqueKeys)
+		if (uniqueKeys!=null) {
+			uniqueKeys.value().each {initUniqueKey(owner,it)}
+		}
+		
+		UniqueKeys uniqueKey=owner.getClass().getAnnotation(UniqueKey)
+		if (uniqueKey!=null) {
+			initUniqueKey(owner,uniqueKey)
+		}
+		
+		
+	}
+
+	private static void initUniqueKey(ConstraintOwner owner,UniqueKey uniqueKey) {		
+		owner.uniqueKeys.add(new UniqueKeyMeta(columns: uniqueKey.columns()))
+	}
 }

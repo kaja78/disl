@@ -18,8 +18,13 @@
  */
 package org.disl.meta
 
+import org.junit.Assert;
+import org.junit.Test
 
-@UniqueKey(columns=["ID","NAME"])
+@UniqueKeys([
+	@UniqueKey(columns=["ID"]),
+	@UniqueKey(columns=["NAME"])])
+
 @Description("This is testing dimension.")
 class TestDimensionTable extends Table {
 	String schema="L2"
@@ -29,7 +34,6 @@ class TestDimensionTable extends Table {
 	@Description("Surrogate key.")
 	Column KEY
 	
-	@UniqueKey
 	@DataType("INTEGER")
 	@Description("Natural key")
 	Column ID
@@ -38,6 +42,11 @@ class TestDimensionTable extends Table {
 	@Description("Dimension name.")
 	Column NAME
 	
-	
+	@Test
+	void testGetUniqueKeys() {
+		List l=this.getUniqueKeys()
+		GroovyTestCase.assertEquals("ID", l[0].columns[0])
+		GroovyTestCase.assertEquals("NAME", l[1].columns[0])
+	}
 	
 }

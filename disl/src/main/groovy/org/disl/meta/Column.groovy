@@ -24,7 +24,7 @@ class Column extends SqlOperators {
 	String description
 	String dataType
 	String defaultValue
-	boolean nullable=false
+	boolean notNull=false
 
 	Column(){}
 	
@@ -38,7 +38,7 @@ class Column extends SqlOperators {
 	}
 	
 	String getConstraint() {
-		if (!isNullable()) {
+		if (isNotNull()) {
 			return " NOT NULL"
 		}
 		return ""

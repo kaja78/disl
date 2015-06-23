@@ -22,12 +22,9 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.management.InstanceOfQueryExp;
 
 import org.disl.job.Job.JobEntry
-import org.disl.meta.Context;
+import org.disl.meta.Context
 import org.disl.pattern.Executable
 
 @Singleton(lazy=true,strict=false)
@@ -46,7 +43,7 @@ class ParallelJobExecutor {
 	
 	private synchronized ExecutorService getExecutorService() {
 		if (executorService==null) {
-			executorService=Executors.newFixedThreadPool(4)
+			executorService=Executors.newFixedThreadPool(Integer.parseInt(Context.getContextProperty("disl.parallelExecutorThreads", "4")))
 		}
 		return executorService
 	}
