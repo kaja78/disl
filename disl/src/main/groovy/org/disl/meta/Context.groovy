@@ -70,6 +70,14 @@ public class Context {
 		}
 		return getContext().getPhysicalSchema(logicalSchemaName).getSchema()
 	}
+	
+	public static String getContextProperty(String key) {
+		return getContext().getProperty(key)
+	}
+	
+	public static String getContextProperty(String key, String defaultValue) {
+		return getContext().getProperty(key,defaultValue)
+	}
 
 	public PhysicalSchema getPhysicalSchema(String schemaName) {
 		if (schemaMap[schemaName]==null) {

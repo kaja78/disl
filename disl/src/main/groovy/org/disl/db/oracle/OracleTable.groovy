@@ -22,34 +22,30 @@ import org.disl.meta.Table
 
 abstract class OracleTable extends Table {
 
-	PartitionByMeta partitionByMeta
+	PartitionByMeta partitionByMeta=new PartitionByMetaImpl()
 
 	@Override
 	public void init() {
 		super.init();
-		initPartitionBy()
+		PartitionByMetaImpl.initPartitionBy(this)
+		PartitionByRangeIntervalMeta.initPartitionBy(this)
 	}
 
-	protected void initPartitionBy() {
-		partitionByMeta=new NoPartitioning()
-		
-		PartitionByRangeInterval anotation=this.getClass().getAnnotation(PartitionByRangeInterval)
-		if (anotation!=null) {
-			partitionByMeta=new PartitionByRangeIntervalMeta(
-					columnName: anotation.columnName(),
-					interval: anotation.interval(),
-					defaultLessThan: anotation.defaultLessThan(),
-					subpartitioningClause: anotation.subpartitioningClasue())
-			return;
+
+
+	static class PartitionByMetaImpl implements PartitionByMeta {
+		String partitionByClause=''
+
+		public static void initPartitionBy(def owner) {
+			PartitionBy anotation=owner.getClass().getAnnotation(PartitionBy)
+			if (anotation==null) {
+				return;
+			}
+			owner.partitionByMeta=new PartitionByMetaImpl(
+					partitionByClause: anotation.value())
 		}
 	}
 
-	static class NoPartitioning implements PartitionByMeta {
-		String getPartitionByClause(){
-			''
-		}
-	}
-	
 	static class PartitionByRangeIntervalMeta implements PartitionByMeta {
 		String columnName
 		String interval
@@ -62,6 +58,18 @@ abstract class OracleTable extends Table {
 PARTITION BY RANGE ($columnName) INTERVAL ($interval)
 ${subpartitioningClause}
     (PARTITION P_DEFAULT VALUES LESS THAN ($defaultLessThan))"""
+		}
+
+		public static void initPartitionBy(def owner) {
+			PartitionByRangeInterval anotation=owner.getClass().getAnnotation(PartitionByRangeInterval)
+			if (anotation==null) {
+				return;
+			}
+			owner.partitionByMeta=new PartitionByRangeIntervalMeta(
+					columnName: anotation.columnName(),
+					interval: anotation.interval(),
+					defaultLessThan: anotation.defaultLessThan(),
+					subpartitioningClause: anotation.subpartitioningClasue())
 		}
 	}
 }
