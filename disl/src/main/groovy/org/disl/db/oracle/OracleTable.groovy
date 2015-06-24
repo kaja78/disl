@@ -22,11 +22,12 @@ import org.disl.meta.Table
 
 abstract class OracleTable extends Table {
 
-	PartitionByMeta partitionByMeta=new PartitionByMetaImpl()
+	PartitionByMeta partitionByMeta
 
 	@Override
 	public void init() {
 		super.init();
+		partitionByMeta=new PartitionByMetaImpl()
 		PartitionByMetaImpl.initPartitionBy(this)
 		PartitionByRangeIntervalMeta.initPartitionBy(this)
 	}
