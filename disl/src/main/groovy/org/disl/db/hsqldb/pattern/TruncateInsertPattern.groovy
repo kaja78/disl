@@ -18,13 +18,14 @@
  */
 package org.disl.db.hsqldb.pattern
 
-import java.util.List;
-
-import org.disl.pattern.ExecuteSQLScriptStep;
-import org.disl.pattern.MappingPattern;
-import org.disl.pattern.Step;
+import org.disl.meta.TableMapping
+import org.disl.pattern.ExecuteSQLScriptStep
+import org.disl.pattern.MappingPattern
+import org.disl.pattern.Step
 
 class TruncateInsertPattern extends MappingPattern {
+	
+	TableMapping mapping
 	
 	@Override
 	public List<Step> getSteps() {

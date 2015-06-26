@@ -18,8 +18,10 @@
  */
 package org.disl.meta
 
+import org.disl.pattern.Pattern;
 import org.junit.Before
 import org.junit.Test
+
 import static groovy.util.GroovyTestCase.*
 
 class TestOperators {
@@ -34,6 +36,7 @@ class TestOperators {
 	void init() {
 		one=new SqlExpression(expression: {1})
 		t=new Table() {
+					Pattern pattern
 					String getSchema() {
 						""
 					};

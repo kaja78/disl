@@ -33,6 +33,7 @@ import java.sql.Types
 import org.disl.meta.Column
 import org.disl.meta.Context
 import org.disl.meta.Table
+import org.disl.pattern.Pattern
 
 class ReverseEngineeringService {
 	protected static final String SRC_FOLDER="src"
@@ -130,6 +131,7 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 	private static class ReverseEngineeredTable extends Table {
 		String schema
 		String physicalSchema
+		Pattern pattern
 	}
 
 	public void traceColumnMappings(Sql sql) {

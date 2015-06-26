@@ -18,12 +18,14 @@
  */
 package org.disl.db.hsqldb.pattern
 
+import org.disl.meta.Table
 import org.disl.pattern.ExecuteSQLScriptStep
 import org.disl.pattern.Step
 import org.disl.pattern.TablePattern
 
 class CreateOrReplaceTablePattern extends TablePattern {
 
+	Table table
 
 	@Override
 	public List<Step> getSteps() {

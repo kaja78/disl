@@ -24,7 +24,7 @@ import org.disl.meta.Context
 import org.disl.meta.TableMapping
 
 abstract class MappingPattern extends Pattern {
-	TableMapping mapping
+	public abstract TableMapping getMapping()
 
 	protected Closure<Sql> getSql() {
 		return {Context.getSql(getMapping().getSchema())}

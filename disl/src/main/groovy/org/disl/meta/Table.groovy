@@ -41,6 +41,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, C
 	}
 	
 	public abstract String getSchema()
+	public abstract getPattern()
 	
 	List columns	
 	String description
@@ -48,7 +49,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, C
 	List<Column> primaryKeyColumns
 	List<UniqueKeyMeta> uniqueKeys
 	List<ForeignKeyMeta> foreignKeys
-	Pattern pattern
+	
 	
 	@Override
 	public String getRefference() {		

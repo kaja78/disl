@@ -48,6 +48,7 @@ class TestTruncateInsertMapping extends DislTestCase {
 	
 	class TEST_TABLE extends Table {
 		String schema="L2"
+		Pattern pattern
 		
 		Column A
 		Column B

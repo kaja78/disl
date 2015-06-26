@@ -24,7 +24,7 @@ import org.disl.meta.Context
 import org.disl.meta.Table
 
 abstract class TablePattern extends Pattern {
-	Table table
+	public abstract Table getTable()
 
 	protected Closure<Sql> getSql() {
 		return {Context.getSql(getTable().getSchema())}
