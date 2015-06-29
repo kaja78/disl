@@ -27,25 +27,25 @@ public abstract class SetOperation {
 	static class UNION extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"UNION ${source.getSQLQuery()}"
+			"UNION select * from ${source.getRefference()}"
 		}
 	}
 	static class UNION_ALL extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"UNION ALL ${source.getSQLQuery()}"
+			"UNION ALL select * from ${source.getRefference()}"
 		}
 	}
 	static class INTERSECT extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"INTERSECT ${source.getSQLQuery()}"
+			"INTERSECT select * from ${source.getRefference()}"
 		}
 	}
 	static class MINUS extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"MINUS ${source.getSQLQuery()}"
+			"MINUS select * from ${source.getRefference()}"
 		}
 	}
 

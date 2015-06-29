@@ -58,7 +58,7 @@ class TestSetOperationMapping extends DislTestCase {
 
 	@Test
 	void testGetSetOperationClause() {
-		assertEquals("""\n\tUNION 	/*Mapping TestingMapping*/
+		assertEquals("""\n\tUNION select * from (\n	/*Mapping TestingMapping*/
 		SELECT
 			s1.A as A,
 			C as c,
@@ -74,6 +74,6 @@ class TestSetOperationMapping extends DislTestCase {
 			s1.A=s1.A
 		GROUP BY
 			s1.A,C,REPEAT(s2.B,3)
-	/*End of mapping TestingMapping*/""",mapping.getSetOperationClause())
+	/*End of mapping TestingMapping*/) subquery2""",mapping.getSetOperationClause())
 	}
 }
