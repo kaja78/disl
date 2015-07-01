@@ -24,12 +24,7 @@ import org.junit.Test
 
 class TestMappingSubquery extends DislTestCase {
 
-	TestingMapping t
-
-	TestMappingSubquery() {
-		t=MetaFactory.create(TestingMapping)
-		t.t.execute()
-	}
+	TestingMapping t=MetaFactory.create(TestingMapping)
 
 	@Test
 	void testGetSQLQuery() {

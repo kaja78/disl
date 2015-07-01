@@ -26,10 +26,11 @@ class OBIPurgeAllCache extends ExecuteSQLQueryStep {
 		String pattern="Call SAPurgeAllCache()"
 		
 		@Override
-		public void execute() {
-			super.execute();
+		public int executeInternal() {
+			int processedRow=super.executeInternal();
 			//Open OBI connection blocks JVM shutdown.
 			getSql().close()
+			return processedRow
 		}
 
 }

@@ -19,6 +19,7 @@
 package org.disl.meta
 
 import org.disl.pattern.Executable;
+import org.disl.pattern.ExecutionInfo;
 import org.disl.pattern.Pattern;
 
 abstract class TableMapping extends Mapping implements Executable {
@@ -31,6 +32,10 @@ abstract class TableMapping extends Mapping implements Executable {
 	
 	public void execute() {
 		getPattern().execute()
+	}
+	
+	public ExecutionInfo getExecutionInfo() {
+		return getPattern().getExecutionInfo()
 	}
 
 }

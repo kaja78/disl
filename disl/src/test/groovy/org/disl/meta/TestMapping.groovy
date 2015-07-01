@@ -55,11 +55,6 @@ class TestMapping extends DislTestCase {
 			groupBy()
 		}
 		
-		@Before
-		void createTestTable() {
-			Context.setContextName("disl-test")
-			MetaFactory.create(TestTable).execute()
-		}
 	}
 
 	

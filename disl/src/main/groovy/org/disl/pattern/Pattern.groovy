@@ -20,15 +20,19 @@ package org.disl.pattern;
 
 
 
-public abstract class Pattern implements Executable {
+public abstract class Pattern extends AbstractExecutable {
+			
 	abstract Collection<Step> getSteps()
 	
 	@Override
-	public void execute() {
+	public int executeInternal() {
 		long timestamp=System.currentTimeMillis();
 		println "Executing pattern $this:"
-		steps.each {it.execute()}
-		println "${this} executed in ${System.currentTimeMillis()-timestamp} ms"		
+		int processedRows=0
+		Collection<Step> steps=getSteps()
+		steps.each {it.execute();processedRows+=it.executionInfo.processedRows}		
+		println "${this} executed in ${System.currentTimeMillis()-timestamp} ms"
+		return processedRows		
 	}
 	
 	@Override

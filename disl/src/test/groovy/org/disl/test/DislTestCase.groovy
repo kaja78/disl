@@ -21,17 +21,21 @@ package org.disl.test
 import groovy.sql.Sql
 
 import org.disl.meta.Context
+import org.disl.meta.MetaFactory
+import org.disl.meta.TestTable
 
 abstract class DislTestCase extends AbstractDislTestCase {
 	
-	DislTestCase() {
+	static {
 		Context.setContextName("disl-test")
-	}
-	
-	protected Sql createSql() {		
 		def sql=Context.getSql("L2")
 		sql.execute("CREATE TABLE DUAL (dummy char(1))")
 		sql.execute("INSERT INTO DUAL VALUES ('X')")
-		return sql		
+		MetaFactory.create(TestTable).execute()		
 	}
+	
+	protected Sql createSql() {
+		Context.getSql("L2")		
+	}
+	
 }

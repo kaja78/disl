@@ -16,15 +16,42 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern
+package org.disl.pattern;
 
-import java.sql.ResultSet
-
-class ExecuteSQLQueryStep extends ExecuteSQLScriptStep {
-
+abstract class AbstractExecutable implements Executable {
+	
+	ExecutionInfo executionInfo=new ExecutionInfo()
+	
+	/**
+	 * Execute the step and return number of processed rows.
+	 * */
+	abstract int executeInternal();
+	
 	@Override
-	protected int executeSqlStatementInternal(String sqlCommand) {
-		getSql().executeQuery(sqlCommand).close()
-		return 1
+	public final void execute() {
+		try {
+			executionInfo.start()
+			beforeExecute()
+			executionInfo.processedRows=executeInternal()
+			executionInfo.finish()
+		} catch (Exception e) {
+			executionInfo.error(e)
+			throw e
+		} finally {
+			postExecute()
+		}
 	}
+	
+	/**
+	 * Hook to implement before execution logic.
+	 * */
+	void beforeExecute() {	
+	}
+	
+	/**
+	 * Hook to implement post execution logic.
+	 * */
+	void postExecute() {		
+	}
+
 }

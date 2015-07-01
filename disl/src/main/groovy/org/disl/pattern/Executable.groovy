@@ -18,18 +18,21 @@
  */
 package org.disl.pattern;
 
-
+/**
+ * Interface representing ability to perform data integration operation(s). This means to generate code and eventually execute it in runtime engine (typically database server). 
+ * */
 public interface Executable {
 
 	/**
-	 * Execute given element.
+	 * Perform all operations related to this executable.
 	 * */
 	public abstract void execute();
 
 	/**
-	 * Simulate execution of given element. Simulation
-	 * means tracing output without execution.
+	 * Simulate execution. Simulation
+	 * means tracing code or output without execution.
 	 */
-	public abstract void simulate();
-
+	public abstract void simulate()
+	
+	public abstract getExecutionInfo()
 }

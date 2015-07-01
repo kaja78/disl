@@ -31,7 +31,6 @@ public class ExecuteSQLScriptStep extends Step {
 	
 	boolean ignoreErrors=false;
 	String commandSeparator=";";
-	int updatedRowCount;
 	def sql;
 
 	Sql getSql() {
@@ -41,13 +40,15 @@ public class ExecuteSQLScriptStep extends Step {
 		sql
 	}
 
-	@Override
-	public void execute() {
+	public int executeInternal() {
 		try {
+			
+		int processedRows=0
 		getCommands().each {
-			executeSqlStatement(it)
+			processedRows=processedRows+executeSqlStatement(it)
 		}
 		getSql().commit()
+		return processedRows
 		} catch (Exception e) {
 			getSql().rollback()
 			throw e
@@ -58,21 +59,22 @@ public class ExecuteSQLScriptStep extends Step {
 		return code.split(getCommandSeparator())
 	}
 
-	protected executeSqlStatement(String sqlCommand) {
+	protected int executeSqlStatement(String sqlCommand) {
 		if (''.equals(sqlCommand.trim())) {
-			return
+			return 0
 		}
 		try {
-			executeSqlStatementInternal(sqlCommand)
+			return executeSqlStatementInternal(sqlCommand)
 		} catch (Exception e) {
 			if (!isIgnoreErrors()) {
 				throw new RuntimeException("Error executing ${this}. SQL statement: $sqlCommand",e)
 			}
+			return 0
 		}
 	}
 
-	protected void executeSqlStatementInternal(String sqlCommand) {
-		updatedRowCount=getSql().executeUpdate(sqlCommand)
+	protected int executeSqlStatementInternal(String sqlCommand) {
+		return getSql().executeUpdate(sqlCommand)
 	}
 	
 }

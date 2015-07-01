@@ -22,10 +22,11 @@ class FileOutputStep extends Step {
 	File file;
 	
 	@Override
-	public void execute() {
+	public int executeInternal() {
 		file.getParentFile().mkdirs()
 		file.createNewFile()
 		file.write(getCode())
+		return 1
 	}
 
 }

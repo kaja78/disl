@@ -21,8 +21,8 @@ package org.disl.meta
 import java.lang.reflect.Field
 
 import org.disl.pattern.Executable
+import org.disl.pattern.ExecutionInfo
 import org.disl.pattern.Pattern
-import org.junit.Before
 
 
 abstract class Table extends MappingSource implements  Executable, IndexOwner, ConstraintOwner {
@@ -41,7 +41,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, C
 	}
 	
 	public abstract String getSchema()
-	public abstract getPattern()
+	public abstract Pattern getPattern()
 	
 	List columns	
 	String description
@@ -89,6 +89,10 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, C
 	
 	public void simulate() {
 		getPattern().simulate()
+	}
+	
+	public ExecutionInfo getExecutionInfo(){
+		return getPattern().getExecutionInfo()
 	}
 	
 	public void init() {

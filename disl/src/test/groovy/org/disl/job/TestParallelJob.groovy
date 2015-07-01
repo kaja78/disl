@@ -18,10 +18,18 @@
  */
 package org.disl.job
 
-import org.disl.pattern.Executable
+import org.disl.meta.Context
+import org.disl.pattern.AbstractExecutable
+import org.disl.test.DislTestCase
+import org.junit.Before
 import org.junit.Test
 
-class TestParallelJob {
+class TestParallelJob extends DislTestCase {
+	
+	@Before
+    void init() {
+		Context.setContextName("disl-test")
+	}
 	
 	@Test
 	public void testExecute() {
@@ -41,9 +49,10 @@ class TestParallelJob {
 		}
 	}
 
-	static class TestingExecutable implements Executable {
-		void execute() {
+	static class TestingExecutable extends AbstractExecutable {
+		int executeInternal() {
 			Thread.sleep(500)
+			return 0
 		}
 		void simulate(){}
 	}

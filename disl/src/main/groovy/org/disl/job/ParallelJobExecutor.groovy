@@ -56,7 +56,7 @@ class ParallelJobExecutor {
 			checkResults(parallelFutures)
 			checkResults(futures)
 		} catch (Exception e) {
-			throw new RuntimeException("Exception in asynchronous execution.")
+			throw new RuntimeException("Exception in asynchronous execution.",e)
 		} finally {
 			releaseParallelJob()
 			job.traceStatus()

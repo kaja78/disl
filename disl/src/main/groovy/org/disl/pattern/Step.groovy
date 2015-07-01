@@ -19,8 +19,9 @@
 package org.disl.pattern;
 
 
-public class Step implements Executable{	
+public abstract class Step extends AbstractExecutable {	
 	String name;
+	
 	def pattern='';
 	
 	String getCode() {
@@ -34,11 +35,6 @@ public class Step implements Executable{
 	public void simulate() {
 		println "  Simulating step ${this}:"
 		println """\t${code.replace("\n","\n\t")}""";		
-	}
-	
-	@Override
-	public void execute() {
-		throw new UnsupportedOperationException();		
 	}
 	
 	public String getName() {

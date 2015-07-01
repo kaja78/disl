@@ -19,10 +19,12 @@
 package org.disl.job
 
 import org.disl.meta.MetaFactory
+import org.disl.pattern.AbstractExecutable
 import org.disl.pattern.Executable
-import org.disl.pattern.Pattern
+import org.disl.pattern.ExecutionInfo
+import org.disl.pattern.Status
 
-class Job implements Executable {
+class Job extends AbstractExecutable {
 
 	List<JobEntry> jobEntries=[]
 	
@@ -49,13 +51,16 @@ class Job implements Executable {
 		addAll(MetaFactory.createAll(traversePath,rootPackage,assignableType));
 	}
 
-	public void execute() {
-		try {
-			jobEntries.each {it.execute()}
-		} finally {
-			traceStatus()			
-		}
-		
+	public int executeInternal() {
+			int processedRows=0
+			jobEntries.each {it.execute(); processedRows+=it.executionInfo.processedRows}
+			return processedRows
+	}
+	
+	@Override
+	public void postExecute() {
+		super.postExecute();
+		traceStatus()
 	}
 
 	public void simulate() {
@@ -68,57 +73,40 @@ class Job implements Executable {
 	}
 	
 	public synchronized void traceStatus() {
-		println "********************************************************************************"
+		String name=toString().padRight(50).toString().substring(0,50)
+		String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
+		String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
+		String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
+		
+		println "*********************************************************************************************"
+		println "* ${name} * ${stat} * ${dur} * ${processedRows} *"
+		println "*********************************************************************************************"
 		jobEntries.each({println it})
-		println "********************************************************************************"
+		println "*********************************************************************************************"
 	}
 	
 	static class JobEntry implements Executable {
 		
-		
 		Executable executable
-		Status status=Status.NEW
-		long createdTime=System.currentTimeMillis()
-		long startTime
-		long finishTime
-		Exception exception
-		
+				
+		ExecutionInfo getExecutionInfo() {
+			executable.executionInfo
+		}
 		
 		void execute() {
-			try {
-				status=Status.RUNNING
-				startTime=System.currentTimeMillis()
-				executable.execute()
-				finishTime=System.currentTimeMillis()
-				status=Status.FINISHED
-			} catch (Exception e) {
-				finishTime=System.currentTimeMillis()
-				status=Status.ERROR
-				exception=e
-				throw e
-			}
+			executable.execute()
 		}
 		
 		void simulate() {
 			executable.simulate()
 		}
 		
-		int getDuration() {
-			return finishTime-startTime
-		}
-		
 		String toString() {
 			String name=executable.toString().padRight(50).toString().substring(0,50)
-			String dur=duration.toString().padLeft(10).toString().substring(0,10)
-			String stat=status.toString().padLeft(10).toString().substring(0,10)
-			return "* ${name} * ${stat} * ${dur} *"			
-		}
-		
-		static enum Status {
-			NEW,
-			RUNNING,
-			FINISHED,
-			ERROR
+			String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
+			String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
+			String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
+			return "* ${name} * ${stat} * ${dur} * ${processedRows} *"			
 		}
 		
 	}

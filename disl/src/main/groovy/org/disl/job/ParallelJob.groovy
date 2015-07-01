@@ -25,8 +25,11 @@ class ParallelJob extends Job {
 	int threadCount=4
 
 	@Override
-	public void execute() {
+	public int executeInternal() {
 		ParallelJobExecutor.instance.execute(this)
+		int processedRows=0
+		jobEntries.each {processedRows+=it.executionInfo.processedRows}
+		return processedRows
 	}
 
 }
