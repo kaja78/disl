@@ -21,7 +21,9 @@ package org.disl.pattern;
 
 
 public abstract class Pattern extends AbstractExecutable {
-			
+	
+	Collection<Step> executionSteps
+				
 	abstract Collection<Step> getSteps()
 	
 	@Override
@@ -29,8 +31,8 @@ public abstract class Pattern extends AbstractExecutable {
 		long timestamp=System.currentTimeMillis();
 		println "Executing pattern $this:"
 		int processedRows=0
-		Collection<Step> steps=getSteps()
-		steps.each {it.execute();processedRows+=it.executionInfo.processedRows}		
+		executionSteps=getSteps()
+		executionSteps.each {it.execute();processedRows+=it.executionInfo.processedRows}		
 		println "${this} executed in ${System.currentTimeMillis()-timestamp} ms"
 		return processedRows		
 	}
