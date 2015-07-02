@@ -34,7 +34,7 @@ class ReverseTablePattern extends Pattern {
 	Table table
 
 	@Override
-	public Collection<Step> getSteps() {
+	public Collection<Step> createSteps() {
 		File directory=new File(outputDir,packageName.replace('.', '/'))
 		File file=new File(directory,"${table.name}.groovy")
 		return [new FileOutputStep(name: "Groovy table definition",pattern: getCode(),file: file)];

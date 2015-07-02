@@ -38,7 +38,7 @@ class TestPattern  {
 		Base element;
 		
 		@Override
-		public List<Step> getSteps() {
+		public List<Step> createSteps() {
 			[new ExecuteSQLScriptStep(name:"1", pattern: """\
 DROP 
 ${element.name}""")]

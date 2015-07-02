@@ -22,17 +22,23 @@ package org.disl.pattern;
 
 public abstract class Pattern extends AbstractExecutable {
 	
-	Collection<Step> executionSteps
+	private Collection<Step> steps
+	
+	public Collection<Step> getSteps() {
+		if (steps==null) {
+			steps=createSteps()
+		}
+		return steps
+	}
 				
-	abstract Collection<Step> getSteps()
+	abstract Collection<Step> createSteps()
 	
 	@Override
 	public int executeInternal() {
 		long timestamp=System.currentTimeMillis();
 		println "Executing pattern $this:"
-		int processedRows=0
-		executionSteps=getSteps()
-		executionSteps.each {it.execute();processedRows+=it.executionInfo.processedRows}		
+		int processedRows=0		
+		getSteps().each {it.execute();processedRows+=it.executionInfo.processedRows}		
 		println "${this} executed in ${System.currentTimeMillis()-timestamp} ms"
 		return processedRows		
 	}
@@ -40,7 +46,7 @@ public abstract class Pattern extends AbstractExecutable {
 	@Override
 	public void simulate() {
 		println "Simulating pattern $this:"
-		steps.each {it.simulate()}		
+		getSteps().each {it.simulate()}		
 	}
 	
 	@Override

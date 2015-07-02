@@ -28,7 +28,7 @@ class TruncateInsertPattern extends MappingPattern {
 	TableMapping mapping
 	
 	@Override
-	public List<Step> getSteps() {
+	public List<Step> createSteps() {
 		return [truncateTableStep,
 				insertStep];
 	}

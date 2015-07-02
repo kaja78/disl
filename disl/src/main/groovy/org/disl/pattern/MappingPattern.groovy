@@ -32,6 +32,6 @@ abstract class MappingPattern extends Pattern {
 	
 	@Override
 	public String toString() {
-		"${this.getClass().getSimpleName()}(${getMapping().getName()})}"
+		"${this.getClass().getSimpleName()}(${getMapping().getName()})"
 	}
 }

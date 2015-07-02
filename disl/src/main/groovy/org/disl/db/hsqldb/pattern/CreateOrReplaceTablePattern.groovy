@@ -28,7 +28,7 @@ class CreateOrReplaceTablePattern extends TablePattern {
 	Table table
 
 	@Override
-	public List<Step> getSteps() {
+	public List<Step> createSteps() {
 		[dropTableStep,
 		 createTableStep]
 	}
