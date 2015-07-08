@@ -39,11 +39,15 @@ class MetaFactory {
 	 * MetaFactory.createAll("bin","com.yourDw",Table).each({it.generate})
 	 * */
 	static Collection createAll(String traversePath,String rootPackage,Class assignableType) {
-		def typesToCreate=findTypes(traversePath,rootPackage,{assignableType.isAssignableFrom(it) && !Modifier.isAbstract(it.getModifiers())})
+		def typesToCreate=findNonAbstractTypes(traversePath,rootPackage,assignableType)
 		typesToCreate.collect {create(it)}
 	}
+	
+	static Collection<Class> findNonAbstractTypes(String traversePath,String rootPackage,Class assignableType) {
+		findTypes(traversePath,rootPackage,{assignableType.isAssignableFrom(it) && !Modifier.isAbstract(it.getModifiers())})
+	}
 
-	private static Collection<Class> findTypes(String traversePath,String rootPackage,Closure classFilter) {
+	static Collection<Class> findTypes(String traversePath,String rootPackage,Closure classFilter) {
 		File rootDir = new File(traversePath)
 		File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
 		def filterClassFiles = ~/.*\.class$/
