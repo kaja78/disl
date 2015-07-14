@@ -18,32 +18,41 @@
  */
 package org.disl.pattern;
 
+import org.disl.meta.Context
 
-public abstract class Step extends AbstractExecutable {	
+
+public abstract class Step extends AbstractExecutable {
+	
+
 	String name;
-	
+
+	/**
+	 * Step execution mode. For pattern only steps of the same execution mode as the context execution mode are created.  
+	 * */
+	String executionMode=Context.EXECUTION_MODE_DEFAULT
+
 	def pattern='';
-	
+
 	String getCode() {
 		if (getPattern() instanceof Closure) {
 			getPattern().call();
 		}
-		getPattern();		
+		getPattern();
 	}
-	
+
 	@Override
 	public void simulate() {
 		println "  Simulating step ${this}:"
-		println """\t${code.replace("\n","\n\t")}""";		
+		println """\t${code.replace("\n","\n\t")}""";
 	}
-	
+
 	public String getName() {
 		if (name==null) {
-			return this.getClass().getSimpleName() 
+			return this.getClass().getSimpleName()
 		}
 		return name
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName()

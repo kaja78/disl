@@ -19,6 +19,8 @@
 package org.disl.meta;
 
 import groovy.sql.Sql
+
+import org.disl.pattern.Step
 /**
  * <p>Abstraction of execution environment. Context maps logical resource name to physical deployment.
  * Each context is defined by configuration file [context name].context.properties. Default context name is "default".</p>
@@ -26,8 +28,10 @@ import groovy.sql.Sql
  * */
 public class Context {
 	public static final String CONTEXT_DEFAULT="default"
-
+	public static final String EXECUTION_MODE_DEFAULT="default"
+	
 	String name
+	String executionMode=EXECUTION_MODE_DEFAULT
 	Properties config
 	Map<String,PhysicalSchema> schemaMap=new HashMap<String, PhysicalSchema>();
 

@@ -18,6 +18,8 @@
  */
 package org.disl.pattern;
 
+import org.disl.meta.Context
+
 
 
 public abstract class Pattern extends AbstractExecutable {
@@ -26,7 +28,7 @@ public abstract class Pattern extends AbstractExecutable {
 	
 	public Collection<Step> getSteps() {
 		if (steps==null) {
-			steps=createSteps()
+			steps=createSteps().findAll {it.executionMode.equals(Context.getContext().getExecutionMode())}
 		}
 		return steps
 	}
