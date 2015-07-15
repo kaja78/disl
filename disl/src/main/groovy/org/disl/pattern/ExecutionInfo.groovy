@@ -25,7 +25,7 @@ class ExecutionInfo {
 	 * *
 	 * @return
 	 */
-	Status status
+	Status status=Status.NEW
 
 	/**
 	 * Get execution start time.
