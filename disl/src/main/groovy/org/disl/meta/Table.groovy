@@ -121,12 +121,11 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, C
 		
 		if (column==null) {			
 			column=f.getType().newInstance()
-			column.name=f.getName()
 			column.parent=this
-			this[column.name]=column
+			this[f.getName()]=column
 			columns.add(column)
 		}
-		column.setName(column.name);
+		column.setName(f.getName());
 		
 		Description desc=f.getAnnotation(Description)
 		if (desc!=null) {

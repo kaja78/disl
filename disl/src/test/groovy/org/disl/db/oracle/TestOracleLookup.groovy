@@ -18,11 +18,38 @@
  */
 package org.disl.db.oracle
 
+import org.disl.meta.Column
+import org.disl.meta.ColumnMapping;
+import org.disl.meta.Mapping
+import org.disl.meta.MetaFactory;
 import org.junit.Test
 
 class TestOracleLookup extends GroovyTestCase {
-	OracleLookup l=new OracleLookup() {
-		List<Map> records=[[a:1,b:2], [a:2,b:4]]
+	TestingOracleLookup l=MetaFactory.create(TestingOracleLookup)
+	TestingLookupMapping m=MetaFactory.create(TestingLookupMapping)
+	
+	static class TestingOracleLookup extends OracleLookup {
+		
+		Column A
+		Column B
+		
+		List<List> records=[[1,2], [2,4]]
+		
+		
+	}
+	
+	static class TestingLookupMapping extends Mapping {
+		String schema="L2"
+		
+		TestingOracleLookup L
+		
+		ColumnMapping C= e L.A+L.B
+		
+		@Override
+		public void initMapping() {
+			from L			
+		}
+		
 	}
 
 	@Test
@@ -32,10 +59,15 @@ class TestOracleLookup extends GroovyTestCase {
 	}
 	
 	@Test
+	public void testGetQuery() {
+		println m.getSQLQuery()
+	}
+	
+	@Test
 	public void testGetRefference() {
-		assertEquals("""(select * from (select 1 as DUMMY_KEY,1 as a,2 as b from dual
+		assertEquals("""(select * from (select 1 as DUMMY_KEY,1 as A,2 as B from dual
 union all
-select 2 as DUMMY_KEY,2 as a,4 as b from dual
+select 2 as DUMMY_KEY,2 as A,4 as B from dual
 ) SRC
 where
 1=1

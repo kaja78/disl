@@ -18,16 +18,47 @@
  */
 package org.disl.db.oracle
 
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field
 
-import org.disl.meta.MappingSource;
-import org.junit.Test;
+import org.disl.meta.Column
+import org.disl.meta.MappingSource
+import org.disl.meta.UniqueKey
 
 
 abstract class OracleLookup extends MappingSource {
+	List<Column> columns
 	
-	abstract List<Map> getRecords();
+	private Object dummy=doEarlyInit()
+	
+	abstract List<List> getRecords();
+	
+	private Object doEarlyInit() {
+		columns=new LinkedList<Column>()
+		init()
+		return null
+	}
+	
+	public void init() {
+		initColumns()
+	}
+	
+	protected void initColumns() {
+		getFieldsByType(Column).each {initColumn(it)}
+	}
+	
+	protected void initColumn(Field f) {
+		Column column=this[f.getName()]
+		
+		if (column==null) {
+			column=f.getType().newInstance()
+			column.parent=this
+			this[f.getName()]=column
+		}
+		column.setName(f.getName());
+		columns.add(column)
+		
+	}
+	
 	
 	public String getRefference(){
 		if (sourceAlias!=null) {
@@ -37,7 +68,19 @@ abstract class OracleLookup extends MappingSource {
 	}
 	
 	public String getLookupQuery() {
-		"select * from ${recordsToSubquery(getRecords())}"
+		"select * from ${recordsToSubquery(createRecordsFromList())}"
+	}
+	
+	protected List<Map> createRecordsFromList() {
+		List recordList=getRecords()
+		recordList.collect { values->
+			Map record=new HashMap()
+			columns.each {column ->
+				record.put(column.name, values[columns.indexOf(column)])
+			}
+			return record
+		}
+		
 	}
 	
 	public static String recordsToSubquery(List<Map> records) {

@@ -20,7 +20,7 @@ package org.disl.meta
 
 class Column extends SqlOperators {
 	String name
-	Table parent
+	MappingSource parent
 	String description
 	String dataType
 	String defaultValue
