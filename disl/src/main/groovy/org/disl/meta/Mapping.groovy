@@ -30,9 +30,9 @@ import org.junit.Test
 
 
 abstract class Mapping  extends MappingSource implements Initializable {
-	
-	private String groupBy
+
 	private Object dummy=doEarlyInit()
+	private String groupBy
 
 	List columns=[]
 	List<MappingSource> sources=[]
