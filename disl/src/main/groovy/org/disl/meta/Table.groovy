@@ -43,7 +43,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, C
 	public abstract String getSchema()
 	public abstract Pattern getPattern()
 	
-	List columns	
+	List<Column> columns	
 	String description
 	List<IndexMeta> indexes
 	List<Column> primaryKeyColumns

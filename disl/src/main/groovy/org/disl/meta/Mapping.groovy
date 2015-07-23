@@ -34,7 +34,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	private Object dummy=doEarlyInit()
 	private String groupBy
 
-	List columns=[]
+	List<ColumnMapping> columns=[]
 	List<MappingSource> sources=[]
 	List<SetOperation> setOperations=[]
 	String filter="1=1"
