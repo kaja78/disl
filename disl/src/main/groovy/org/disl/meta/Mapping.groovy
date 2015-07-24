@@ -34,6 +34,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	private Object dummy=doEarlyInit()
 	private String groupBy
 
+	String description
 	List<ColumnMapping> columns=[]
 	List<MappingSource> sources=[]
 	List<SetOperation> setOperations=[]
@@ -52,8 +53,23 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	public void init() {
 		initColumnAliases()
 		initMapping()
+		initDescription()
 		if (getGroupBy()==null && getColumns().find({it instanceof AggregateColumnMapping})) {
 			groupBy()
+		}
+	}
+	
+	protected void initDescription() {
+		Description desc=this.getClass().getAnnotation(Description)
+		if (desc) {
+			setDescription(desc.value())
+		}
+		
+		getFieldsByType(ColumnMapping).each { 
+			desc=it.getAnnotation(Description)
+			if (desc) {
+				this[it.getName()].setDescription(desc.value())
+			}
 		}
 	}
 	

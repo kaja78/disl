@@ -27,6 +27,7 @@ abstract class ColumnMapping extends SqlOperators {
 	Mapping parent
 	def expression
 	String alias
+	String description
 	
 	String toString(){
 		if (parent.getSourceAlias()==null) {
@@ -45,6 +46,7 @@ abstract class ColumnMapping extends SqlOperators {
 		}
 		return expression
 	}
+	
 	
 
 }
