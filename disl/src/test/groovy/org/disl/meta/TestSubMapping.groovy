@@ -28,7 +28,7 @@ class TestSubMapping extends DislTestCase {
 	class TestingSubMapping extends Mapping {
 		String schema="L2"
 
-		ColumnMapping A=e {"${subquery.A}"}
+		ColumnMapping A=e "${subquery.A}"
 		ColumnMapping B=e "1"
 
 		TestingMapping subquery

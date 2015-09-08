@@ -25,7 +25,7 @@ import org.codehaus.groovy.ast.expr.ClosureExpression;
 abstract class ColumnMapping extends SqlOperators {
 
 	Mapping parent
-	def expression
+	String expression
 	String alias
 	String description
 	
@@ -37,16 +37,7 @@ abstract class ColumnMapping extends SqlOperators {
 	}
 	
 	String getAliasedMappingExpression() {
-		"$mappingExpression as $alias"
+		"$expression as $alias"
 	}
 	
-	String getMappingExpression() {
-		if (expression instanceof Closure) {
-			return expression.call()
-		}
-		return expression
-	}
-	
-	
-
 }

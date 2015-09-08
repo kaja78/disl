@@ -61,7 +61,7 @@ class TestMappingSubquery extends DislTestCase {
 		TestTable t
 		Subquery s
 
-		ColumnMapping A=e {t.A}
+		ColumnMapping A=e t.A
 
 		void initMapping() {
 			from t
@@ -76,7 +76,7 @@ ${s.SQLQuery}
 
 			TestTable t
 
-			ColumnMapping B=e {t.B}
+			ColumnMapping B=e t.B
 
 			void initMapping() {
 				from t

@@ -33,9 +33,9 @@ class TestSetOperationMapping extends DislTestCase {
 		TestingMapping subquery1
 		TestingMapping subquery2
 
-		ColumnMapping A=e {"$subquery1.A"}
+		ColumnMapping A=e "$subquery1.A"
 		ColumnMapping c=e "C"
-		ColumnMapping B=e {"$subquery1.B"}
+		ColumnMapping B=e "$subquery1.B"
 
 		@Override
 		public void initMapping() {

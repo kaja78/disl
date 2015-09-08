@@ -163,7 +163,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	public void groupBy(List expressions) {
 		String clause=expressions.collect({
 			if (it instanceof ExpressionColumnMapping) {
-				it=it.mappingExpression
+				it=it.expression
 			}
 			it.toString()
 		}).join(',')
@@ -206,11 +206,23 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	/**
 	 * Shorthand for createExpressionColumnMapping.
 	 * */
-	ExpressionColumnMapping e(expression) {
+	ExpressionColumnMapping e(String expression) {
 		createExpressionColumnMapping(expression)
 	}
 	
-	ExpressionColumnMapping createExpressionColumnMapping(expression) {
+	ExpressionColumnMapping e(Integer expression) {
+		e(expression.toString())
+	}
+	
+	ExpressionColumnMapping e(Double expression) {
+		e(expression.toString())
+	}
+	
+	ExpressionColumnMapping e(SqlOperators expression) {
+		e(expression.toString())
+	}
+	
+	ExpressionColumnMapping createExpressionColumnMapping(String expression) {
 		addColumnMapping new ExpressionColumnMapping(expression: expression,parent: this)
 	}
 	
@@ -222,11 +234,23 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	/**
 	 * Shorthand for createAggregateColumnMapping.
 	 * */
-	AggregateColumnMapping a(aggregateFunction) {
+	AggregateColumnMapping a(String aggregateFunction) {
 		createAggregateColumnMapping(aggregateFunction)
 	}
+	
+	AggregateColumnMapping a(Integer aggregateFunction) {
+		a(aggregateFunction.toString())
+	}
+	
+	AggregateColumnMapping a(Double aggregateFunction) {
+		a(aggregateFunction.toString())
+	}
+	
+	AggregateColumnMapping a(SqlOperators aggregateFunction) {
+		a(aggregateFunction.toString())
+	}
 
-	AggregateColumnMapping createAggregateColumnMapping(aggregateFunction) {
+	AggregateColumnMapping createAggregateColumnMapping(String aggregateFunction) {
 		addColumnMapping new AggregateColumnMapping(expression: aggregateFunction,parent: this)
 	}
 	
@@ -285,9 +309,9 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	 * */
 	public void validate() {
 		try {
-			def sqlStatement = "select * from (${getSQLQuery()}) where 1=2"
+			String sqlStatement = "select * from (${getSQLQuery()}) where 1=2"
 			println sqlStatement
-			getSql().getConnection().prepareStatement(sqlStatement).execute()			
+			getSql().rows(sqlStatement)	
 		} catch (SQLException e) {		
 			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${getSQLQuery()}")
 		}		

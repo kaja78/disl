@@ -46,7 +46,7 @@ class TestOperators {
 		B=new Column(name:"B",parent:t)
 		m=new Mapping() {
 					ColumnMapping M=e "TO_NUMBER('1')"
-					ColumnMapping N=e {"TO_NUMBER('1')"}
+					ColumnMapping N=e "TO_NUMBER('1')"
 					void initMapping(){}
 					String getSchema() {
 						""

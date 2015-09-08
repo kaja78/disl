@@ -62,6 +62,8 @@ public class PhysicalSchema {
 	protected Sql createSql() {
 		def sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
 		sql.getConnection().setAutoCommit(false)
+		sql.cacheConnection=true
+		sql.cacheStatements=false
 		return sql
 	}
 	
