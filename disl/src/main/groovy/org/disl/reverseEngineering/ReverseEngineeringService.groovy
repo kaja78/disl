@@ -148,7 +148,7 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 
 		StringBuffer sb=new StringBuffer()
 		for (int i=1;i<=metadata.columnCount;i++) {
-			sb.append("ColumnMapping ${metadata.getColumnLabel(i)}=e {${nvl(columnExpressions[i-1],metadata.getColumnLabel(i))}}\n")
+			sb.append("ColumnMapping ${metadata.getColumnLabel(i)}=e ${nvl(columnExpressions[i-1],metadata.getColumnLabel(i))}\n")
 		}
 
 
