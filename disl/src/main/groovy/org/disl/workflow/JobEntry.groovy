@@ -16,28 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta
+package org.disl.workflow;
 
 import org.disl.pattern.Executable;
 import org.disl.pattern.ExecutionInfo;
-import org.disl.pattern.Pattern;
 
-/**
- * Abstract parent for Mappings defining loading of target table using pattern. 
- * */
-abstract class TableMapping extends Mapping implements Executable {
-	public abstract Table getTarget()
-	public abstract Pattern getPattern()
-
-	public void simulate() {
-		getPattern().simulate()
+class JobEntry implements Executable {
+	
+	Executable executable
+			
+	ExecutionInfo getExecutionInfo() {
+		executable.executionInfo
 	}
-
-	public void execute() {
-		getPattern().execute()
+	
+	void execute() {
+		executable.execute()
 	}
-
-	public ExecutionInfo getExecutionInfo() {
-		return getPattern().getExecutionInfo()
+	
+	void simulate() {
+		executable.simulate()
 	}
+	
+	String toString() {
+		String name=executable.toString().padRight(50).toString().substring(0,50)
+		String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
+		String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
+		String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
+		return "* ${name} * ${stat} * ${dur} * ${processedRows} *"			
+	}
+	
 }

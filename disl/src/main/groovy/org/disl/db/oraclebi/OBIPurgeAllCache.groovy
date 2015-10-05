@@ -18,9 +18,11 @@
  */
 package org.disl.db.oraclebi
 
-import org.disl.pattern.ExecuteSQLQueryStep
-import org.junit.Test
+import org.disl.pattern.ExecuteSQLQueryStep;
 
+/**
+ * Purge Oracle BI Server cache.
+ * */
 class OBIPurgeAllCache extends ExecuteSQLQueryStep {
 
 		String pattern="Call SAPurgeAllCache()"

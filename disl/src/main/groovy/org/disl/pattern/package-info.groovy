@@ -16,15 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta
-
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
-
 /**
- * Container for uniqu key definitions.
+ * Provide classes to build DISL MDA patterns. Patterns are used to generate artifacts or execute code based on DISL data integration model.
  * */
-@Retention(RetentionPolicy.RUNTIME)
-@interface UniqueKeys {
-	UniqueKey[] value()
-}
+package org.disl.pattern

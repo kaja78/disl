@@ -16,15 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta
+package org.disl.db.vertica
 
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
+import org.disl.meta.PhysicalSchema
 
-/**
- * Container for uniqu key definitions.
- * */
-@Retention(RetentionPolicy.RUNTIME)
-@interface UniqueKeys {
-	UniqueKey[] value()
+class VerticaSchema extends PhysicalSchema {
+	
+	String host
+	int port=5433
+	String databaseName
+	String jdbcDriver="com.vertica.Driver"
+	
+	@Override
+	public String getJdbcUrl() {
+		"jdbc:vertica://${host}:${port}/${databaseName}"
+	}
 }

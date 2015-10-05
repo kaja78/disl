@@ -16,17 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.job
+package org.disl.workflow
 
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-import org.disl.job.Job.JobEntry
 import org.disl.meta.Context
 import org.disl.pattern.Executable
-
+/**
+ * Handles parallel execution of job entries.
+ * */
 @Singleton(lazy=true,strict=false)
 class ParallelJobExecutor {
 	int parallelJobsInProgress=0
@@ -48,7 +49,9 @@ class ParallelJobExecutor {
 		return executorService
 	}
 	
-	
+	/**
+	 * Execute Job's jobEntries in parallel.
+	 * */
 	void execute(Job job) {
 		def parallelFutures=submitParallelJobTasks(job.getJobEntries())
 		def futures=submitTasks(job.getJobEntries())	
@@ -79,13 +82,13 @@ class ParallelJobExecutor {
 		return parallelJobTasks.collect({service.submit(it)})
 	}
 	
-	List<Future> submitTasks(Collection<Executable> executables) {
+	protected List<Future> submitTasks(Collection<Executable> executables) {
 		Collection<Callable> tasks=executables.findAll({!isParallelJobEntry(it)}).collect({createCallable(it)})
 		def service=getExecutorService()
 		return tasks.collect({service.submit(it)})		
 	}
 	
-	void shutdownExecutors() {
+	protected void shutdownExecutors() {
 			if (executorService!=null) {
 				executorService.shutdown()
 				executorService=null
@@ -96,18 +99,18 @@ class ParallelJobExecutor {
 			}
 	}
 	
-	boolean isParallelJobEntry(JobEntry jobEntry) {
+	protected boolean isParallelJobEntry(JobEntry jobEntry) {
 		return (jobEntry.executable instanceof ParallelJob)
 	}
 	
 	/**
-	 * Check result of Executable execution. The result should be null. However Exception is thrown if execution
+	 * Check result of Executable execution. The result should be null. However Exception is thrown if execution failed.
 	 * */
-	void checkResults(List<Future> futures) {
+	protected void checkResults(List<Future> futures) {
 		futures.each({it.get()})
 	}
 	
-	Callable createCallable(Executable executable) {
+	protected Callable createCallable(Executable executable) {
 		String parentContext=Context.getContextName()
 		return new Callable() {
 			Object call() {

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.reverseEngineering
+package org.disl.db.reverseEngineering
 
 import groovy.sql.GroovyResultSet
 import groovy.sql.GroovyResultSetProxy
@@ -35,12 +35,25 @@ import org.disl.meta.Context
 import org.disl.meta.Table
 import org.disl.pattern.Pattern
 
+/**
+ * Provides DISL model reverse engineering functionality.
+ * */
 class ReverseEngineeringService {
-	protected static final String SRC_FOLDER="src"
+	protected static String SRC_FOLDER="src"
 
 	String logicalSchemaName
+	
 	ReverseTablePattern reverseTablePattern=new ReverseTablePattern()
 
+	/**
+	 * Reverse data dictionary tables and views into DISL data model.
+	 * @param targetPackage Package to create reversed data model objects in.
+	 * @param tablePattern Database object name like filter pattern. Default null.
+	 * @param sourceSchemaFilterPattern Source scheme like filter pattern. Default null.
+	 * @param outputDir Output directory.  Default SRC_FLDER.
+	 * @param tableTypes  @see java.sql.DatabaseMetaData#getTables Default null.
+	 * @parentClassName Parent class name for generated data model objects. Default @see getAbstractParentTableClassSimpleName. 
+	 * */
 	public Collection<Table> reverseSchemaTables(String targetPackage,String tablePattern=null,String sourceSchemaFilterPattern=null,File outputDir=new File(SRC_FOLDER),String[] tableTypes=null,String parentClassName=getAbstractParentTableClassSimpleName(targetPackage)){
 		Sql sql=Context.getSql(getLogicalSchemaName())
 		if (sourceSchemaFilterPattern==null) {
@@ -134,6 +147,10 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 		Pattern pattern
 	}
 
+	/**
+	 * Try to parse SQL query stored in system clipboard and trace column mapping to system output and clipboard.
+	 * Assumes valid SQL query is stored in system clipboard.
+	 * */
 	public void traceColumnMappings(Sql sql) {
 		String query=Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor)
 		traceColumnMappings(sql, query)

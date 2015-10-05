@@ -16,19 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.test
-
-import static org.junit.Assert.*
+package org.disl.util.test
 
 import java.util.List;
 import java.util.Map;
 
-import org.disl.db.oracle.OracleLookup;
-
 import groovy.sql.Sql
+import groovy.test.GroovyAssert
 
-abstract class AbstractDislTestCase extends GroovyTestCase {
+import org.disl.db.oracle.OracleLookup
 
+/**
+ * Abstract parent for Disl test cases. 
+ * Disl test cases support unit testing of SQL expression 
+ * typically defined within Mappings or shared expression libraries.
+ * */
+abstract class AbstractDislTestCase {
 	static Sql sql
 
 	protected Sql getSql() {
@@ -37,20 +40,36 @@ abstract class AbstractDislTestCase extends GroovyTestCase {
 		}
 		sql
 	}
-	
+
+
+	/**
+	 * Factory method for creating database connection. The connection will be used to evaluate SQL expression in assertExpression* methods.
+	 * */
 	protected abstract Sql createSql();
 
-	public void assertExpressionTrue(expression) {
-		assertRowCount(1, "select 1 from dual where ${expression}")
-	}
-	
-	public void assertExpressionFalse(expression) {
-		assertRowCount(0, "select 1 from dual where ${expression}")
-	}
+	/**
+	 * Database dialect specific implementation of evaluating SQL Expression. @see org.disl.db.oracle.OracleDislTestCase.
+	 * */
+	public abstract String evaluate(expression);
+
+	/**
+	 * Database dialect specific implementation of evaluating boolean SQL Expression. @see org.disl.db.oracle.OracleDislTestCase.
+	 * */
+	public abstract void assertExpressionTrue(expression);
+
+	/**
+	 * Database dialect specific implementation of evaluating boolean SQL Expression. @see org.disl.db.oracle.OracleDislTestCase.
+	 * */
+	public abstract void assertExpressionFalse(expression);
+
+	/**
+	 * Database dialect specific implementation of generating SQL query returning resultset with passed records. @see org.disl.db.oracle.OracleDislTestCase.
+	 * */
+	public abstract String recordsToSubquery(List<Map> records);
 
 	public void assertRowCount(int expectedCount,String sqlQuery) {
 		int actualCount=getRowCount(sqlQuery)
-		assertEquals("""Invalid rowcount returned from query:
+		GroovyAssert.assertEquals("""Invalid rowcount returned from query:
 ${sqlQuery}
 """,expectedCount,actualCount,0)
 	}
@@ -60,22 +79,14 @@ ${sqlQuery}
 	}
 
 	public void assertExpressionEquals(expectedExpression,actualExpression) {
-		assertEquals(evaluate(expectedExpression),evaluate(actualExpression))
+		GroovyAssert.assertEquals(evaluate(expectedExpression),evaluate(actualExpression))
 	}
 
 	public void assertExpressionEquals(expectedExpression,actualExpression,List<Map> records) {
-		assertEquals(evaluate(expectedExpression),evaluate(actualExpression,records))
-	}
-
-	public String evaluate(expression) {
-		getSql().firstRow("select ${expression} from DUAL".toString()).find().value
+		GroovyAssert.assertEquals(evaluate(expectedExpression),evaluate(actualExpression,records))
 	}
 
 	public String evaluate(expression,List<Map> records) {
 		getSql().firstRow("select ${expression} from ${recordsToSubquery(records)}".toString()).find().value
-	}
-	
-	public String recordsToSubquery(List<Map> records) {
-		return OracleLookup.recordsToSubquery(records)
 	}
 }

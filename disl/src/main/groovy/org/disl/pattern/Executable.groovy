@@ -19,7 +19,8 @@
 package org.disl.pattern;
 
 /**
- * Interface representing ability to perform data integration operation(s). This means to generate code and eventually execute it in runtime engine (typically database server). 
+ * Interface representing ability to perform some operation(s). 
+ * In DISL this typically means to generate code based on provided data integration model element and eventually execute it in runtime engine (typically database server). 
  * */
 public interface Executable {
 

@@ -18,6 +18,9 @@
  */
 package org.disl.meta
 
+/**
+ * Defines set operation to be performed on Mapping's sources.
+ * */
 public abstract class SetOperation {
 	
 	Mapping source

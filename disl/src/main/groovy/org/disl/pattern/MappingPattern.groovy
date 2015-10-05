@@ -18,11 +18,14 @@
  */
 package org.disl.pattern
 
-import groovy.sql.Sql
+import groovy.lang.Closure;
+import groovy.sql.Sql;
 
-import org.disl.meta.Context
-import org.disl.meta.TableMapping
+import org.disl.meta.TableMapping;
 
+/**
+ * Pattern for mapping.
+ * */
 abstract class MappingPattern extends Pattern {
 	public abstract TableMapping getMapping()
 

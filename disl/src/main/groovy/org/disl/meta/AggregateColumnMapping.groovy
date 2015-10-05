@@ -18,6 +18,9 @@
  */
 package org.disl.meta
 
+/**
+ * Column mapping containing agregate funtion. When Mapping contains at least one AgrecateColumnMapping, group by clause is generated automatically in sql query.
+ * */
 class AggregateColumnMapping extends ColumnMapping {
 	
 }

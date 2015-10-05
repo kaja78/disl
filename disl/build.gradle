@@ -31,10 +31,19 @@ repositories { mavenCentral() }
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.3.10'
 	compile 'junit:junit:4.12'
-	testCompile 'org.hsqldb:hsqldb:2.3.2'
+	testRuntime 'org.hsqldb:hsqldb:2.3.2'
 }
 
 license { 
 	header rootProject.file('HEADER.txt')
 	ext.year = Calendar.getInstance().get(Calendar.YEAR)
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier 'sources'
+	from sourceSets.main.allSource
+}
+ 
+artifacts {
+	archives sourcesJar
 }

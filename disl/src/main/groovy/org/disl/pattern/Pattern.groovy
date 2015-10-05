@@ -21,7 +21,12 @@ package org.disl.pattern;
 import org.disl.meta.Context
 
 
-
+/**
+ * Represents set of operations (steps) to be performed to implement MDA pattern for given DISL data integration model object.
+ * Pattern for table may generate DDL for table deployment into target database or execute replication or change data capture process.
+ * Pattern for mapping may generate or execute data integration logic.
+ * Patterns are use to define generic transformation of DISL model objects into artifacts.
+ * */
 public abstract class Pattern extends AbstractExecutable {
 	
 	private Collection<Step> steps

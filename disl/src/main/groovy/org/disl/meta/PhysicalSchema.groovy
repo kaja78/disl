@@ -18,24 +18,29 @@
  */
 package org.disl.meta;
 
-import groovy.sql.Sql
+import groovy.sql.Sql;
 
-public class PhysicalSchema {
+/**
+ * Generic physical database schema. 
+ * Context is used to map logical schemas used in DISL model to physical schemas.
+ * Physical schemas are specific for each execution environment (Context).
+ * */
+public abstract class PhysicalSchema {
 	
 	String name
 	String user
 	String password
-	String jdbcDriver
-	String jdbcUrl
 	String schema
 	SqlProxy sqlProxy
+	
+	abstract String getJdbcDriver()
+	abstract String getJdbcUrl()
 	
 	public void init() {
 		Context context=Context.getContext();
 		user=getSchemaProperty("user",user)
 		password=getSchemaProperty("password",password)
 		jdbcDriver=getSchemaProperty("jdbcDriver",jdbcDriver)
-		jdbcUrl=getSchemaProperty("jdbcUrl",jdbcUrl)
 		schema=getSchemaProperty("schema",schema)
 	}
 	

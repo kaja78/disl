@@ -16,20 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.job
-
-import org.disl.pattern.Executable
-
-class ParallelJob extends Job {
-
-	int threadCount=4
-
-	@Override
-	public int executeInternal() {
-		ParallelJobExecutor.instance.execute(this)
-		int processedRows=0
-		jobEntries.each {processedRows+=it.executionInfo.processedRows}
-		return processedRows
-	}
-
-}
+/**
+ * Provides classes for definition of DISL workflow.
+ * */
+package org.disl.workflow

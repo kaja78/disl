@@ -19,6 +19,7 @@
 package org.disl.pattern
 
 import org.disl.test.DislTestCase
+import static groovy.test.GroovyAssert.*
 import org.junit.Test
 
 class TestExecuteSqlScriptStep extends DislTestCase {
@@ -32,6 +33,5 @@ class TestExecuteSqlScriptStep extends DislTestCase {
 		assertEquals(2, p.getCommands().size())
 		assertEquals("A", p.getCommands()[0])
 		assertEquals("B", p.getCommands()[1])
-		
 	}
 }

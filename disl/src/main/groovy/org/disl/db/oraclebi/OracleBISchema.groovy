@@ -18,17 +18,16 @@
  */
 package org.disl.db.oraclebi
 
-import org.disl.meta.PhysicalSchema
+import org.disl.meta.PhysicalSchema;
 
-
+/**
+ * Oracle BI server PhysicalSchema implementation.
+ * */
 class OracleBISchema extends PhysicalSchema {
 	String host
 	String port=9703
+	String jdbcDriver="oracle.bi.jdbc.AnaJdbcDriver"
 
-	
-	OracleBISchema() {
-		jdbcDriver="oracle.bi.jdbc.AnaJdbcDriver"
-	}
 	
 	@Override
 	public void init() {

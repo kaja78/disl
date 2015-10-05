@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.reverseEngineering
+package org.disl.db.reverseEngineering
 
 import org.disl.test.DislTestCase;
 import org.junit.Test;
+import static groovy.test.GroovyAssert.*
 
 class TestReverseEngineeringService extends DislTestCase {
 	

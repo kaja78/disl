@@ -22,6 +22,7 @@ import org.disl.meta.Column
 import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.pattern.Pattern
+import org.disl.pattern.generic.CreateOrReplaceTablePattern;
 import org.disl.test.DislTestCase
 import org.junit.Test
 

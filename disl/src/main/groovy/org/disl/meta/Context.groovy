@@ -18,9 +18,10 @@
  */
 package org.disl.meta;
 
-import groovy.sql.Sql
+import groovy.sql.Sql;
 
-import org.disl.pattern.Step
+import java.util.Map;
+import java.util.Properties;
 /**
  * <p>Abstraction of execution environment. Context maps logical resource name to physical deployment.
  * Each context is defined by configuration file [context name].context.properties. Default context name is "default".</p>

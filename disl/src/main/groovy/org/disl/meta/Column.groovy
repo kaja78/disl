@@ -18,7 +18,10 @@
  */
 package org.disl.meta
 
-class Column extends SqlOperators {
+/**
+ * Column of database table or view.
+ * */
+class Column extends AbstractSqlExpression {
 	String name
 	MappingSource parent
 	String description

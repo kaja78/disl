@@ -16,10 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta;
+/**
+ * This package provides API for construction of DISL data integration model.
+ * Data integration model consists of data model defining source and target data structures.
+ * and data mapping model which defines data transformation processes. 
+ * 
+ * */
+package org.disl.meta
 
 
-public interface ConstraintOwner {
 
-	List<UniqueKeyMeta> getUniqueKeys();
-}

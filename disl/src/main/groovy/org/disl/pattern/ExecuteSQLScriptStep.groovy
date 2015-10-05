@@ -18,12 +18,9 @@
  */
 package org.disl.pattern;
 
-import static org.junit.Assert.*
-import groovy.sql.Sql
+import groovy.sql.Sql;
 
-import org.disl.meta.Base
-import org.junit.Assert
-import org.junit.Test
+import java.util.Collection;
 
 public class ExecuteSQLScriptStep extends Step {
 

@@ -17,8 +17,9 @@
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta
-import org.disl.db.hsqldb.pattern.CreateOrReplaceTablePattern
 import org.disl.pattern.Pattern
+import org.disl.pattern.generic.CreateOrReplaceTablePattern;
+import org.junit.Before
 import org.junit.Test
 
 
@@ -41,6 +42,10 @@ class TestTable extends Table {
 	
 	def DUMMY
 	
+	@Before
+	void initTest() {
+		init()
+	}
 	
 	@Test
 	void testGetColumns() {

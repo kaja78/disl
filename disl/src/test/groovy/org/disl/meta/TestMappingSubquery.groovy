@@ -19,6 +19,7 @@
 package org.disl.meta
 
 import org.disl.test.DislTestCase
+import static groovy.test.GroovyAssert.*
 import org.junit.Before
 import org.junit.Test
 

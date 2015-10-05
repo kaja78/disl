@@ -18,15 +18,23 @@
  */
 package org.disl.meta
 
-import javax.management.InstanceOfQueryExp;
-
-import org.codehaus.groovy.ast.expr.ClosureExpression;
-
-abstract class ColumnMapping extends SqlOperators {
+/**
+ * ColumnMapping defines data transformation for single column in Mapping.
+ * */
+abstract class ColumnMapping extends AbstractSqlExpression {
 
 	Mapping parent
+	
+	/**
+	 * Sql expression defining data transformation.
+	 * */
 	String expression
+	
+	/**
+	 * Name of column in ResultSet.
+	 * */
 	String alias
+	
 	String description
 	
 	String toString(){

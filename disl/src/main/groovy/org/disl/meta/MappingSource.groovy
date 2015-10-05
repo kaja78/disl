@@ -17,14 +17,10 @@
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta
-import static org.junit.Assert.*;
 
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Test;
-
-
+/**
+ * Data source of data transformation defined in Mapping.
+ * */
 abstract class MappingSource extends Base {
 	String sourceAlias
 	Join join=new Join.NONE(source:this)	

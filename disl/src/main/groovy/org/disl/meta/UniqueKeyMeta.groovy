@@ -19,12 +19,14 @@
 package org.disl.meta
 
 
-
+/**
+ * Holds unique key metadata in DISL data model.
+ * */
 class UniqueKeyMeta {
 	
 	String[] columns=[]
 
-	public static void initUniqueKeys(ConstraintOwner owner) {
+	public static void initUniqueKeys(Table owner) {
 		UniqueKeys uniqueKeys=owner.getClass().getAnnotation(UniqueKeys)
 		if (uniqueKeys!=null) {
 			uniqueKeys.value().each {initUniqueKey(owner,it)}
@@ -38,7 +40,7 @@ class UniqueKeyMeta {
 		
 	}
 
-	private static void initUniqueKey(ConstraintOwner owner,UniqueKey uniqueKey) {		
+	private static void initUniqueKey(Table owner,UniqueKey uniqueKey) {		
 		owner.uniqueKeys.add(new UniqueKeyMeta(columns: uniqueKey.columns()))
 	}
 }

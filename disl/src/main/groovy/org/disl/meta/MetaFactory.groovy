@@ -21,7 +21,9 @@ package org.disl.meta
 import groovy.io.FileType
 
 import java.lang.reflect.Modifier
-
+/**
+ * Factory for DISL model objects.
+ * */
 class MetaFactory {
 	static <T> T create(Class<T> type) {
 		def instance=type.newInstance();

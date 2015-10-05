@@ -18,16 +18,22 @@
  */
 package org.disl.db.hsqldb
 
-import static org.junit.Assert.*
 
-import org.disl.meta.PhysicalSchema
-import org.junit.Test
-
+import org.disl.meta.PhysicalSchema;
+/**
+ * Implementation of Hsqldb PhysicalSchema.
+ * */
 class HsqldbSchema extends PhysicalSchema {
+
+	String jdbcDriver="org.hsqldb.jdbcDriver"
+	String databaseName="mem:inmemoryDb"
+	
 	HsqldbSchema() {
-		jdbcDriver="org.hsqldb.jdbcDriver"
-		jdbcUrl="jdbc:hsqldb:mem:inmemoryDb"
 		user="sa"
+	}
+	
+	String getJdbcUrl() {
+		"jdbc:hsqldb:${databaseName}"
 	}
 
 }

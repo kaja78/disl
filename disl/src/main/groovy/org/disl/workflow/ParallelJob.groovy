@@ -16,15 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta
-
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
-
+package org.disl.workflow
 /**
- * Container for uniqu key definitions.
+ * ParallelJob executes executables in parallel.
  * */
-@Retention(RetentionPolicy.RUNTIME)
-@interface UniqueKeys {
-	UniqueKey[] value()
+class ParallelJob extends Job {
+
+	@Override
+	public int executeInternal() {
+		ParallelJobExecutor.instance.execute(this)
+		int processedRows=0
+		jobEntries.each {processedRows+=it.executionInfo.processedRows}
+		return processedRows
+	}
+
 }

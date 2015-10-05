@@ -19,9 +19,12 @@
 package org.disl.meta
 
 import java.lang.reflect.Field;
+import java.util.List;
 
-
-class Base {
+/**
+ * Abstract parent class for DISL meta classes.
+ * */
+abstract class Base {
 	
 	String name
 	
@@ -40,7 +43,7 @@ class Base {
 		getFieldsByType(this.getClass(), matchType);
 	}
 	
-	protected List<Field> getFieldsByType(Class type,Class matchType) {
+	public List<Field> getFieldsByType(Class type,Class matchType) {
 		List<Field> fields=[]
 		if (type.getSuperclass()!=null) {
 			fields.addAll(getFieldsByType(type.getSuperclass(),matchType))

@@ -23,6 +23,9 @@ import groovy.sql.Sql
 import org.disl.meta.Context
 import org.disl.meta.Table
 
+/**
+ * Pattern for Table.
+ * */
 abstract class TablePattern extends Pattern {
 	public abstract Table getTable()
 

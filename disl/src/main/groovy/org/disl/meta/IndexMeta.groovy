@@ -19,7 +19,9 @@
 package org.disl.meta;
 
 import java.util.List;
-
+/**
+ * Holds index metadata in DISL data model.
+ * */
 class IndexMeta {
 	List<String> columnNames
 	

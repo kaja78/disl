@@ -18,71 +18,72 @@
  */
 package org.disl.meta
 
-import org.junit.Test
-
-class SqlOperators {
+/**
+ * Abstract implementation of basic SQLExpression operators.
+ * */
+abstract class AbstractSqlExpression {
 	
-	SqlOperators plus(Object o) {
+	AbstractSqlExpression plus(Object o) {
 		return new SqlExpression( expression: {"${this}+${o}"})
 	}
 	
-	SqlOperators minus(Object o) {
+	AbstractSqlExpression minus(Object o) {
 		return new SqlExpression( expression: {"${this}-${o}"})
 	}
 	
-	SqlOperators multiply(Object o) {
+	AbstractSqlExpression multiply(Object o) {
 		return new SqlExpression( expression: {"${this}*${o}"})
 	}
 	
-	SqlOperators div(Object o) {
+	AbstractSqlExpression div(Object o) {
 		return new SqlExpression( expression: {"${this}/${o}"})
 	}
 	
-	SqlOperators mod(Object o) {
+	AbstractSqlExpression mod(Object o) {
 		return new SqlExpression( expression: {"${this}%${o}"})
 	}
 	
-	SqlOperators or(Object o) {
+	AbstractSqlExpression or(Object o) {
 		return new SqlExpression( expression: {"${this} or ${o}"})
 	}
 	
-	SqlOperators and(Object o) {
+	AbstractSqlExpression and(Object o) {
 		return new SqlExpression( expression: {"${this} and ${o}"})
 	}
 		
-	SqlOperators concat(Object... o) {
+	AbstractSqlExpression concat(Object... o) {
 		return new SqlExpression( expression: {"${this}||${o.join('||')}"})
 	}
 	
-	SqlOperators IN (Object... o) {
+	AbstractSqlExpression IN (Object... o) {
 		return new SqlExpression( expression: {"${this} IN (${o.join(',')})"})
 	}
 	
-	SqlOperators isEqual(Object o) {
+	AbstractSqlExpression isEqual(Object o) {
 		return new SqlExpression( expression: {"${this.toString()}=${o.toString()}"})
 	}
 	
-	SqlOperators isNotEqual(Object o) {
+	AbstractSqlExpression isNotEqual(Object o) {
 		return new SqlExpression( expression: {"${this.toString()}<>${o.toString()}"})
 	}
 	
-	SqlOperators lessThan(Object o) {
+	AbstractSqlExpression lessThan(Object o) {
 		return new SqlExpression( expression: {"${this}<${o}"})
 	}
 	
-	SqlOperators greaterThan(Object o) {
+	AbstractSqlExpression greaterThan(Object o) {
 		return new SqlExpression( expression: {"${this}>${o}"})
 	}
 	
-	SqlOperators lessOrEqualThan(Object o) {
+	AbstractSqlExpression lessOrEqualThan(Object o) {
 		return new SqlExpression( expression: {"${this}<=${o}"})
 	}
 	
-	SqlOperators greaterOrEqualThan(Object o) {
+	AbstractSqlExpression greaterOrEqualThan(Object o) {
 		return new SqlExpression( expression: {"${this}>=${o}"})
 	}
 	
-	SqlOperators between (Object o,Object p) {
+	AbstractSqlExpression between (Object o,Object p) {
 		return new SqlExpression( expression: {"${this} between ${o} and ${p}"})
 	}
 	

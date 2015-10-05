@@ -16,42 +16,62 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.job
+package org.disl.workflow
 
-import org.disl.meta.MetaFactory
-import org.disl.pattern.AbstractExecutable
-import org.disl.pattern.Executable
-import org.disl.pattern.ExecutionInfo
-import org.disl.pattern.Status
+import java.util.List;
 
+import org.disl.pattern.AbstractExecutable;
+import org.disl.pattern.Executable;
+/**
+ * Job executes list of job entries in serial order.
+ * */
 class Job extends AbstractExecutable {
 
 	List<JobEntry> jobEntries=[]
 	
+	/**
+	 * Add executable instance to job entry list.
+	 * */
 	void add(Executable executable) {
 		this.jobEntries.add(new JobEntry(executable: executable))
 	}
 
+	/**
+	 * Create new instance of Executable and add it to job entry list.
+	 * */
 	public Job addType(Class<Executable> type) {
 		add(MetaFactory.create(type))
 		return this
 	}
 	
+	/**
+	 * Create list of Executable instances and add it to job entry list.
+	 * */
 	public Job addTypes(List<Class<Executable>> types) {
 		types.each({addType(it)})
 		return this
 	}
 	
+	/**
+	 * Add list of executables to job entry list.
+	 * */
+
 	public Job addAll(List<Executable> executables) {
 		executables.each {add(it)}
 		return this
 	}
 
+	/**
+	 * Find, create and add executables to job entry list.
+	 * @param traversePath Root path to look for executables classes in.
+	 * @param rootPackage Root package to look for executables classes in.
+	 * @param assignableType Only classes assignable from assignableType will be added to job entry list.
+	 * */
 	public Job addAll(String traversePath,String rootPackage,Class assignableType) {
 		addAll(MetaFactory.createAll(traversePath,rootPackage,assignableType));
 	}
 
-	public int executeInternal() {
+	protected int executeInternal() {
 			int processedRows=0
 			jobEntries.each {it.execute(); processedRows+=it.executionInfo.processedRows}
 			return processedRows
@@ -83,32 +103,6 @@ class Job extends AbstractExecutable {
 		println "*********************************************************************************************"
 		jobEntries.each({println it})
 		println "*********************************************************************************************"
-	}
-	
-	static class JobEntry implements Executable {
-		
-		Executable executable
-				
-		ExecutionInfo getExecutionInfo() {
-			executable.executionInfo
-		}
-		
-		void execute() {
-			executable.execute()
-		}
-		
-		void simulate() {
-			executable.simulate()
-		}
-		
-		String toString() {
-			String name=executable.toString().padRight(50).toString().substring(0,50)
-			String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
-			String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
-			String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
-			return "* ${name} * ${stat} * ${dur} * ${processedRows} *"			
-		}
-		
 	}
 	
 	

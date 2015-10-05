@@ -19,6 +19,7 @@
 package org.disl.test
 
 import org.junit.Test
+import static groovy.test.GroovyAssert.*
 
 class TestDislTestCase extends DislTestCase {
 	

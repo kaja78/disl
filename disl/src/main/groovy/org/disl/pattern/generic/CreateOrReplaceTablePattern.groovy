@@ -16,13 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.db.hsqldb.pattern
+package org.disl.pattern.generic
 
-import org.disl.meta.Table
-import org.disl.pattern.ExecuteSQLScriptStep
-import org.disl.pattern.Step
-import org.disl.pattern.TablePattern
+import java.util.List;
 
+import org.disl.meta.Table;
+import org.disl.pattern.ExecuteSQLScriptStep;
+import org.disl.pattern.Step;
+import org.disl.pattern.TablePattern;
+
+/**
+ * Hsqldb table deployment pattern.
+ * */
 class CreateOrReplaceTablePattern extends TablePattern {
 
 	Table table

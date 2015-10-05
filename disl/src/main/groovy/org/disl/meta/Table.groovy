@@ -18,37 +18,27 @@
  */
 package org.disl.meta
 
-import java.lang.reflect.Field
+import java.lang.reflect.Field;
+import java.util.List;
 
-import org.disl.pattern.Executable
-import org.disl.pattern.ExecutionInfo
-import org.disl.pattern.Pattern
+import org.disl.pattern.Executable;
+import org.disl.pattern.ExecutionInfo;
+import org.disl.pattern.Pattern;
 
+/**
+ * Representation of table or view in DISL data model.
+ * */
+abstract class Table extends MappingSource implements  Executable, IndexOwner, Initializable {
 
-abstract class Table extends MappingSource implements  Executable, IndexOwner, ConstraintOwner {
-	
-	private Object dumm=doEarlyInit()
-	
-	private Object doEarlyInit() {		
-		columns=[]		
-		description=""
-		indexes=[]
-		primaryKeyColumns=[]
-		uniqueKeys=[]
-		foreignKeys=[]
-		init()
-		return null
-	}
-	
 	public abstract String getSchema()
 	public abstract Pattern getPattern()
 	
-	List<Column> columns	
-	String description
-	List<IndexMeta> indexes
-	List<Column> primaryKeyColumns
-	List<UniqueKeyMeta> uniqueKeys
-	List<ForeignKeyMeta> foreignKeys
+	List<Column> columns=[]	
+	String description=""
+	List<IndexMeta> indexes=[]
+	List<Column> primaryKeyColumns=[]
+	List<UniqueKeyMeta> uniqueKeys=[]
+	List<ForeignKeyMeta> foreignKeys=[]
 	
 	
 	@Override

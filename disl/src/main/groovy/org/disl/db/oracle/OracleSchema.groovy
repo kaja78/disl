@@ -18,23 +18,16 @@
  */
 package org.disl.db.oracle
 
-import groovy.sql.Sql
+import org.disl.meta.PhysicalSchema;
 
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.SQLClientInfoException;
-
-import org.disl.meta.PhysicalSchema
-import org.junit.Test
-
+/**
+ *Oracle physical schema implementation.
+ * */
 class OracleSchema extends PhysicalSchema {
 	String host
 	String port=1521
 	String databaseName
-
-	OracleSchema() {
-		jdbcDriver="oracle.jdbc.OracleDriver"
-	}
+	String jdbcDriver="oracle.jdbc.OracleDriver"
 
 	@Override
 	public void init() {

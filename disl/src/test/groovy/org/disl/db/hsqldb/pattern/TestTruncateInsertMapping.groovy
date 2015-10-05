@@ -24,6 +24,7 @@ import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.meta.TableMapping
 import org.disl.pattern.Pattern
+import org.disl.pattern.generic.TruncateInsertPattern;
 import org.disl.test.DislTestCase
 import org.junit.Test
 

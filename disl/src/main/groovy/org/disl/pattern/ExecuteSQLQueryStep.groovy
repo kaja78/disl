@@ -18,7 +18,6 @@
  */
 package org.disl.pattern
 
-import java.sql.ResultSet
 
 class ExecuteSQLQueryStep extends ExecuteSQLScriptStep {
 

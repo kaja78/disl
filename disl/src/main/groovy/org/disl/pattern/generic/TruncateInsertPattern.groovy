@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.db.hsqldb.pattern
+package org.disl.pattern.generic
 
-import org.disl.meta.TableMapping
-import org.disl.pattern.ExecuteSQLScriptStep
-import org.disl.pattern.MappingPattern
-import org.disl.pattern.Step
+import java.util.List;
+
+import org.disl.meta.TableMapping;
+import org.disl.pattern.ExecuteSQLScriptStep;
+import org.disl.pattern.MappingPattern;
+import org.disl.pattern.Step;
 
 class TruncateInsertPattern extends MappingPattern {
 	

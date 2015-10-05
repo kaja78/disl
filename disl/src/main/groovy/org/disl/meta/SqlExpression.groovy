@@ -18,11 +18,10 @@
  */
 package org.disl.meta
 
-import groovy.lang.Closure;
-
-import org.junit.Test;
-
-class SqlExpression extends SqlOperators {
+/**
+ * Represent SQL expression in DISL model.
+ * */
+class SqlExpression extends AbstractSqlExpression {
 	Object expression
 
 	@Override

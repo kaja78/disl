@@ -16,13 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta;
+package org.disl.db.oracle
 
 import java.util.List;
+import java.util.Map;
+
+import org.disl.util.test.AbstractDislTestCase;
+
+import groovy.sql.Sql
+import groovy.test.GroovyAssert
 
 /**
- * Data model element which is capable of defining indexes (table, materialized view ...).
+ * Abstract parent for Oracle DISL test cases.
  * */
-interface IndexOwner {
-	List<IndexMeta> getIndexes();
+abstract class OracleDislTestCase extends AbstractDislTestCase {
+	
+	public String evaluate(expression) {
+		getSql().firstRow("select ${expression} from DUAL".toString()).find().value
+	}
+	
+	public void assertExpressionTrue(expression) {
+		assertRowCount(1, "select 1 from dual where ${expression}")
+	}
+
+	public void assertExpressionFalse(expression) {
+		assertRowCount(0, "select 1 from dual where ${expression}")
+	}
+
+	
+	public String recordsToSubquery(List<Map> records) {
+		return OracleLookup.recordsToSubquery(records)
+	}
 }

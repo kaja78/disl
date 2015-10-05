@@ -25,7 +25,7 @@ abstract class AbstractExecutable implements Executable {
 	/**
 	 * Execute the step and return number of processed rows.
 	 * */
-	abstract int executeInternal();
+	protected abstract int executeInternal();
 	
 	@Override
 	public final void execute() {

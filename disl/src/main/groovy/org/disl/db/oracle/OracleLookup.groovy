@@ -18,37 +18,41 @@
  */
 package org.disl.db.oracle
 
-import java.lang.reflect.Field
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
-import org.disl.meta.Column
-import org.disl.meta.MappingSource
-import org.disl.meta.UniqueKey
+import org.disl.meta.Column;
+import org.disl.meta.MappingSource;
 
-
+/**
+ * Creates logical SQL query containing constant record set, which can be used as MappingSource.
+ * This enables constant lookup definition in DISL model without the need to deploy any database objects to database.
+ * */
 abstract class OracleLookup extends MappingSource {
 	List<Column> columns
-	
+
 	private Object dummy=doEarlyInit()
-	
+
 	abstract List<List> getRecords();
-	
+
 	private Object doEarlyInit() {
 		columns=new LinkedList<Column>()
 		init()
 		return null
 	}
-	
+
 	public void init() {
 		initColumns()
 	}
-	
+
 	protected void initColumns() {
 		getFieldsByType(Column).each {initColumn(it)}
 	}
-	
+
 	protected void initColumn(Field f) {
 		Column column=this[f.getName()]
-		
+
 		if (column==null) {
 			column=f.getType().newInstance()
 			column.parent=this
@@ -56,21 +60,20 @@ abstract class OracleLookup extends MappingSource {
 		}
 		column.setName(f.getName());
 		columns.add(column)
-		
 	}
-	
-	
+
+
 	public String getRefference(){
 		if (sourceAlias!=null) {
 			return "(\n${getLookupQuery()}) $sourceAlias"
 		}
 		return "(${getLookupQuery()})"
 	}
-	
+
 	public String getLookupQuery() {
 		"select * from ${recordsToSubquery(createRecordsFromList())}"
 	}
-	
+
 	protected List<Map> createRecordsFromList() {
 		List recordList=getRecords()
 		recordList.collect { values->
@@ -80,9 +83,8 @@ abstract class OracleLookup extends MappingSource {
 			}
 			return record
 		}
-		
 	}
-	
+
 	public static String recordsToSubquery(List<Map> records) {
 		String joinCondition=""
 		List aliases=findAliases(records)
@@ -100,7 +102,7 @@ where
 1=1
 ${joinCondition}"""
 	}
-	
+
 	private static List findAliases(List<Map> records) {
 		List aliases=[]
 		records[0].keySet().each {
@@ -114,7 +116,7 @@ ${joinCondition}"""
 		}
 		return aliases
 	}
-	
+
 	private static String mapToQuery(Map row, String sourceAlias, int index,boolean includeMissingSourceAliasColumns) {
 		Map sourceAliasRow=row.findAll {
 			String key=it.key.toString()
@@ -129,5 +131,4 @@ ${joinCondition}"""
 		String expressions=sourceAliasRow.collect({key, value -> "${value} as ${key}" }).join(",")
 		return "select ${index} as DUMMY_KEY,${expressions} from dual\n"
 	}
-	
 }

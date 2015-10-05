@@ -46,7 +46,8 @@ class TestDimensionTable extends Table {
 	
 	@Test
 	void testGetUniqueKeys() {
-		List l=this.getUniqueKeys()
+		Table t=MetaFactory.create(TestDimensionTable)
+		List l=t.getUniqueKeys()
 		GroovyTestCase.assertEquals("ID", l[0].columns[0])
 		GroovyTestCase.assertEquals("NAME", l[1].columns[0])
 	}

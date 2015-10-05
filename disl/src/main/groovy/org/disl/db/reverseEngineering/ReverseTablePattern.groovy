@@ -16,16 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.reverseEngineering
+package org.disl.db.reverseEngineering
 
 
 import org.disl.meta.Column
-import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.pattern.FileOutputStep
 import org.disl.pattern.Pattern
 import org.disl.pattern.Step
-import org.junit.Test
 
 class ReverseTablePattern extends Pattern {
 	File outputDir=new File("src")

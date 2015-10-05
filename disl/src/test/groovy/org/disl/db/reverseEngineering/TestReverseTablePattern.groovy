@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.reverseEngineering
+package org.disl.db.reverseEngineering
+
+import static org.junit.Assert.*
 
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestDimensionTable
 import org.junit.Test
-import static org.junit.Assert.*
 
 class TestReverseTablePattern {
 

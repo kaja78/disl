@@ -18,6 +18,9 @@
  */
 package org.disl.meta
 
+/**
+ * Column mapping containing valid sql expression. The expression must not be agregate function (@see AggregateColumnMapping).
+ * */
 class ExpressionColumnMapping extends ColumnMapping {
 	
 	

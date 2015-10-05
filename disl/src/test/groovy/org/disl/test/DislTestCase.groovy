@@ -20,11 +20,12 @@ package org.disl.test
 
 import groovy.sql.Sql
 
+import org.disl.db.oracle.OracleDislTestCase;
 import org.disl.meta.Context
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestTable
 
-abstract class DislTestCase extends AbstractDislTestCase {
+abstract class DislTestCase extends OracleDislTestCase {
 	
 	static {
 		Context.setContextName("disl-test")

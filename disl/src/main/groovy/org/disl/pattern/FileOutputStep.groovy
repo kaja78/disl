@@ -18,6 +18,8 @@
  */
 package org.disl.pattern
 
+import java.io.File;
+
 class FileOutputStep extends Step {
 	File file;
 	

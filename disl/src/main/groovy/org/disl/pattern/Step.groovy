@@ -21,6 +21,9 @@ package org.disl.pattern;
 import org.disl.meta.Context
 
 
+/**
+ * Represents one operation to be performed as part of Pattern execution.
+ * */
 public abstract class Step extends AbstractExecutable {
 	
 

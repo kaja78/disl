@@ -17,12 +17,24 @@
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta;
-
+/**
+ * Holds metadata for joining MappingSources in Mapping.
+ * */
 public abstract class Join {
 
+	/**
+	 * Join MappingSource.
+	 * */
 	MappingSource source
+	
+	/**
+	 * Join condition.
+	 * */
 	String condition
 	
+	/**
+	 * Generate part of SQL query from clause for given MappingSource.
+	 * */
 	public abstract String getFromClause();
 
 	public static class NONE extends Join {

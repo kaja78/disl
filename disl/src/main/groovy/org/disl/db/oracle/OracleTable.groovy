@@ -18,8 +18,12 @@
  */
 package org.disl.db.oracle
 
-import org.disl.meta.Table
+import org.disl.meta.Table;
 
+/**
+ * Abstract parent for Oracle table. Add support for Oracle partitioning annotations.
+ * @See PartitionBy and PartitionByRangeInterval.
+ * */
 abstract class OracleTable extends Table {
 
 	PartitionByMeta partitionByMeta

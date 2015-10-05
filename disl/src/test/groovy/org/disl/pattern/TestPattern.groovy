@@ -27,12 +27,14 @@ class TestPattern  {
 	
 	@Test
 	public void testSimulate() {
-		Pattern testingPattern=new TestingPattern(element:new Base());		
+		Pattern testingPattern=new TestingPattern(element:new BaseMock());
 		testingPattern.simulate();
-		assertEquals("DROP \nBase", testingPattern.steps[0].code)
+		assertEquals("DROP \nBaseMock", testingPattern.steps[0].code)
 		
 		
 	}
+
+	private class BaseMock extends Base {}
 	
 	class TestingPattern extends Pattern {
 		Base element;
