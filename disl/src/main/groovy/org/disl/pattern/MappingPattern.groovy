@@ -18,10 +18,10 @@
  */
 package org.disl.pattern
 
-import groovy.lang.Closure;
-import groovy.sql.Sql;
+import groovy.sql.Sql
 
-import org.disl.meta.TableMapping;
+import org.disl.meta.Context
+import org.disl.meta.TableMapping
 
 /**
  * Pattern for mapping.
