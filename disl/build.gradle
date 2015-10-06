@@ -52,3 +52,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 artifacts {
 	archives sourcesJar
 }
+
+String getVersionName() {
+	'git describe --tags'.execute(null,project.projectDir).text.trim()
+}
