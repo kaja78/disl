@@ -23,6 +23,11 @@
  
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
+apply plugin: 'java-library-distribution'
+apply plugin: 'maven'
+
+project.group='org.disl'
+project.version="${getVersionName()}"
 
 sourceCompatibility = 1.7
 

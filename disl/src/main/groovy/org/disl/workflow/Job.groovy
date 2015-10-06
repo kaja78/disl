@@ -18,10 +18,9 @@
  */
 package org.disl.workflow
 
-import java.util.List;
-
-import org.disl.pattern.AbstractExecutable;
-import org.disl.pattern.Executable;
+import org.disl.meta.MetaFactory
+import org.disl.pattern.AbstractExecutable
+import org.disl.pattern.Executable
 /**
  * Job executes list of job entries in serial order.
  * */

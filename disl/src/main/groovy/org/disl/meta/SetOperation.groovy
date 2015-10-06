@@ -18,12 +18,15 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic
+
 /**
  * Defines set operation to be performed on Mapping's sources.
  * */
+@CompileStatic
 public abstract class SetOperation {
 	
-	Mapping source
+	MappingSource source
 	
 	public abstract String getSetOperationClause();
 	

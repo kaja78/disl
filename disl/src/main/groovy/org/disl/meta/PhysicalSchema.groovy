@@ -18,13 +18,15 @@
  */
 package org.disl.meta;
 
-import groovy.sql.Sql;
+import groovy.sql.Sql
+import groovy.transform.CompileStatic
 
 /**
  * Generic physical database schema. 
  * Context is used to map logical schemas used in DISL model to physical schemas.
  * Physical schemas are specific for each execution environment (Context).
  * */
+@CompileStatic 
 public abstract class PhysicalSchema {
 	
 	String name

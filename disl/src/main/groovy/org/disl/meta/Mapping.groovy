@@ -19,6 +19,7 @@
 package org.disl.meta
 
 import groovy.sql.Sql
+import groovy.transform.CompileStatic;
 
 import java.lang.reflect.Field
 import java.sql.SQLException
@@ -30,6 +31,7 @@ import java.sql.SQLException
  * This class implements early initialization for all fields of types assignable from MappingSource.
  * This enables to reference MappingSources in initializers of ColumnMapping fields.
  * */
+@CompileStatic
 abstract class Mapping  extends MappingSource implements Initializable {
 	/**
 	 * Since this is first field in this class definition, it ensures doEarlyInit() method is called before next fields are intialized.
@@ -77,7 +79,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		getFieldsByType(ColumnMapping).each {
 			desc=it.getAnnotation(Description)
 			if (desc) {
-				this[it.getName()].setDescription(desc.value())
+				((ColumnMapping)this[it.getName()]).setDescription(desc.value())
 			}
 		}
 	}
@@ -98,12 +100,12 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		return {null}
 	}
 
-	void initColumnAliases() {
-		getFieldsByType(ColumnMapping).each { initAlias(it)}
+	protected void initColumnAliases() {
+		getFieldsByType(ColumnMapping).each { initColumnMapping(it)}
 	}
 
-	void initAlias(Field field) {
-		this[field.name].alias=field.name
+	protected void initColumnMapping(Field field) {
+		((ColumnMapping)this[field.name]).alias=field.name
 	}
 
 	void initSourceAliases() {
@@ -112,7 +114,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 
 	void initSourceAlias(String property) {
 		MetaProperty metaProperty=metaClass.getProperties().find {it.name==property}
-		def p=MetaFactory.create(metaProperty.getType())
+		MappingSource p=(MappingSource)MetaFactory.create(metaProperty.getType())
 		p.sourceAlias=property
 		this[property]=p
 	}
@@ -169,7 +171,7 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		groupBy(l)
 	}
 
-	public void groupBy(List expressions) {
+	public void groupBy(Collection expressions) {
 		String clause=expressions.collect({
 			if (it instanceof ExpressionColumnMapping) {
 				it=it.expression
@@ -214,27 +216,27 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	/**
 	 * Shorthand for createExpressionColumnMapping.
 	 * */
-	ExpressionColumnMapping e(String expression) {
+	ColumnMapping e(String expression) {
 		createExpressionColumnMapping(expression)
 	}
 
-	ExpressionColumnMapping e(Integer expression) {
+	ColumnMapping e(Integer expression) {
 		e(expression.toString())
 	}
 
-	ExpressionColumnMapping e(Double expression) {
+	ColumnMapping e(Double expression) {
 		e(expression.toString())
 	}
 
-	ExpressionColumnMapping e(AbstractSqlExpression expression) {
+	ColumnMapping e(AbstractSqlExpression expression) {
 		e(expression.toString())
 	}
 
-	ExpressionColumnMapping createExpressionColumnMapping(String expression) {
+	ColumnMapping createExpressionColumnMapping(String expression) {
 		addColumnMapping new ExpressionColumnMapping(expression: expression,parent: this)
 	}
 
-	ColumnMapping addColumnMapping(columnMapping) {
+	ColumnMapping addColumnMapping(ColumnMapping columnMapping) {
 		columns.add columnMapping
 		columnMapping
 	}
@@ -242,23 +244,23 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	/**
 	 * Shorthand for createAggregateColumnMapping.
 	 * */
-	AggregateColumnMapping a(String aggregateFunction) {
+	ColumnMapping a(String aggregateFunction) {
 		createAggregateColumnMapping(aggregateFunction)
 	}
 
-	AggregateColumnMapping a(Integer aggregateFunction) {
+	ColumnMapping a(Integer aggregateFunction) {
 		a(aggregateFunction.toString())
 	}
 
-	AggregateColumnMapping a(Double aggregateFunction) {
+	ColumnMapping a(Double aggregateFunction) {
 		a(aggregateFunction.toString())
 	}
 
-	AggregateColumnMapping a(AbstractSqlExpression aggregateFunction) {
+	ColumnMapping a(AbstractSqlExpression aggregateFunction) {
 		a(aggregateFunction.toString())
 	}
 
-	AggregateColumnMapping createAggregateColumnMapping(String aggregateFunction) {
+	ColumnMapping createAggregateColumnMapping(String aggregateFunction) {
 		addColumnMapping new AggregateColumnMapping(expression: aggregateFunction,parent: this)
 	}
 
