@@ -26,7 +26,7 @@ import org.disl.pattern.Step;
 import org.disl.pattern.TablePattern;
 
 /**
- * Hsqldb table deployment pattern.
+ * Generic create or replace table deployment pattern.
  * */
 class CreateOrReplaceTablePattern extends TablePattern {
 

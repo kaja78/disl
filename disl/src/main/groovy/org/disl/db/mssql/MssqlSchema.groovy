@@ -21,7 +21,9 @@ package org.disl.db.mssql
 import groovy.sql.Sql;
 
 import org.disl.meta.PhysicalSchema;
-
+/**
+ * Implementation of MS SQL Server PhysicalSchema based on JTDS JDBC driver (groupId: net.sourceforge.jtds, artifactId: jtds). 
+ * */
 class MssqlSchema extends PhysicalSchema {
 	String host
 	int port=1433

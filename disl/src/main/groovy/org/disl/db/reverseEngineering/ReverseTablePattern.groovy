@@ -24,11 +24,28 @@ import org.disl.meta.Table
 import org.disl.pattern.FileOutputStep
 import org.disl.pattern.Pattern
 import org.disl.pattern.Step
-
+/**
+ * Pattern for generating source code for DISL data model table.
+ * */
 class ReverseTablePattern extends Pattern {
+	/**
+	 * Output directory for generated source code.
+	 * */
 	File outputDir=new File("src")
+	
+	/**
+	 * Package name of generated table class.
+	 * */
 	String packageName
+	
+	/**
+	 * Class name of table class parent.
+	 * */
 	String parentClassName
+	
+	/**
+	 * Model of table to be generated.
+	 * */
 	Table table
 
 	@Override

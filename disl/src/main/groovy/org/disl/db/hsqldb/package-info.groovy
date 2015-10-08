@@ -16,22 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.db.vertica
-
-import org.disl.meta.PhysicalSchema
-
 /**
- * Vertica analytic platform PhysicalSchema implementation.
+ * Support for HyperSQL DataBase.
  * */
-class VerticaSchema extends PhysicalSchema {
-	
-	String host
-	int port=5433
-	String databaseName
-	String jdbcDriver="com.vertica.Driver"
-	
-	@Override
-	public String getJdbcUrl() {
-		"jdbc:vertica://${host}:${port}/${databaseName}"
-	}
-}
+package org.disl.db.hsqldb
