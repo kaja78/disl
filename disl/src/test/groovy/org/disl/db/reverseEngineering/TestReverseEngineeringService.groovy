@@ -24,7 +24,7 @@ import static groovy.test.GroovyAssert.*
 
 class TestReverseEngineeringService extends DislTestCase {
 	
-	ReverseEngineeringService s=new ReverseEngineeringService(logicalSchemaName: "INFORMATION_SCHEMA")
+	ReverseEngineeringService s=new ReverseEngineeringService(logicalSchemaName: "default")
 	
 	@Test
 	public void testReverseSchemaTables() {		

@@ -23,11 +23,11 @@ import org.disl.meta.Column
 import org.disl.meta.Table
 import org.disl.pattern.FileOutputStep
 import org.disl.pattern.Pattern
-import org.disl.pattern.Step
+import org.disl.pattern.TablePattern
 /**
  * Pattern for generating source code for DISL data model table.
  * */
-class ReverseTablePattern extends Pattern {
+class ReverseTablePattern extends TablePattern {
 	/**
 	 * Output directory for generated source code.
 	 * */
@@ -47,37 +47,56 @@ class ReverseTablePattern extends Pattern {
 	 * Model of table to be generated.
 	 * */
 	Table table
-
-	@Override
-	public Collection<Step> createSteps() {
+	
+	File getFile() {
 		File directory=new File(outputDir,packageName.replace('.', '/'))
-		File file=new File(directory,"${table.name}.groovy")
-		return [new FileOutputStep(name: "Groovy table definition",pattern: getCode(),file: file)];
+		new File(directory,"${table.name}.groovy")
 	}
 
-	String getCode() {
-		"""\
+	@Override
+	public void init() {	
+		add CreateDislTable
+	}
+	
+	static class CreateDislTable extends FileOutputStep {
+		
+		ReverseTablePattern getPattern() {
+			pattern
+		}
+		
+		File getFile() {
+			getPattern().getFile()
+		}
+		
+		String getCode() {
+			"""\
 package $packageName
 
 import org.disl.meta.*
 
 @Description(\"""$table.description\""")
-class $table.name extends ${parentClassName} {
-
-$columnDefinitions		
-}"""
+	class $table.name extends ${parentClassName} {
+	
+	$columnDefinitions
+	}"""
 	}
 
 	String getColumnDefinitions() {
-		getTable().getColumns().collect {getColumnDefinitionCode(it)}.join("\n\n")
+		table.getColumns().collect {getColumnDefinitionCode(it)}.join("\n\n")
 	}
 
 	String getColumnDefinitionCode(Column column) {
 		"""\
-		@Description(\"""$column.description\""")
+			@Description(\"""$column.description\""")
 		@DataType("$column.dataType")
 		Column $column.name"""
+		}
+	
+		
+		
 	}
+
+
 }
 
 

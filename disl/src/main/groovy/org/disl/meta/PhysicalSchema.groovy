@@ -18,6 +18,9 @@
  */
 package org.disl.meta;
 
+import java.util.List;
+import java.util.Map;
+
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 
@@ -37,6 +40,11 @@ public abstract class PhysicalSchema {
 	
 	abstract String getJdbcDriver()
 	abstract String getJdbcUrl()
+	
+	abstract String evaluateExpressionQuery(String expression)
+	abstract String evaluateConditionQuery(String expression)
+	abstract getRecordQuery(int index,String expressions);
+
 	
 	public void init() {
 		Context context=Context.getContext();
@@ -72,6 +80,53 @@ public abstract class PhysicalSchema {
 		sql.cacheConnection=true
 		sql.cacheStatements=false
 		return sql
+	}
+	
+	public String recordsToSubquery(List<Map> records) {
+		String joinCondition=""
+		List aliases=findAliases(records)
+		boolean firstSource=true
+		String sourceList=aliases.collect {
+			String alias=it
+			int index=0
+			String innerQuery=records.collect {index++; mapToQuery(it,alias,index,firstSource)}.join("union all\n")
+			firstSource=false
+			return "(${innerQuery}) $alias"
+		}.join(",\n")
+		joinCondition=aliases.collect({"AND ${it}.DUMMY_KEY=${aliases[0]}.DUMMY_KEY"}).join("\n")
+		return """${sourceList}
+where
+1=1
+${joinCondition}"""
+	}
+
+	private List findAliases(List<Map> records) {
+		List aliases=[]
+		records[0].keySet().each {
+			String columnName=it.toString()
+			if (columnName.contains('.')) {
+				aliases.add(columnName.substring(0, columnName.indexOf('.')))
+			}
+		}
+		if (aliases.size()==0) {
+			aliases.add("SRC")
+		}
+		return aliases
+	}
+
+	public String mapToQuery(Map<String,String> row, String sourceAlias, int index,boolean includeMissingSourceAliasColumns) {
+		Map sourceAliasRow=row.findAll {
+			String key=it.key.toString()
+			return key.startsWith("${sourceAlias}.") || (includeMissingSourceAliasColumns && !key.contains('.'))
+		}
+		sourceAliasRow=sourceAliasRow.collectEntries {key, value ->
+			if (key.startsWith("${sourceAlias}.")) {
+				key=key.substring(key.indexOf('.')+1)
+			}
+			[key, value]
+		}
+		String expressions=sourceAliasRow.collect({key, value -> "${value} as ${key}" }).join(",")
+		return getRecordQuery(index,expressions)
 	}
 	
 	@Override

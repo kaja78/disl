@@ -25,7 +25,6 @@ import org.disl.meta.Context
  * Represents one operation to be performed as part of Pattern execution.
  * */
 public abstract class Step extends AbstractExecutable {
-	
 
 	String name;
 
@@ -34,14 +33,9 @@ public abstract class Step extends AbstractExecutable {
 	 * */
 	String executionMode=Context.EXECUTION_MODE_DEFAULT
 
-	def pattern='';
+	Pattern pattern
 
-	String getCode() {
-		if (getPattern() instanceof Closure) {
-			getPattern().call();
-		}
-		getPattern();
-	}
+	abstract String getCode();
 
 	@Override
 	public void simulate() {

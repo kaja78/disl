@@ -19,6 +19,9 @@
 package org.disl.db.hsqldb
 
 
+import java.util.List;
+import java.util.Map;
+
 import org.disl.meta.PhysicalSchema;
 /**
  * Implementation of Hsqldb PhysicalSchema.
@@ -34,6 +37,27 @@ class HsqldbSchema extends PhysicalSchema {
 	
 	String getJdbcUrl() {
 		"jdbc:hsqldb:${databaseName}"
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		databaseName=getSchemaProperty("databaseName", databaseName)		
+	}
+	
+	@Override
+	public String evaluateExpressionQuery(String expression) {
+		"SELECT ${expression} FROM (VALUES (0))"
+	}
+	
+	@Override
+	public String evaluateConditionQuery(String expression) {
+		"select 1 from (VALUES (0)) where ${expression}"
+	}
+	
+	@Override
+	public String getRecordQuery(int index,String expressions) {
+		"select ${index} as DUMMY_KEY,${expressions} from (VALUES(0))\n"
 	}
 
 }

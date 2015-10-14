@@ -21,36 +21,46 @@ package org.disl.pattern
 import static groovy.test.GroovyAssert.*
 
 import org.disl.meta.Base
+import org.disl.meta.Context
+import org.junit.Before
 import org.junit.Test
 
 class TestPattern  {
 	
+	@Before
+	void initTest() {
+		Context.setContextName('disl-test')
+	}
+
 	@Test
 	public void testSimulate() {
-		Pattern testingPattern=new TestingPattern(element:new BaseMock());
+		Context ctx=Context.getContext()
+		TestingPattern testingPattern=new TestingPattern(element:new BaseMock());
+		testingPattern.init()
 		testingPattern.simulate();
 		assertEquals("DROP \nBaseMock", testingPattern.steps[0].code)
-		
-		
 	}
 
 	private class BaseMock extends Base {}
-	
-	class TestingPattern extends Pattern {
+
+	static class TestingPattern extends Pattern {
 		Base element;
-		
 		@Override
-		public List<Step> createSteps() {
-			[new ExecuteSQLScriptStep(name:"1", pattern: """\
+		public void init() {
+			add TestingStep
+		}
+	}
+
+	static class TestingStep extends Step {
+		String getCode() {
+			"""\
 DROP 
-${element.name}""")]
+${getPattern().element.name}"""
 		}
 		
-	
-		
-		
+		@Override
+		protected int executeInternal() {
+			return 0;
+		}
 	}
-	
-	
-	
 }

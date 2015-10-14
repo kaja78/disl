@@ -18,43 +18,19 @@
  */
 package org.disl.pattern.generic
 
-import java.util.List;
-
-import org.disl.meta.TableMapping;
-import org.disl.pattern.ExecuteSQLScriptStep;
-import org.disl.pattern.MappingPattern;
-import org.disl.pattern.Step;
+import org.disl.meta.Mapping
+import org.disl.pattern.MappingPattern
+import org.disl.pattern.generic.step.InsertIntoTable;
+import org.disl.pattern.generic.step.TruncateTable;
 
 class TruncateInsertPattern extends MappingPattern {
-	
-	TableMapping mapping
-	
+
+
+
 	@Override
-	public List<Step> createSteps() {
-		return [truncateTableStep,
-				insertStep];
+	public void init() {
+		add([TruncateTable,InsertIntoTable])
 	}
-	
-	protected ExecuteSQLScriptStep getTruncateTableStep() {
-		new ExecuteSQLScriptStep(
-				name: "Truncate target table",
-				pattern: "TRUNCATE TABLE ${mapping.target.name}",
-				sql: sql
-			)
-	}
-	
-	protected ExecuteSQLScriptStep getInsertStep() {
-		new ExecuteSQLScriptStep(
-				name: "Insert into target table",
-				pattern: """/
-INSERT INTO ${mapping.target.name}
-	(
-	${mapping.targetColumnNames.join(",\n\t")}				
-	)
-${mapping.SQLQuery}				
-""",
-				sql: sql
-			)
-	}
-	
+
+
 }

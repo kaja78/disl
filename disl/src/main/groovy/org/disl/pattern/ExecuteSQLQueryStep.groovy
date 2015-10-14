@@ -19,7 +19,7 @@
 package org.disl.pattern
 
 
-class ExecuteSQLQueryStep extends ExecuteSQLScriptStep {
+abstract class ExecuteSQLQueryStep extends ExecuteSQLScriptStep {
 
 	@Override
 	protected int executeSqlStatementInternal(String sqlCommand) {

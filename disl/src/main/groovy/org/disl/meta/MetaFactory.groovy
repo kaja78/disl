@@ -26,6 +26,14 @@ import java.lang.reflect.Modifier
  * */
 class MetaFactory {
 	static <T> T create(Class<T> type) {
+		try {
+			createInstance(type)
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to create instance of class ${type.getName()}",e);
+		}
+	}
+
+	private static <T> T createInstance(Class<T> type) {
 		def instance=type.newInstance();
 		if (instance instanceof Initializable) {
 			instance.init();

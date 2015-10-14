@@ -18,11 +18,17 @@
  */
 package org.disl.meta
 
+import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
 
 import java.lang.reflect.Field
+import java.sql.ResultSetMetaData
 import java.sql.SQLException
+
+import org.disl.pattern.Executable
+import org.disl.pattern.ExecutionInfo
+import org.disl.pattern.MappingPattern
 
 
 /**
@@ -32,7 +38,7 @@ import java.sql.SQLException
  * This enables to reference MappingSources in initializers of ColumnMapping fields.
  * */
 @CompileStatic
-abstract class Mapping  extends MappingSource implements Initializable {
+abstract class Mapping  extends MappingSource implements Initializable,Executable {
 	/**
 	 * Since this is first field in this class definition, it ensures doEarlyInit() method is called before next fields are intialized.
 	 * */
@@ -48,8 +54,14 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	public boolean isEarlyInitialized() {
 		return earlyInitialized
 	}
+	
+	public MappingPattern getPattern() {
+		return null
+	}
 
-	public abstract String getSchema()
+	public String getSchema() {
+		'default'
+	}	
 
 	protected Mapping(){}
 
@@ -67,6 +79,25 @@ abstract class Mapping  extends MappingSource implements Initializable {
 		initDescription()
 		if (getGroupBy()==null && getColumns().find({it instanceof AggregateColumnMapping})) {
 			groupBy()
+		}
+		initPattern()
+	}
+	
+	protected void initPattern() {
+		initPatternField()
+		if (getPattern()) {
+			getPattern().setMapping(this)
+			getPattern().init()
+		}
+	}
+
+	private initPatternField() {
+		if (!getPattern()) {
+			Field patternField=getFieldByName('pattern')
+			if (patternField) {
+				patternField.setAccessible(true)
+				patternField.set(this, patternField.getType().newInstance())
+			}
 		}
 	}
 
@@ -306,7 +337,6 @@ abstract class Mapping  extends MappingSource implements Initializable {
 	public void validate() {
 		try {
 			String sqlStatement = "select * from (${getSQLQuery()}) where 1=2"
-			println sqlStatement
 			getSql().rows(sqlStatement)
 		} catch (SQLException e) {
 			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${getSQLQuery()}")
@@ -315,5 +345,45 @@ abstract class Mapping  extends MappingSource implements Initializable {
 
 	public Sql getSql() {
 		Context.getSql(getSchema())
+	}
+	
+	@Override
+	public void execute() {
+		if (pattern) {
+			pattern.execute()
+		} else {
+			println exportToCSV(100)
+		}		
+	}
+
+	@Override
+	public void simulate() {
+		if (pattern) {
+			pattern.simulate()		
+		} else {
+			println getSQLQuery()
+		}
+	}
+
+	@Override
+	public ExecutionInfo getExecutionInfo() {
+		if (pattern) {
+			return pattern.executionInfo
+		}
+		return new ExecutionInfo();
+	}
+	
+	public String exportToCSV(int maxRows) {
+		StringBuffer csv=new StringBuffer()
+		getSql().rows(getSQLQuery(),1,maxRows,{csv.append(getCSVHeader((ResultSetMetaData)it))}).each {csv.append(((GroovyRowResult)it).values().join('\t')+'\n')}
+		csv.toString()
+	}
+	
+	private String getCSVHeader(ResultSetMetaData metaData) {
+		List l=[]
+		for (int i=1;i<=metaData.getColumnCount();i++) {
+			l.add(metaData.getColumnName(i))
+		}
+		l.join('\t')+'\n'
 	}
 }

@@ -26,15 +26,15 @@ import org.disl.meta.Table
 /**
  * Pattern for Table.
  * */
-abstract class TablePattern extends Pattern {
-	public abstract Table getTable()
-
-	protected Closure<Sql> getSql() {
-		return {Context.getSql(getTable().getSchema())}
-	}
+abstract class TablePattern<T extends Table> extends Pattern {
+	T table
 	
+	void addSqlScriptStep(String name,String code) {
+		add(ExecuteSQLScriptTableStep.create(name, code))
+	}
+
 	@Override
 	public String toString() {
-		"${this.getClass().getSimpleName()}(${getTable().getName()})"
+		"${this.getClass().getSimpleName()}(${getTable()})"
 	}
 }

@@ -16,40 +16,45 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.db.hsqldb.pattern
+package org.disl.pattern
 
-import org.disl.meta.Column
-import org.disl.meta.MetaFactory
+import groovy.sql.Sql
+
+import org.disl.meta.Context;
 import org.disl.meta.Table
-import org.disl.pattern.Pattern
-import org.disl.pattern.generic.CreateOrReplaceTablePattern;
-import org.disl.test.DislTestCase
-import org.junit.Test
 
-class TestCreateOrReplaceTable extends DislTestCase {
+abstract class ExecuteSQLScriptTableStep<T extends Table> extends ExecuteSQLScriptStep {
 
-	static class KEY extends Column {
-		String dataType="DECIMAL"
-	}
-
-	static class TESTING_TABLE extends Table {
-		CreateOrReplaceTablePattern pattern
-
-		KEY TT_KEY
+	TablePattern getPattern() {
+		super.getPattern()
 	}
 	
-	TESTING_TABLE t=MetaFactory.create(TESTING_TABLE)
-
-
-
-	@Test
-	public void testSimulate() {
-		t.simulate()
+	T getTable() {
+		getPattern().getTable()
+	}
+	
+	@Override
+	public Sql getSql() {
+		return Context.getSql(getTable().getSchema());
+	}
+	
+	public static ExecuteSQLScriptTableStep create(final String stepName,String code) {
+		ExecuteSQLScriptTableStep step=new ExecuteSQLScriptTableStep() {
+			
+			String getCode() {
+				code
+			}
+			
+			Sql getSql() {
+				Context.getSql(getPattern().getTable().getSchema())
+			}
+		}
+		step.name=stepName
+		return step
 	}
 
-	@Test
-	public void testExecute() {
-		t.execute()
-		t.execute()
-	}
+
+
+
+
 }

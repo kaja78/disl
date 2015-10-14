@@ -16,35 +16,43 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.db.oracle
-
-import java.util.List;
-import java.util.Map;
-
-import org.disl.util.test.AbstractDislTestCase;
+package org.disl.pattern
 
 import groovy.sql.Sql
-import groovy.test.GroovyAssert
 
-/**
- * Abstract parent for Oracle DISL test cases.
- * */
-abstract class OracleDislTestCase extends AbstractDislTestCase {
-	
-	public String evaluate(expression) {
-		getSql().firstRow("select ${expression} from DUAL".toString()).find().value
+import org.disl.meta.Context
+import org.disl.meta.Mapping
+import org.disl.meta.TableMapping;
+
+abstract class ExecuteSQLScriptMappingStep<M extends Mapping> extends ExecuteSQLScriptStep {
+
+	MappingPattern getPattern() {
+		super.getPattern()
 	}
 	
-	public void assertExpressionTrue(expression) {
-		assertRowCount(1, "select 1 from dual where ${expression}")
+	M getMapping() {
+		getPattern().getMapping()
+	}
+	
+	@Override
+	public Sql getSql() {
+		return Context.getSql(getMapping().getSchema());
 	}
 
-	public void assertExpressionFalse(expression) {
-		assertRowCount(0, "select 1 from dual where ${expression}")
+	public static ExecuteSQLScriptMappingStep create(String name,String code) {
+		ExecuteSQLScriptMappingStep step=new ExecuteSQLScriptMappingStep() {
+			String getCode() {
+				code
+			}
+			
+			Sql getSql() {
+				Context.getSql(getPattern().getMapping().getSchema())
+			}
+		}
+		step.name=name
+		return step
 	}
 
-	
-	public String recordsToSubquery(List<Map> records) {
-		return OracleLookup.recordsToSubquery(records)
-	}
+
+
 }

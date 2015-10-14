@@ -18,13 +18,11 @@
  */
 package org.disl.util.test
 
-import java.util.List;
-import java.util.Map;
-
 import groovy.sql.Sql
 import groovy.test.GroovyAssert
 
-import org.disl.db.oracle.OracleLookup
+import org.disl.meta.Context
+import org.disl.meta.PhysicalSchema
 
 /**
  * Abstract parent for Disl test cases. 
@@ -32,40 +30,30 @@ import org.disl.db.oracle.OracleLookup
  * typically defined within Mappings or shared expression libraries.
  * */
 abstract class AbstractDislTestCase {
-	static Sql sql
 
-	protected Sql getSql() {
-		if (sql==null) {
-			sql=createSql()
-		}
-		sql
+	public Sql getSql() {
+		Context.getSql(schema)
+	}
+	
+	public String getSchema() {
+		'default'
+	}
+	
+	public PhysicalSchema getPhysicalSchema() {
+		Context.getContext().getPhysicalSchema(getSchema())
 	}
 
+	public void assertExpressionTrue(expression) {
+		assertRowCount(1, physicalSchema.evaluateConditionQuery(expression))
+	}
 
-	/**
-	 * Factory method for creating database connection. The connection will be used to evaluate SQL expression in assertExpression* methods.
-	 * */
-	protected abstract Sql createSql();
+	public void assertExpressionFalse(expression) {
+		assertRowCount(0, physicalSchema.evaluateConditionQuery(expression))
+	}
 
-	/**
-	 * Database dialect specific implementation of evaluating SQL Expression. @see org.disl.db.oracle.OracleDislTestCase.
-	 * */
-	public abstract String evaluate(expression);
-
-	/**
-	 * Database dialect specific implementation of evaluating boolean SQL Expression. @see org.disl.db.oracle.OracleDislTestCase.
-	 * */
-	public abstract void assertExpressionTrue(expression);
-
-	/**
-	 * Database dialect specific implementation of evaluating boolean SQL Expression. @see org.disl.db.oracle.OracleDislTestCase.
-	 * */
-	public abstract void assertExpressionFalse(expression);
-
-	/**
-	 * Database dialect specific implementation of generating SQL query returning resultset with passed records. @see org.disl.db.oracle.OracleDislTestCase.
-	 * */
-	public abstract String recordsToSubquery(List<Map> records);
+	public String recordsToSubquery(List<Map> records) {
+		physicalSchema.recordsToSubquery(records)
+	}
 
 	public void assertRowCount(int expectedCount,String sqlQuery) {
 		int actualCount=getRowCount(sqlQuery)
@@ -86,7 +74,14 @@ ${sqlQuery}
 		GroovyAssert.assertEquals(evaluate(expectedExpression),evaluate(actualExpression,records))
 	}
 
-	public String evaluate(expression,List<Map> records) {
+	/**
+	 * Evaluate value of SQL expression.
+	 * */
+	public String evaluate(String expression) {
+		return getSql().firstRow(physicalSchema.evaluateExpressionQuery(expression)).getAt(0)
+	}
+	
+	public String evaluate(String expression,List<Map> records) {
 		getSql().firstRow("select ${expression} from ${recordsToSubquery(records)}".toString()).find().value
 	}
 }

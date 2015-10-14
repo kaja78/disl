@@ -16,30 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.db.oracle
+package org.disl.meta
+
+import groovy.transform.CompileStatic;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import org.disl.meta.Column;
-import org.disl.meta.MappingSource;
-
 /**
  * Creates logical SQL query containing constant record set, which can be used as MappingSource.
  * This enables constant lookup definition in DISL model without the need to deploy any database objects to database.
  * */
-abstract class OracleLookup extends MappingSource {
+@CompileStatic
+abstract class Lookup extends MappingSource {
 	List<Column> columns
-
-	private Object dummy=doEarlyInit()
-
+	private boolean dummy=doEarlyInit()
+		
 	abstract List<List> getRecords();
+	
+	public String getSchema() {
+		'default'
+	}
 
+	public PhysicalSchema getPhysicalSchema() {
+		Context.getContext().getPhysicalSchema(getSchema())
+	}
+	
 	private Object doEarlyInit() {
 		columns=new LinkedList<Column>()
 		init()
-		return null
+		return true
 	}
 
 	public void init() {
@@ -51,10 +58,10 @@ abstract class OracleLookup extends MappingSource {
 	}
 
 	protected void initColumn(Field f) {
-		Column column=this[f.getName()]
+		Column column=(Column)this[f.getName()]
 
 		if (column==null) {
-			column=f.getType().newInstance()
+			column=(Column)f.getType().newInstance()
 			column.parent=this
 			this[f.getName()]=column
 		}
@@ -71,7 +78,7 @@ abstract class OracleLookup extends MappingSource {
 	}
 
 	public String getLookupQuery() {
-		"select * from ${recordsToSubquery(createRecordsFromList())}"
+		"select * from ${physicalSchema.recordsToSubquery(createRecordsFromList())}"
 	}
 
 	protected List<Map> createRecordsFromList() {
@@ -85,50 +92,4 @@ abstract class OracleLookup extends MappingSource {
 		}
 	}
 
-	public static String recordsToSubquery(List<Map> records) {
-		String joinCondition=""
-		List aliases=findAliases(records)
-		boolean firstSource=true
-		String sourceList=aliases.collect {
-			String alias=it
-			int index=0
-			String innerQuery=records.collect {index++; mapToQuery(it,alias,index,firstSource)}.join("union all\n")
-			firstSource=false
-			return "(${innerQuery}) $alias"
-		}.join(",\n")
-		joinCondition=aliases.collect({"AND ${it}.DUMMY_KEY=${aliases[0]}.DUMMY_KEY"}).join("\n")
-		return """${sourceList}
-where
-1=1
-${joinCondition}"""
-	}
-
-	private static List findAliases(List<Map> records) {
-		List aliases=[]
-		records[0].keySet().each {
-			String columnName=it.toString()
-			if (columnName.contains('.')) {
-				aliases.add(columnName.substring(0, columnName.indexOf('.')))
-			}
-		}
-		if (aliases.size()==0) {
-			aliases.add("SRC")
-		}
-		return aliases
-	}
-
-	private static String mapToQuery(Map row, String sourceAlias, int index,boolean includeMissingSourceAliasColumns) {
-		Map sourceAliasRow=row.findAll {
-			String key=it.key.toString()
-			return key.startsWith("${sourceAlias}.") || (includeMissingSourceAliasColumns && !key.contains('.'))
-		}
-		sourceAliasRow=sourceAliasRow.collectEntries {key, value ->
-			if (key.startsWith("${sourceAlias}.")) {
-				key=key.substring(key.indexOf('.')+1)
-			}
-			[key, value]
-		}
-		String expressions=sourceAliasRow.collect({key, value -> "${value} as ${key}" }).join(",")
-		return "select ${index} as DUMMY_KEY,${expressions} from dual\n"
-	}
 }

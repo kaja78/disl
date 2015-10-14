@@ -21,18 +21,18 @@ package org.disl.pattern
 import groovy.sql.Sql
 
 import org.disl.meta.Context
-import org.disl.meta.TableMapping
+import org.disl.meta.Mapping
 
 /**
  * Pattern for mapping.
  * */
-abstract class MappingPattern extends Pattern {
-	public abstract TableMapping getMapping()
-
-	protected Closure<Sql> getSql() {
-		return {Context.getSql(getMapping().getSchema())}
-	}
+abstract class MappingPattern<M extends Mapping> extends Pattern {
+	M mapping
 	
+	void addSqlScriptStep(String name,String code) {
+		add(ExecuteSQLScriptMappingStep.create(name, code))
+	}
+
 	@Override
 	public String toString() {
 		"${this.getClass().getSimpleName()}(${getMapping().getName()})"

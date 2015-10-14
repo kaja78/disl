@@ -35,5 +35,5 @@ public interface Executable {
 	 */
 	public abstract void simulate()
 	
-	public abstract getExecutionInfo()
+	public abstract ExecutionInfo getExecutionInfo()
 }

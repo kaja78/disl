@@ -26,8 +26,9 @@ apply plugin: 'groovy'
 apply plugin: 'java-library-distribution'
 apply plugin: 'maven'
 
-project.group='org.disl'
+project.group='com.github.kaja78'
 project.version="${getVersionName()}"
+project.version="0.2-SNAPSHOT"
 
 sourceCompatibility = 1.7
 
@@ -55,4 +56,38 @@ artifacts {
 
 String getVersionName() {
 	'git describe --tags'.execute(null,project.projectDir).text.trim()
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: "https://oss.sonatype.org/content/repositories/snapshots/")
+			pom.project {
+				licenses {
+					license {
+						name 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
+						url 'http://www.gnu.org/licenses/gpl.txt'
+						distribution 'repo'
+					}
+				}
+				developers {
+					developer {
+						name 'Karel Hübl'
+						email 'karel.huebl@gmail.com'
+						organization 'Karel Hübl'
+						organizationUrl 'https://github.com/kaja78'						
+					}
+				}
+				issueManagement {
+					system 'Github'
+					url 'https://github.com/kaja78/disl/issues'					
+				}
+				scm {
+					connection 'scm:git:git@github.com:kaja78/disl.git'
+					developerConnection 'scm:git:git@github.com:kaja78/disl.git'
+					url 'git:git@github.com:kaja78/disl.git'
+				}
+			}
+		}
+	}
 }

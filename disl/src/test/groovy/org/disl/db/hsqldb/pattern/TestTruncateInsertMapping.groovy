@@ -24,7 +24,9 @@ import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.meta.TableMapping
 import org.disl.pattern.Pattern
-import org.disl.pattern.generic.TruncateInsertPattern;
+import org.disl.pattern.TablePattern
+import org.disl.pattern.generic.CreateOrReplaceTablePattern;
+import org.disl.pattern.generic.TruncateInsertPattern
 import org.disl.test.DislTestCase
 import org.junit.Test
 
@@ -32,8 +34,7 @@ class TestTruncateInsertMapping extends DislTestCase {
 	
 	
 	class TestMapping extends TableMapping {
-		Pattern pattern=new TruncateInsertPattern(mapping: this)
-		String schema="L2"
+		TruncateInsertPattern pattern
 		
 		TEST_TABLE target
 		TEST_TABLE src
@@ -47,9 +48,9 @@ class TestTruncateInsertMapping extends DislTestCase {
 		}
 	}
 	
-	class TEST_TABLE extends Table {
-		String schema="L2"
-		Pattern pattern
+	static class TEST_TABLE extends Table {
+
+		CreateOrReplaceTablePattern pattern
 		
 		Column A
 		Column B

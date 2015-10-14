@@ -24,35 +24,16 @@ import org.disl.meta.Table;
 import org.disl.pattern.ExecuteSQLScriptStep;
 import org.disl.pattern.Step;
 import org.disl.pattern.TablePattern;
+import org.disl.pattern.generic.step.CreateTable;
+import org.disl.pattern.generic.step.DropTable;
 
 /**
  * Generic create or replace table deployment pattern.
  * */
 class CreateOrReplaceTablePattern extends TablePattern {
 
-	Table table
-
 	@Override
-	public List<Step> createSteps() {
-		[dropTableStep,
-		 createTableStep]
+	public void init() {
+		add ([DropTable,CreateTable])		
 	}
-	
-	protected ExecuteSQLScriptStep getDropTableStep() {
-	new ExecuteSQLScriptStep(
-		name:"Drop table",
-		pattern: "DROP TABLE ${table.name};",
-		ignoreErrors: true,
-		sql: getSql())
-	}
-	
-	protected ExecuteSQLScriptStep getCreateTableStep() {
-		new ExecuteSQLScriptStep(
-			 name:"Create table",
-			 pattern: """\
-CREATE TABLE ${table.name} (
-	${table.columnDefinitions.join(",\n\t")});""",
-			 sql: sql)
-		}
-
 }

@@ -144,7 +144,7 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 	private static class ReverseEngineeredTable extends Table {
 		String schema
 		String physicalSchema
-		Pattern pattern
+		ReverseTablePattern pattern
 	}
 
 	/**

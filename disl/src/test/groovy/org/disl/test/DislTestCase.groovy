@@ -18,25 +18,19 @@
  */
 package org.disl.test
 
-import groovy.sql.Sql
-
-import org.disl.db.oracle.OracleDislTestCase;
 import org.disl.meta.Context
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestTable
+import org.disl.util.test.AbstractDislTestCase
 
-abstract class DislTestCase extends OracleDislTestCase {
+class DislTestCase extends AbstractDislTestCase {
 	
 	static {
 		Context.setContextName("disl-test")
-		def sql=Context.getSql("L2")
+		def sql=Context.getSql("default")
 		sql.execute("CREATE TABLE DUAL (dummy char(1))")
 		sql.execute("INSERT INTO DUAL VALUES ('X')")
 		MetaFactory.create(TestTable).execute()		
-	}
-	
-	protected Sql createSql() {
-		Context.getSql("L2")		
 	}
 	
 }

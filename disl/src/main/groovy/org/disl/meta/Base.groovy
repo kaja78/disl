@@ -52,6 +52,21 @@ abstract class Base {
 		return fields
 	}
 	
+	public Field getFieldByName(String name) {
+		return getFieldByName(name, this.getClass())
+	}
+	
+	public Field getFieldByName(String name,Class type) {
+		try {
+			return type.getDeclaredField(name)
+		} catch (NoSuchFieldException e) {
+			if (type.getSuperclass()) {
+				return getFieldByName(name,type.getSuperclass())
+			}
+			return null
+		}
+	}
+	
 	public List getPropertyValuesByType(Class type) {
 		return metaClass.properties.findAll({type.isAssignableFrom(it.type)}).collect({this.getProperty(it.name)});
 	}

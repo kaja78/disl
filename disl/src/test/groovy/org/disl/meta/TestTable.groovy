@@ -17,8 +17,8 @@
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta
-import org.disl.pattern.Pattern
-import org.disl.pattern.generic.CreateOrReplaceTablePattern;
+import org.disl.pattern.TablePattern
+import org.disl.pattern.generic.CreateOrReplaceTablePattern
 import org.junit.Before
 import org.junit.Test
 
@@ -26,8 +26,7 @@ import org.junit.Test
 @Indexes(@Index(columns=["A","B"]))
 class TestTable extends Table {
 
-	Pattern pattern=new CreateOrReplaceTablePattern(table: this)
-	String schema="L2"
+	CreateOrReplaceTablePattern pattern
 	
 	@Description("Column A.")
 	@DataType("VARCHAR(255)")

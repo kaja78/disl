@@ -18,14 +18,17 @@
  */
 package org.disl.db.oraclebi
 
-import org.disl.pattern.ExecuteSQLQueryStep;
+import groovy.sql.Sql
+
+import org.disl.pattern.ExecuteSQLQueryStep
 
 /**
  * Purge Oracle BI Server cache.
  * */
 class OBIPurgeAllCache extends ExecuteSQLQueryStep {
 
-		String pattern="Call SAPurgeAllCache()"
+		Sql sql
+		String code='Call SAPurgeAllCache()'
 		
 		@Override
 		public int executeInternal() {

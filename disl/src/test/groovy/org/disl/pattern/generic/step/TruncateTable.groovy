@@ -16,40 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.db.hsqldb.pattern
+package org.disl.pattern.generic.step;
 
-import org.disl.meta.Column
-import org.disl.meta.MetaFactory
-import org.disl.meta.Table
-import org.disl.pattern.Pattern
-import org.disl.pattern.generic.CreateOrReplaceTablePattern;
-import org.disl.test.DislTestCase
-import org.junit.Test
+import org.disl.meta.TableMapping
+import org.disl.pattern.ExecuteSQLScriptMappingStep
 
-class TestCreateOrReplaceTable extends DislTestCase {
-
-	static class KEY extends Column {
-		String dataType="DECIMAL"
-	}
-
-	static class TESTING_TABLE extends Table {
-		CreateOrReplaceTablePattern pattern
-
-		KEY TT_KEY
-	}
-	
-	TESTING_TABLE t=MetaFactory.create(TESTING_TABLE)
-
-
-
-	@Test
-	public void testSimulate() {
-		t.simulate()
-	}
-
-	@Test
-	public void testExecute() {
-		t.execute()
-		t.execute()
+class TruncateTable extends ExecuteSQLScriptMappingStep{
+	String getCode() {
+		"TRUNCATE TABLE ${getMapping().target.name}"
 	}
 }

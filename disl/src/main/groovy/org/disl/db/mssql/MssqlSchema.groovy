@@ -43,4 +43,19 @@ class MssqlSchema extends PhysicalSchema {
 		sql.getConnection().setAutoCommit(false)
 		sql
 	}
+	
+	@Override
+	public String evaluateExpressionQuery(String expression) {
+		"SELECT ${expression}"
+	}
+	
+	@Override
+	public String evaluateConditionQuery(String expression) {
+		"select 1 where ${expression}"
+	}
+	
+	@Override
+	public String getRecordQuery(int index,String expressions) {
+		"select ${index} as DUMMY_KEY,${expressions}\n"
+	}
 }

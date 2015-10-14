@@ -53,4 +53,19 @@ class OracleSchema extends PhysicalSchema {
 			setDatabaseName("/${serviceName}")
 		}
 	}
+	
+	@Override
+	public String evaluateExpressionQuery(String expression) {
+		"SELECT ${expression} FROM dual"
+	}
+	
+	@Override
+	public String evaluateConditionQuery(String expression) {
+		"select 1 from dual where ${expression}"
+	}
+	
+	@Override
+	public String getRecordQuery(int index,String expressions) {
+		"select ${index} as DUMMY_KEY,${expressions} from dual\n"
+	}
 }

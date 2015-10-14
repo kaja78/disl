@@ -38,6 +38,21 @@ class OracleBISchema extends PhysicalSchema {
 	
 	public String getJdbcUrl() {
 		"jdbc:oraclebi://${getHost()}:${getPort()}/"
-	}	
+	}
+	
+	@Override
+	public String evaluateExpressionQuery(String expression) {
+		throw new UnsupportedOperationException()
+	}
+	
+	@Override
+	public String evaluateConditionQuery(String expression) {
+		throw new UnsupportedOperationException()
+	}
+	
+	@Override
+	public String getRecordQuery(int index,String expressions) {
+		throw new UnsupportedOperationException()
+	}
 	
 }

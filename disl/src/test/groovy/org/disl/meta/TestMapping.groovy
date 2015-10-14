@@ -28,7 +28,6 @@ import org.junit.Test
 class TestMapping extends DislTestCase {
 
 	static class TestingMapping extends Mapping {
-		String schema="L2"
 
 		TestTable s1
 		TestTable s2

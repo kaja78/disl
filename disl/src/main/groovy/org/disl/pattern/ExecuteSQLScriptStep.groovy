@@ -18,24 +18,18 @@
  */
 package org.disl.pattern;
 
-import groovy.sql.Sql;
+import org.disl.meta.Table;
 
-import java.util.Collection;
+import groovy.sql.Sql
 
-public class ExecuteSQLScriptStep extends Step {
+abstract class ExecuteSQLScriptStep extends Step {
 
 	public static final String BACKSLASH_NEW_LINE = "\\\\\n"
 	
 	boolean ignoreErrors=false;
 	String commandSeparator=";";
-	def sql;
 
-	Sql getSql() {
-		if (sql instanceof Closure) {
-			return sql.call();
-		}
-		sql
-	}
+	abstract Sql getSql();
 
 	public int executeInternal() {
 		try {

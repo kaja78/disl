@@ -20,8 +20,8 @@ package org.disl.pattern
 
 import java.io.File;
 
-class FileOutputStep extends Step {
-	File file;
+abstract class FileOutputStep extends Step {
+	abstract File getFile()
 	
 	@Override
 	public int executeInternal() {

@@ -26,6 +26,8 @@ import org.junit.Test
 class TestMappingSubquery extends DislTestCase {
 
 	TestingMapping t=MetaFactory.create(TestingMapping)
+	
+
 
 	@Test
 	void testGetSQLQuery() {
@@ -57,8 +59,6 @@ class TestMappingSubquery extends DislTestCase {
 
 	static class TestingMapping extends Mapping {
 
-		String schema="L2"
-
 		TestTable t
 		Subquery s
 
@@ -72,8 +72,6 @@ ${s.SQLQuery}
 		}
 
 		static class Subquery extends Mapping {
-
-			String schema="L2"
 
 			TestTable t
 

@@ -22,6 +22,10 @@ abstract class AbstractExecutable implements Executable {
 	
 	ExecutionInfo executionInfo=new ExecutionInfo()
 	
+	public ExecutionInfo getExecutionInfo() {
+		executionInfo
+	}
+	
 	/**
 	 * Execute the step and return number of processed rows.
 	 * */

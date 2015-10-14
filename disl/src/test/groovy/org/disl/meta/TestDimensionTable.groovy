@@ -18,8 +18,8 @@
  */
 package org.disl.meta
 
-import org.disl.pattern.Pattern;
-import org.junit.Assert;
+import org.disl.pattern.TablePattern
+import org.disl.pattern.generic.CreateOrReplaceTablePattern
 import org.junit.Test
 
 @UniqueKeys([
@@ -28,8 +28,8 @@ import org.junit.Test
 
 @Description("This is testing dimension.")
 class TestDimensionTable extends Table {
-	String schema="L2"
-	Pattern pattern
+
+	TablePattern pattern=new CreateOrReplaceTablePattern(table: this)
 	
 	@PrimaryKey
 	@DataType("INTEGER")

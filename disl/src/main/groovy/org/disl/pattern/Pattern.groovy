@@ -18,7 +18,11 @@
  */
 package org.disl.pattern;
 
+import groovy.transform.CompileStatic;
+
 import org.disl.meta.Context
+import org.disl.meta.Initializable;
+import org.disl.meta.MetaFactory;
 
 
 /**
@@ -27,19 +31,30 @@ import org.disl.meta.Context
  * Pattern for mapping may generate or execute data integration logic.
  * Patterns are use to define generic transformation of DISL model objects into artifacts.
  * */
-public abstract class Pattern extends AbstractExecutable {
+
+public abstract class Pattern extends AbstractExecutable implements Initializable {
 	
-	private Collection<Step> steps
+	private Collection<Step> steps=[]
 	
 	public Collection<Step> getSteps() {
-		if (steps==null) {
-			steps=createSteps().findAll {it.executionMode.equals(Context.getContext().getExecutionMode())}
-		}
-		return steps
+		String em=Context.getContext().getExecutionMode()
+		steps.findAll {it.executionMode.equals(Context.getContext().getExecutionMode())}
+	}
+	
+	public void add(Step step) {
+		step.setPattern(this)
+		steps.add(step)
+	}
+	
+	public void add(Class<Step> type) {
+		Step step=MetaFactory.create(type)		
+		add(step)
+	}
+	
+	public void add(Collection<Class<Step>> types) {
+		types.each {add(it)}
 	}
 				
-	abstract Collection<Step> createSteps()
-	
 	@Override
 	public int executeInternal() {
 		long timestamp=System.currentTimeMillis();
@@ -60,5 +75,7 @@ public abstract class Pattern extends AbstractExecutable {
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
+	
+	public abstract void init();
 
 }
