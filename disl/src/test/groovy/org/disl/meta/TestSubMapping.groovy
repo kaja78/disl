@@ -25,7 +25,7 @@ import org.junit.Test
 
 class TestSubMapping extends DislTestCase {
 
-	class TestingSubMapping extends Mapping {
+	static class TestingSubMapping extends Mapping {
 
 		ColumnMapping A=e "${subquery.A}"
 		ColumnMapping B=e "1"

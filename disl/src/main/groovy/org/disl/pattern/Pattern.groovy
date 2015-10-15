@@ -36,6 +36,8 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	
 	private Collection<Step> steps=[]
 	
+	protected Pattern(){}
+	
 	public Collection<Step> getSteps() {
 		String em=Context.getContext().getExecutionMode()
 		steps.findAll {it.executionMode.equals(Context.getContext().getExecutionMode())}

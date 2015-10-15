@@ -106,11 +106,6 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 	protected void initPattern() {
 		initPatternField()
-
-		if (getPattern()) {
-			getPattern().setTable(this)
-			getPattern().init()
-		}
 	}
 
 	private initPatternField() {
@@ -118,7 +113,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 			Field patternField=getFieldByName('pattern')
 			if (patternField) {
 				patternField.setAccessible(true)
-				patternField.set(this,patternField.getType().newInstance())
+				patternField.set(this,MetaFactory.create(patternField.getType(),{((TablePattern<Table>)it).setTable(this)}))
 			}
 		}
 	}

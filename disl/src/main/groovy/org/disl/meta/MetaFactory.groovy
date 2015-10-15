@@ -20,26 +20,38 @@ package org.disl.meta
 
 import groovy.io.FileType
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier
 /**
  * Factory for DISL model objects.
  * */
 class MetaFactory {
-	static <T> T create(Class<T> type) {
+	static <T> T create(Class<T> type, Closure initClosure=null) {
 		try {
-			createInstance(type)
+			createInstance(type,initClosure)
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to create instance of class ${type.getName()}",e);
 		}
 	}
 
-	private static <T> T createInstance(Class<T> type) {
-		def instance=type.newInstance();
+	private static <T> T createInstance(Class<T> type, Closure initClosure) {
+		Constructor<T> constructor=type.getDeclaredConstructor(new Class[0])
+		constructor.setAccessible(true)		 
+		T instance=constructor.newInstance(new Object[0])
+		initInstance(instance,initClosure)
+		instance
+	}
+
+	private static void initInstance(Object instance,Closure initClosure=null) {
+		if (initClosure) {
+			initClosure.call(instance)
+		}
 		if (instance instanceof Initializable) {
 			instance.init();
 		}
-		instance
 	}
+	
+	
 
 	/**
 	 * Traverse all class files in traversePath and creates instances for all found classes in given rootPackage (including subpackages) which are assignable to assignableType.

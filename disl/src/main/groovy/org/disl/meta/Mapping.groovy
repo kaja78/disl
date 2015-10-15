@@ -85,10 +85,6 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	
 	protected void initPattern() {
 		initPatternField()
-		if (getPattern()) {
-			getPattern().setMapping(this)
-			getPattern().init()
-		}
 	}
 
 	private initPatternField() {
@@ -96,7 +92,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			Field patternField=getFieldByName('pattern')
 			if (patternField) {
 				patternField.setAccessible(true)
-				patternField.set(this, patternField.getType().newInstance())
+				patternField.set(this, MetaFactory.create(patternField.getType(),{((MappingPattern)it).setMapping(this)}))
 			}
 		}
 	}

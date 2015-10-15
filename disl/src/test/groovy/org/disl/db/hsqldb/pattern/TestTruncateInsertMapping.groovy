@@ -33,7 +33,7 @@ import org.junit.Test
 class TestTruncateInsertMapping extends DislTestCase {
 	
 	
-	class TestMapping extends TableMapping {
+	static class TestMapping extends TableMapping {
 		TruncateInsertPattern pattern
 		
 		TEST_TABLE target

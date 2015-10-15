@@ -49,9 +49,14 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier 'sources'
 	from sourceSets.main.allSource
 }
+
+task groovydocJar(type: Jar) {
+	classifier = 'groovydoc'
+	from groovydoc
+}
  
 artifacts {
-	archives sourcesJar
+	archives groovydocJar, sourcesJar
 }
 
 String getVersionName() {
@@ -61,7 +66,14 @@ String getVersionName() {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			repository(url: "https://oss.sonatype.org/content/repositories/snapshots/")
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+				authentication(userName: sonatypeUser, password: sonatypePassword)
+			}
+			
+			/*repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: sonatypeUser, password: sonatypePassword)
+			}*/
+		
 			pom.project {
 				licenses {
 					license {
