@@ -25,10 +25,12 @@ apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'java-library-distribution'
 apply plugin: 'maven'
+apply plugin: 'signing'
+
 
 project.group='com.github.kaja78'
-project.version="${getVersionName()}"
-project.version="0.2-SNAPSHOT"
+//project.version="${getVersionName()}"
+project.version="0.2.0"
 
 sourceCompatibility = 1.7
 
@@ -51,12 +53,16 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 task groovydocJar(type: Jar) {
-	classifier = 'groovydoc'
+	classifier = 'javadoc'
 	from groovydoc
 }
  
 artifacts {
 	archives groovydocJar, sourcesJar
+}
+
+signing {
+	sign configurations.archives
 }
 
 String getVersionName() {
@@ -66,15 +72,19 @@ String getVersionName() {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-				authentication(userName: sonatypeUser, password: sonatypePassword)
-			}
-			
-			/*repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+			/*snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
 				authentication(userName: sonatypeUser, password: sonatypePassword)
 			}*/
+			
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: sonatypeUser, password: sonatypePassword)
+			}
 		
 			pom.project {
+				name 'disl'
+				description 'disl = data integration specific language. Goal of this project is to implement groovy based domain specific language supporting modelling of data integration projects. Disl will support data modeling and data mapping including support for MDA transformations and unit testing.'
+				url 'https://github.com/kaja78/disl'
 				licenses {
 					license {
 						name 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
