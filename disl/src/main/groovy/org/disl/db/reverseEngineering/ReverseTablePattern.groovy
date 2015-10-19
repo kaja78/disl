@@ -27,7 +27,7 @@ import org.disl.pattern.TablePattern
 /**
  * Pattern for generating source code for DISL data model table.
  * */
-class ReverseTablePattern extends TablePattern {
+class ReverseTablePattern extends TablePattern<ReverseEngineeredTable> {
 	/**
 	 * Output directory for generated source code.
 	 * */
@@ -43,11 +43,6 @@ class ReverseTablePattern extends TablePattern {
 	 * */
 	String parentClassName
 	
-	/**
-	 * Model of table to be generated.
-	 * */
-	Table table
-	
 	File getFile() {
 		File directory=new File(outputDir,packageName.replace('.', '/'))
 		new File(directory,"${table.name}.groovy")
@@ -61,7 +56,7 @@ class ReverseTablePattern extends TablePattern {
 	static class CreateDislTable extends FileOutputStep {
 		
 		ReverseTablePattern getPattern() {
-			pattern
+			super.pattern
 		}
 		
 		File getFile() {
@@ -70,24 +65,24 @@ class ReverseTablePattern extends TablePattern {
 		
 		String getCode() {
 			"""\
-package $packageName
+package $pattern.packageName
 
 import org.disl.meta.*
 
-@Description(\"""$table.description\""")
-	class $table.name extends ${parentClassName} {
+@Description(\"""$pattern.table.description\""")
+	class $pattern.table.name extends ${pattern.parentClassName} {
 	
 	$columnDefinitions
 	}"""
 	}
 
 	String getColumnDefinitions() {
-		table.getColumns().collect {getColumnDefinitionCode(it)}.join("\n\n")
+		pattern.table.getColumns().collect {getColumnDefinitionCode(it)}.join("\n\n")
 	}
 
 	String getColumnDefinitionCode(Column column) {
 		"""\
-			@Description(\"""$column.description\""")
+		@Description(\"""$column.description\""")
 		@DataType("$column.dataType")
 		Column $column.name"""
 		}
