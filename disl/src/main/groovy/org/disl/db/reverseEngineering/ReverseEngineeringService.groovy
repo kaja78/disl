@@ -43,7 +43,7 @@ class ReverseEngineeringService {
 
 	String logicalSchemaName
 	
-	ReverseTablePattern reverseTablePattern=new ReverseTablePattern()
+	//ReverseTablePattern reverseTablePattern=new ReverseTablePattern()
 
 	/**
 	 * Reverse data dictionary tables and views into DISL data model.
@@ -60,13 +60,15 @@ class ReverseEngineeringService {
 			sourceSchemaFilterPattern=Context.getContext().getPhysicalSchema(getLogicalSchemaName()).getSchema()
 		}
 		checkAbstractParentTableExist(targetPackage,outputDir)
-		reverseTablePattern.setPackageName(targetPackage)
-		reverseTablePattern.setOutputDir(outputDir)
-		reverseTablePattern.setParentClassName(parentClassName)
 		List<Table> tables=reverseEngineerTables(sql,tablePattern,tableTypes,sourceSchemaFilterPattern)
 		tables.each {
 			Table t=it
+			ReverseTablePattern reverseTablePattern=new ReverseTablePattern()			
+			reverseTablePattern.setPackageName(targetPackage)
+			reverseTablePattern.setOutputDir(outputDir)
+			reverseTablePattern.setParentClassName(parentClassName)			
 			reverseTablePattern.setTable(t)
+			reverseTablePattern.init()			
 			reverseTablePattern.execute()
 		}
 	}
@@ -139,12 +141,6 @@ public abstract class ${getAbstractParentTableClassSimpleName(packageName)}  ext
 	protected void eachRow(ResultSet res,Closure eachRowClosure) {
 		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
 		gRes.eachRow eachRowClosure
-	}
-
-	private static class ReverseEngineeredTable extends Table {
-		String schema
-		String physicalSchema
-		ReverseTablePattern pattern
 	}
 
 	/**
