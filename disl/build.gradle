@@ -30,9 +30,10 @@ apply plugin: 'signing'
 
 project.group='com.github.kaja78'
 //project.version="${getVersionName()}"
-project.version="0.2.0"
+project.version="0.3.SNAPSHOT"
 
 sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories { mavenCentral() }
 
