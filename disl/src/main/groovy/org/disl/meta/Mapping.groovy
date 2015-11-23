@@ -390,7 +390,6 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		try {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
 		} catch (Exception e) {
-			e.printStackTrace()
 		}
 		
 	}

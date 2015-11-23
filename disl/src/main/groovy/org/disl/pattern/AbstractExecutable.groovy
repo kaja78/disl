@@ -18,6 +18,8 @@
  */
 package org.disl.pattern;
 
+import org.disl.meta.MetaFactory;
+
 abstract class AbstractExecutable implements Executable {
 	
 	ExecutionInfo executionInfo=new ExecutionInfo()
@@ -56,6 +58,10 @@ abstract class AbstractExecutable implements Executable {
 	 * Hook to implement post execution logic.
 	 * */
 	void postExecute() {		
+	}
+	
+	Collection createAll(String packageName,Class assignableFrom) {
+		return MetaFactory.createAll(this.getClass(), packageName, assignableFrom)		
 	}
 
 }
