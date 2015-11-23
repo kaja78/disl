@@ -26,17 +26,51 @@ import org.disl.pattern.Pattern;
  * Abstract parent for Mappings defining loading of target table using pattern. 
  * */
 abstract class TableMapping<T extends Table> extends Mapping implements Executable {
+	
 	public abstract T getTarget()
-
-	public void simulate() {
-		getPattern().simulate()
+	
+	public void checkUnmappedTargetColumns() {
+		if (getUnmappedTargetColumns().size()>0) {
+			traceUnmappedColumns()
+			throw new AssertionError("Found unmapped columns: ${getUnmappedTargetColumns().collect({it.name}).join(',')}")
+		}
+	}
+	
+	public void checkColumnsMissingInTarget() {
+		if (getColumnsMissingInTarget().size>0) {
+			throw new AssertionError("Found columns missing in target: ${getColumnsMissingInTarget().join(',')}")
+		}
+	}
+	
+	public void traceUnmappedColumns() {
+		getUnmappedTargetColumns().each {println "ColumnMapping $it.name=e src.${it.name}"}
+	}
+	
+	Collection<Column> getUnmappedTargetColumns() {
+		return getTarget().getColumns().findAll {
+			Column targetColumn=it
+			boolean unmapped=true
+			this.columns.each {  
+				if (it.getAlias().equals(targetColumn.name)) {
+					unmapped=false
+					return
+				}
+			}
+			return unmapped
+		}
+	}
+	
+	Collection<ColumnMapping> getColumnsMissingInTarget() {
+		return getColumns().findAll {
+			ColumnMapping columnMapping=it
+			boolean missing=true
+			target.columns.each {
+				if (it.name.equals(columnMapping.alias)) {
+					missing=false
+				}
+			}
+			return missing
+		}
 	}
 
-	public void execute() {
-		getPattern().execute()
-	}
-
-	public ExecutionInfo getExecutionInfo() {
-		return getPattern().getExecutionInfo()
-	}
 }

@@ -29,7 +29,7 @@ import org.junit.Test
 @Description("This is testing dimension.")
 class TestDimensionTable extends Table {
 
-	TablePattern pattern=new CreateOrReplaceTablePattern(table: this)
+	CreateOrReplaceTablePattern pattern
 	
 	@PrimaryKey
 	@DataType("INTEGER")

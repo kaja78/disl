@@ -22,6 +22,8 @@ import groovy.io.FileType
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier
+
+import org.disl.workflow.ClassFinder;
 /**
  * Factory for DISL model objects.
  * */
@@ -54,32 +56,22 @@ class MetaFactory {
 	
 
 	/**
-	 * Traverse all class files in traversePath and creates instances for all found classes in given rootPackage (including subpackages) which are assignable to assignableType.
+	 * Creates instances for all found classes in given rootPackage (including subpackages) which are assignable to assignableType. 
+	 * Only classes located in the same class path element (jar file or directory) as the sourceClass will be found and created!
 	 * 
 	 * Example: 
 	 * //Generate all tables defined in disl model for your data warehouse.
-	 * MetaFactory.createAll("bin","com.yourDw",Table).each({it.generate})
+	 * MetaFactory.createAll(com.yourDw.AbstractDwTable,"com.yourDw",AbstractDwTable).each({it.generate})
 	 * */
-	static Collection createAll(String traversePath,String rootPackage,Class assignableType) {
-		def typesToCreate=findNonAbstractTypes(traversePath,rootPackage,assignableType)
+	static Collection createAll(Class sourceClass,String rootPackage,Class assignableType) {
+		Collection<Class> typesToCreate=ClassFinder.createClassFinder(sourceClass).findNonAbstractTypes(rootPackage,assignableType)
+		if (typesToCreate.size()==0) {
+			throw new RuntimeException('No classes found!')
+		}
 		typesToCreate.collect {create(it)}
 	}
 	
-	static Collection<Class> findNonAbstractTypes(String traversePath,String rootPackage,Class assignableType) {
-		findTypes(traversePath,rootPackage,{assignableType.isAssignableFrom(it) && !Modifier.isAbstract(it.getModifiers())})
-	}
+	
 
-	static Collection<Class> findTypes(String traversePath,String rootPackage,Closure classFilter) {
-		File rootDir = new File(traversePath)
-		File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
-		def filterClassFiles = ~/.*\.class$/
-		def types=[]
-		traverseDir.traverse (type: FileType.FILES, nameFilter: filterClassFiles){
-			String classFile=it.absolutePath.substring(rootDir.absolutePath.length()+1)
-			String className=classFile.substring(0,classFile.length()-6).replace('\\', '.')
-			def type=Class.forName(className)
-			types.add(type)
-		}
-		types.findAll classFilter
-	}
+
 }

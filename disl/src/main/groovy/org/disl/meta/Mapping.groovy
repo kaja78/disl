@@ -22,6 +22,8 @@ import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import java.lang.reflect.Field
 import java.sql.ResultSetMetaData
 import java.sql.SQLException
@@ -382,4 +384,15 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		}
 		l.join('\t')+'\n'
 	}
+	
+	public void copySqlQueryToClipboard() {
+		StringSelection ss = new StringSelection(getSQLQuery());
+		try {
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
+		} catch (Exception e) {
+			e.printStackTrace()
+		}
+		
+	}
+
 }

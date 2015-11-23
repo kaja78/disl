@@ -33,7 +33,7 @@ class TestParallelJob extends DislTestCase {
 	
 	@Test
 	public void testExecute() {
-		new ParallelJob().addAll([new TestingJob(),
+		new ParallelJob(){}.addAll([new TestingJob(),
 				new TestingJob(),
 				new TestingJob(),
 				new TestingJob(),

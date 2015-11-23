@@ -20,7 +20,7 @@ package org.disl.workflow
 /**
  * ParallelJob executes executables in parallel.
  * */
-class ParallelJob extends Job {
+abstract class ParallelJob extends Job {
 
 	@Override
 	public int executeInternal() {

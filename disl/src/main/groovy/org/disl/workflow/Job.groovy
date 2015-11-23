@@ -24,7 +24,7 @@ import org.disl.pattern.Executable
 /**
  * Job executes list of job entries in serial order.
  * */
-class Job extends AbstractExecutable {
+abstract class Job extends AbstractExecutable {
 
 	List<JobEntry> jobEntries=[]
 	
@@ -59,15 +59,24 @@ class Job extends AbstractExecutable {
 		executables.each {add(it)}
 		return this
 	}
+	
+	/**
+	 * Find, create and add executables in job package and all subpackages to job entry list. 
+	 * Compiled executables must be located in the same classpath element (directory or jar).
+	 * @param assignableType Only classes assignable from assignableType will be added to job entry list.
+	 * */
+	public Job addAll(Class assignableType) {
+		addAll(MetaFactory.createAll(this.getClass(),this.getClass().getPackage().getName(),assignableType));
+	}
 
 	/**
-	 * Find, create and add executables to job entry list.
-	 * @param traversePath Root path to look for executables classes in.
+	 * Find, create and add executables to job entry list. 
+	 * Compiled executables must be located in the same classpath element (directory or jar). 
 	 * @param rootPackage Root package to look for executables classes in.
 	 * @param assignableType Only classes assignable from assignableType will be added to job entry list.
 	 * */
-	public Job addAll(String traversePath,String rootPackage,Class assignableType) {
-		addAll(MetaFactory.createAll(traversePath,rootPackage,assignableType));
+	public Job addAll(String rootPackage,Class assignableType) {
+		addAll(MetaFactory.createAll(this.getClass(),rootPackage,assignableType));
 	}
 
 	protected int executeInternal() {
