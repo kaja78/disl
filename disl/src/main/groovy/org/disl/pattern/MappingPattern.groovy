@@ -29,6 +29,10 @@ import org.disl.meta.Mapping
 abstract class MappingPattern<M extends Mapping> extends Pattern {
 	M mapping
 	
+	final M getMapping() {
+		mapping
+	}
+	
 	void addSqlScriptStep(String name,String code) {
 		add(ExecuteSQLScriptMappingStep.create(name, code))
 	}

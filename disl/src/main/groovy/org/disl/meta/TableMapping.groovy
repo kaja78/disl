@@ -25,8 +25,8 @@ import org.disl.pattern.Pattern;
 /**
  * Abstract parent for Mappings defining loading of target table using pattern. 
  * */
-abstract class TableMapping extends Mapping implements Executable {
-	public abstract Table getTarget()
+abstract class TableMapping<T extends Table> extends Mapping implements Executable {
+	public abstract T getTarget()
 
 	public void simulate() {
 		getPattern().simulate()
