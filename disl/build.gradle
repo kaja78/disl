@@ -30,7 +30,7 @@ apply plugin: 'signing'
 
 project.group='com.github.kaja78'
 //project.version="${getVersionName()}"
-project.version="0.3.SNAPSHOT"
+project.version="0.3.0"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -40,7 +40,7 @@ repositories { mavenCentral() }
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.3.10'
 	compile 'junit:junit:4.12'
-	testRuntime 'org.hsqldb:hsqldb:2.3.2'
+	testCompile 'org.hsqldb:hsqldb:2.3.2'
 }
 
 license { 
@@ -73,9 +73,9 @@ String getVersionName() {
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			/*snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
 				authentication(userName: sonatypeUser, password: sonatypePassword)
-			}*/
+			}
 			
 			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
