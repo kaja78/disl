@@ -93,7 +93,7 @@ abstract class ClassFinder {
 		}
 		public Collection<Class> findTypes(String rootPackage,Closure classFilter) {
 			Collection<JarEntry> entries=getJarFile().entries().findAll {((JarEntry)it).name.startsWith(rootPackage.replace('.', '/')) && ((JarEntry)it).name.endsWith('.class')}
-			return entries.collect{Class.forName(getClassName(it.name))}
+			return entries.collect({Class.forName(getClassName(it.name))}).findAll(classFilter)
 		}
 
 	}

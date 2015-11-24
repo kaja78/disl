@@ -34,7 +34,9 @@ class TestClassFinder {
 		Class typeInParentPackage=org.junit.ComparisonFailure
 		Class typeInOtherPackage=org.junit.validator.AnnotationValidator
 
-		ClassFinder jarFinder=ClassFinder.createClassFinder(sourceClass)	
+		ClassFinder jarFinder=ClassFinder.createClassFinder(sourceClass)
+		Assert.assertEquals(0,jarFinder.findTypes({false}).size())
+		
 		Collection<Class> types=jarFinder.findTypes {true}
 		
 		Assert.assertTrue(types.contains(sourceClass))
@@ -51,7 +53,9 @@ class TestClassFinder {
 		Class typeInSamePackage=org.disl.meta.Table
 		Class typeInOtherPackage=org.disl.workflow.Job
 
-		ClassFinder fsFinder=ClassFinder.createClassFinder(sourceClass)	
+		ClassFinder fsFinder=ClassFinder.createClassFinder(sourceClass)
+		Assert.assertEquals(0,fsFinder.findTypes({false}).size())
+		
 		Collection<Class> types=fsFinder.findTypes {true}
 		
 		Assert.assertTrue(types.contains(sourceClass))
