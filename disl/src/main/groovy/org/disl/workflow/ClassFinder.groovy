@@ -40,7 +40,7 @@ abstract class ClassFinder {
 	}
 	
 	protected File getCodeSourceFile() {
-		new File(sourceClass.getProtectionDomain().getCodeSource().getLocation().file)
+		new File(URLDecoder.decode(sourceClass.getProtectionDomain().getCodeSource().getLocation().file))
 	}
 	
 	public static ClassFinder createClassFinder(Class sourceClass) {
