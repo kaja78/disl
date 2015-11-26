@@ -31,7 +31,7 @@ class MetaFactory {
 	static <T> T create(Class<T> type, Closure initClosure=null) {
 		try {
 			createInstance(type,initClosure)
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException("Unable to create instance of class ${type.getName()}",e);
 		}
 	}
