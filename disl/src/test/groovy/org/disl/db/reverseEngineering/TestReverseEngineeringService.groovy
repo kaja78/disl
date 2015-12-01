@@ -28,8 +28,8 @@ class TestReverseEngineeringService extends DislTestCase {
 	
 	@Test
 	public void testReverseSchemaTables() {		
-		s.reverseSchemaTables("l2","%TABLE%",null,new File("build/test"))
-		assert new File("build/test/l2/SYSTEM_TABLES.groovy").exists()
+		s.reverseSchemaTables("l2","%DUAL%",null,new File("build/test"))
+		assert new File("build/test/l2/DUAL.groovy").exists()
 	}
 	
 	@Test

@@ -22,15 +22,23 @@ import static org.junit.Assert.*
 
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestDimensionTable
+import org.junit.Before
 import org.junit.Test
 
 class TestReverseTablePattern {
 
-	def pattern=new ReverseTablePattern(
+	ReverseTablePattern pattern
+	
+	
+	@Before
+	void initTest() {
+	pattern=new ReverseTablePattern(
 	table: MetaFactory.create(TestDimensionTable),
 	outputDir: new File("build/test"),
 	parentClassName: "AbstractL2Table", 
 	packageName: "l2")
+	pattern.init()
+	}
 
 	@Test
 	public void testSimulate() {
@@ -57,7 +65,7 @@ class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Dimension name.\""")
 		@DataType("VARCHAR(200)")
-		Column NAME		
+		Column NAME
 }"""
 		pattern.execute()
 		assertEquals(expectedContent,new File("build/test/l2/TestDimensionTable.groovy").getText())

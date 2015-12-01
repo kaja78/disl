@@ -24,6 +24,8 @@ import org.disl.meta.Context
 import org.disl.meta.Mapping
 import org.disl.meta.MetaFactory
 import org.disl.pattern.Executable
+import org.disl.util.sqlDep.CreateSqlSetRequest
+import org.disl.util.sqlDep.SqlDepService
 
 /**
  * DISL script class.
@@ -80,6 +82,16 @@ abstract class DislScript extends Script{
 
 	public <T> Collection<T> create(Collection<Class<T>> executable) {
 		executable.collect {MetaFactory.create(it)}
+	}
+	
+	public <T> Collection<T> createAll(Class sourceClass,String rootPackage,Class assignableType) {
+		MetaFactory.createAll(sourceClass, rootPackage, assignableType)
+	}
+	
+	public void sqlDepPublish(String sqlDepUserAccountId,String sqlDepCustomSqlSetName,Collection objects) {
+		CreateSqlSetRequest request=new CreateSqlSetRequest(userAccountId: sqlDepUserAccountId,customSqlSetName:sqlDepCustomSqlSetName)
+		request.add(objects.toArray())
+		println new SqlDepService().post(request)		
 	}
 
 	Context getContext() {

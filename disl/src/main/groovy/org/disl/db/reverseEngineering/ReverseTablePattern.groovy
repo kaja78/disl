@@ -70,10 +70,10 @@ package $pattern.packageName
 import org.disl.meta.*
 
 @Description(\"""$pattern.table.description\""")
-	class $pattern.table.name extends ${pattern.parentClassName} {
-	
-	$columnDefinitions
-	}"""
+class $pattern.table.name extends ${pattern.parentClassName} {
+
+$columnDefinitions
+}"""
 	}
 
 	String getColumnDefinitions() {
