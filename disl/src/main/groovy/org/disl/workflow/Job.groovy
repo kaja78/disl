@@ -78,6 +78,17 @@ abstract class Job extends AbstractExecutable {
 	public Job addAll(String rootPackage,Class assignableType) {
 		addAll(MetaFactory.createAll(this.getClass(),rootPackage,assignableType));
 	}
+	
+	/**
+	 * Find, create and add executables to job entry list.
+	 * @param traversePath Root path to look for executables classes in.
+	 * @param rootPackage Root package to look for executables classes in.
+	 * @param assignableType Only classes assignable from assignableType will be added to job entry list.
+	 * */
+	@Deprecated
+	public Job addAll(String traversePath,String rootPackage,Class assignableType) {
+		addAll(MetaFactory.createAll(traversePath,rootPackage,assignableType));
+	}
 
 	protected int executeInternal() {
 			int processedRows=0

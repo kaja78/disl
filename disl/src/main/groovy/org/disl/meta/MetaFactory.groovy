@@ -20,10 +20,10 @@ package org.disl.meta
 
 import groovy.io.FileType
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier
+import java.lang.reflect.Constructor
+import java.util.regex.Pattern
 
-import org.disl.workflow.ClassFinder;
+import org.disl.workflow.ClassFinder
 /**
  * Factory for DISL model objects.
  * */
@@ -69,6 +69,39 @@ class MetaFactory {
 			throw new RuntimeException('No classes found!')
 		}
 		typesToCreate.collect {create(it)}
+	}
+	
+	/**
+	 * Traverse all class files in traversePath and creates instances for all found classes in given rootPackage (including subpackages) which are assignable to assignableType.
+	 * 
+	 * Example: 
+	 * //Generate all tables defined in disl model for your data warehouse.
+	 * MetaFactory.createAll("bin","com.yourDw",Table).each({it.generate})
+	 * */
+	@Deprecated	
+	static Collection createAll(String traversePath,String rootPackage,Class assignableType) {
+		
+		def typesToCreate=new DirectoryClassFinder(traversePath: traversePath).findNonAbstractTypes(rootPackage,assignableType)
+		typesToCreate.collect {create(it)}
+	}
+	
+	@Deprecated
+	protected static class DirectoryClassFinder extends ClassFinder {
+		String traversePath
+		
+		public Collection<Class> findTypes(String rootPackage,Closure classFilter) {
+			File rootDir = new File(traversePath)
+			File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
+			Pattern filterClassFiles = ~/.*\.class$/
+			def types=[]
+			traverseDir.traverse ((Map<String,Object>)[type: FileType.FILES, nameFilter: filterClassFiles]) {
+				String classFile=it.absolutePath.substring(rootDir.absolutePath.length()+1)				
+				Class type=Class.forName(getClassName(classFile))
+				types.add(type)
+			}
+			types.findAll classFilter
+		}
+
 	}
 	
 	

@@ -18,12 +18,15 @@
  */
 package org.disl.workflow
 
+import groovy.sql.Sql
 import groovy.transform.CompileStatic
 
 import org.disl.meta.Context
 import org.disl.meta.Mapping
 import org.disl.meta.MetaFactory
 import org.disl.pattern.Executable
+import org.disl.pattern.ExecuteSQLScriptStep
+import org.disl.pattern.ExecutionInfo
 import org.disl.util.sqlDep.CreateSqlSetRequest
 import org.disl.util.sqlDep.SqlDepService
 
@@ -39,8 +42,35 @@ import org.disl.util.sqlDep.SqlDepService
  }
  * */
 @CompileStatic
-abstract class DislScript extends Script{
+abstract class DislScript extends Script implements Executable{
+	
+	String schema='default'
+	ExecutionInfo executionInfo=new ExecutionInfo()
 
+	/*@Override
+	public Object run() {
+		execute()
+	}
+	
+	public abstract Object runScript();*/
+	
+	@Override
+	void execute(){
+		executionInfo.start()
+		try {
+			this.run()
+			executionInfo.finish()
+		} catch (Exception e) {
+			executionInfo.error(e)
+			throw e
+		}
+	}
+	
+	@Override
+	void simulate(){
+		println "Simulating execution of script ${this.getClass().getName()}"		
+	}
+	
 	void execute(Class<Executable> executable) {
 		create(executable).execute()
 	}
@@ -48,7 +78,14 @@ abstract class DislScript extends Script{
 	void execute(Collection<Class<Executable>> executable) {
 		create(executable).each {it.execute()}
 	}
-
+	
+	/**
+	 * Execute SQL script.
+	 * */
+	void executeSql(String code,boolean ignoreErrors=false,String commandSeparator=';') {
+		new SqlScriptExecutor(ignoreErrors: ignoreErrors,commandSeparator: commandSeparator,code: code,schema: schema).execute()
+	}
+	
 	void simulate(Class<Executable> executable) {
 		create(executable).simulate()
 	}
@@ -101,4 +138,14 @@ abstract class DislScript extends Script{
 	void setContextName(String name) {
 		Context.setContextName(name)
 	}
+	
+	protected static class SqlScriptExecutor extends ExecuteSQLScriptStep {
+		String code
+		String schema
+		
+		Sql getSql() {
+			Context.getContext().getSql(schema)
+		}
+	}
+	
 }

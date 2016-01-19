@@ -16,10 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.disl.workflow
+
 import org.disl.meta.TestDimensionTable;
-import org.disl.workflow.TestParallelJob.TestingJob;
+import org.disl.pattern.ExecutionInfo;
 
 @BaseScript(org.disl.workflow.DislScript)
 import groovy.transform.BaseScript
 
 simulate TestDimensionTable
+simulate TestingScript
