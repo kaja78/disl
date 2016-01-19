@@ -22,6 +22,8 @@ import groovy.sql.Sql;
 
 import java.util.Map;
 import java.util.Properties;
+
+import org.disl.db.reverseEngineering.ReverseEngineeringService;
 /**
  * <p>Abstraction of execution environment. Context maps logical resource name to physical deployment.
  * Each context is defined by configuration file [context name].context.properties. Default context name is "default".</p>
@@ -84,13 +86,20 @@ public class Context {
 		return getContext().getProperty(key,defaultValue)
 	}
 
+	public static ReverseEngineeringService getReverseEngineeringService(String logicalSchemaName) {
+		ReverseEngineeringService res=getContext().getPhysicalSchema(logicalSchemaName).getReverseEngineeringService()
+		res.setLogicalSchemaName(logicalSchemaName)
+		return res
+
+	}
+	
 	public PhysicalSchema getPhysicalSchema(String schemaName) {
 		if (schemaMap[schemaName]==null) {
 			createSchema(schemaName)
 		}
 		schemaMap[schemaName]
 	}
-
+	
 	protected void createSchema(String schemaName) {
 		String schemaType=getProperty(schemaName)
 		if (schemaType==null) {

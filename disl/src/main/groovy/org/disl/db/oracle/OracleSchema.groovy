@@ -18,6 +18,7 @@
  */
 package org.disl.db.oracle
 
+import org.disl.db.reverseEngineering.ReverseEngineeringService;
 import org.disl.meta.PhysicalSchema;
 
 /**
@@ -67,5 +68,10 @@ class OracleSchema extends PhysicalSchema {
 	@Override
 	public String getRecordQuery(int index,String expressions) {
 		"select ${index} as DUMMY_KEY,${expressions} from dual\n"
+	}
+	
+	@Override
+	public ReverseEngineeringService getReverseEngineeringService() {
+		return new OracleReverseEngineeringService();
 	}
 }

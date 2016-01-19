@@ -21,6 +21,8 @@ package org.disl.meta;
 import java.util.List;
 import java.util.Map;
 
+import org.disl.db.reverseEngineering.ReverseEngineeringService;
+
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 
@@ -127,6 +129,10 @@ ${joinCondition}"""
 		}
 		String expressions=sourceAliasRow.collect({key, value -> "${value} as ${key}" }).join(",")
 		return getRecordQuery(index,expressions)
+	}
+	
+	public ReverseEngineeringService getReverseEngineeringService() {
+		return new ReverseEngineeringService()
 	}
 	
 	@Override
