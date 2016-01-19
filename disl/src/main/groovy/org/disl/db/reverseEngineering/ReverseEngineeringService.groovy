@@ -88,7 +88,7 @@ class ReverseEngineeringService {
 	}
 
 	protected String getDataType(String dataTypeName,BigDecimal size, BigDecimal decimalDigits,BigDecimal sqlDataType) {
-		if (size==null || isIgnoreSize(sqlDataType.intValue())) {
+		if (size==null || size==0 || isIgnoreSize(sqlDataType.intValue())) {
 			return "${dataTypeName}"
 		}
 		if (decimalDigits==null) {
