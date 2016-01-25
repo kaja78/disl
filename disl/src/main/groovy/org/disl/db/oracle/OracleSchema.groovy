@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *

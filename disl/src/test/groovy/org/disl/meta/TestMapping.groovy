@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -44,7 +44,7 @@ class TestMapping extends DislTestCase {
 
 		void initMapping() {
 			from s1
-			innerJoin s2 on "$s1.A=$s2.A"
+			innerJoin s2 on (s1.A,s2.A)
 			leftOuterJoin s3 on "$s2.A=$s3.A"
 			rightOuterJoin s4 on "$s2.A=$s4.A"
 			fullOuterJoin s5 on "$s2.A=$s5.A"

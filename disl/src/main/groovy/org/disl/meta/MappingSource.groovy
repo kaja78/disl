@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -35,9 +35,19 @@ abstract class MappingSource extends Base {
 		return join.fromClause
 	}
 	
+	/**
+	 * Define join condition based SQL expression.
+	 * */
 	public MappingSource on(Object condition){
 		this.join.condition=condition.toString()
 		this
+	}
+	
+	/**
+	 * Shorthand method for on("${expression1}=${expression2}").
+	 * */
+	public MappingSource on(Object expression1,Object expression2) {
+		return on("${expression1}=${expression2}")
 	}
 
 
