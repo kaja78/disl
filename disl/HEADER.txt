@@ -1,4 +1,4 @@
-Copyright ${year} Karel Hübl <karel.huebl@gmail.com>.
+Copyright 2015 - ${year} Karel Hübl <karel.huebl@gmail.com>.
   
 This file is part of disl.
  

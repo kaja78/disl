@@ -16,7 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.disl.meta
+
 /**
- * Support for Oracle database.
+ * Representation of view in DISL data tranformation model.
  * */
-package org.disl.db.oracle
+abstract class View extends Mapping {
+
+	@Override
+	public String getRefference() {
+		String alias=""
+		if (sourceAlias!=null) {
+			alias=" ${sourceAlias}"
+		}
+		return "${fullName}${alias}"
+	}
+
+	public String getFullName() {
+		String ownerPrefix=""
+		String owner=getPhysicalSchema()
+		if (owner!=null) {
+			ownerPrefix="${owner}."
+		}
+		"${ownerPrefix}${name}"
+	}
+
+	public String getPhysicalSchema() {
+		Context.getPhysicalSchemaName(getSchema())
+	}
+
+}
