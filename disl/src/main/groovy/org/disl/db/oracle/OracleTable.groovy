@@ -30,10 +30,10 @@ abstract class OracleTable extends Table {
 
 	@Override
 	public void init() {
-		super.init();
 		partitionByMeta=new PartitionByMetaImpl()
 		PartitionByMetaImpl.initPartitionBy(this)
 		PartitionByRangeIntervalMeta.initPartitionBy(this)
+		super.init();
 	}
 
 
