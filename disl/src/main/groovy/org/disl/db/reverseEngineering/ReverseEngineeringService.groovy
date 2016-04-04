@@ -39,7 +39,7 @@ import org.disl.pattern.Pattern
  * Provides DISL model reverse engineering functionality.
  * */
 class ReverseEngineeringService {
-	protected static String SRC_FOLDER="src"
+	protected static String SRC_FOLDER="src/main/groovy"
 
 	String logicalSchemaName
 	
