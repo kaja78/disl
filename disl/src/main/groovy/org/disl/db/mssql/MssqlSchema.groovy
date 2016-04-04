@@ -26,14 +26,26 @@ import org.disl.meta.PhysicalSchema;
  * */
 class MssqlSchema extends PhysicalSchema {
 	String host
-	int port=1433
+	int port
 	String databaseName
 	String instance
 
 	String jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
+	
+	@Override
+	public void init() {
+		super.init();
+		host=getSchemaProperty('host')
+		port=Integer.parseInt(getSchemaProperty('port','1433'))
+		databaseName=getSchemaProperty('databaseName')
+		instance=getSchemaProperty('instance')
+	}
 
 	public String getJdbcUrl() {
-		"jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};instance=${getInstance()};user=${getUser()};password=${getPassword()};"
+		if (getInstance()==null) {
+			return "jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};user=${getUser()};password=${getPassword()};"	
+		}
+		"jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};instance=${getInstance()};user=${getUser()};password=${getPassword()};"		
 	}
 
 	@Override

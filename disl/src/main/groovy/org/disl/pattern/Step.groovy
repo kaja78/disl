@@ -31,7 +31,9 @@ public abstract class Step extends AbstractExecutable {
 	/**
 	 * Step execution mode. For pattern only steps of the same execution mode as the context execution mode are created.  
 	 * */
-	String executionMode=Context.EXECUTION_MODE_DEFAULT
+	String getExecutionMode(){
+		Context.EXECUTION_MODE_DEFAULT
+	}
 
 	Pattern pattern
 
