@@ -81,9 +81,12 @@ $columnDefinitions
 	}
 
 	String getColumnDefinitionCode(Column column) {
+		String notNull =column.notNull?"\n\t\t@NotNull":""
+		String primaryKey =column.primaryKey?"\n\t\t@PrimaryKey":""
+		
 		"""\
 		@Description(\"""$column.description\""")
-		@DataType("$column.dataType")
+		@DataType("$column.dataType")$primaryKey$notNull
 		Column $column.name"""
 		}
 	
@@ -101,4 +104,4 @@ $columnDefinitions
 
 
 
-
+ 

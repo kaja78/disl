@@ -28,6 +28,7 @@ class Column extends AbstractSqlExpression {
 	String dataType
 	String defaultValue
 	boolean notNull=false
+	boolean primaryKey = false
 
 	Column(){}
 	
@@ -61,4 +62,4 @@ class Column extends AbstractSqlExpression {
 		}
 		"${parent.getSourceAlias()}.${getName()}"
 	}
-}
+} 

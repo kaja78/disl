@@ -38,10 +38,12 @@ class TestDimensionTable extends Table {
 	
 	@DataType("INTEGER")
 	@Description("Natural key")
+	@NotNull
 	Column ID
 	
 	@DataType("VARCHAR(200)")
 	@Description("Dimension name.")
+	@NotNull
 	Column NAME
 	
 	@Test

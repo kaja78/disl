@@ -36,7 +36,6 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	List<Column> columns=[]
 	String description=""
 	List<IndexMeta> indexes=[]
-	List<Column> primaryKeyColumns=[]
 	List<UniqueKeyMeta> uniqueKeys=[]
 	List<ForeignKeyMeta> foreignKeys=[]
 
@@ -149,7 +148,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 		PrimaryKey primaryKey=f.getAnnotation(PrimaryKey)
 		if (primaryKey!=null) {
-			primaryKeyColumns.add(column)
+			column.setPrimaryKey(true)
 		}
 
 		DefaultMapping defaultMapping=f.getAnnotation(DefaultMapping)
@@ -174,6 +173,10 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 	public Iterable<String> getColumnDefinitions() {
 		columns.collect {it.columnDefinition}
+	}
+	
+	public List<Column> getPrimaryKeyColumns() {
+		columns.findAll {it.isPrimaryKey()}
 	}
 
 	static class ForeignKeyMeta {

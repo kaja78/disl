@@ -21,7 +21,7 @@ import org.disl.pattern.TablePattern
 import org.disl.pattern.generic.CreateOrReplaceTablePattern
 import org.junit.Before
 import org.junit.Test
-
+import static org.junit.Assert.*
 
 @Indexes(@Index(columns=["A","B"]))
 class TestTable extends Table {
@@ -32,9 +32,11 @@ class TestTable extends Table {
 	@DataType("VARCHAR(255)")
 	Column A
 	
+	@PrimaryKey
 	@DataType("VARCHAR(255)")
 	Column B
 	
+	@PrimaryKey
 	@DataType("VARCHAR(255)")
 	Column C
 	
@@ -62,6 +64,11 @@ class TestTable extends Table {
 		assert indexes!=null
 		assert indexes[0].columnNames[0]=="A"
 		assert indexes[0].columnNames[1]=="B"
+	}
+	
+	@Test
+	void testGetPrimaryKeyColumns() {
+		assertEquals([B,C], getPrimaryKeyColumns())
 	}
 	
 	

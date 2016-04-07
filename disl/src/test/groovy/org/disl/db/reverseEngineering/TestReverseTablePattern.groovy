@@ -57,14 +57,17 @@ class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Surrogate key.\""")
 		@DataType("INTEGER")
+		@PrimaryKey
 		Column KEY
 
 		@Description(\"""Natural key\""")
 		@DataType("INTEGER")
+		@NotNull
 		Column ID
 
 		@Description(\"""Dimension name.\""")
 		@DataType("VARCHAR(200)")
+		@NotNull
 		Column NAME
 }"""
 		pattern.execute()
