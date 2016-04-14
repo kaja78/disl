@@ -99,6 +99,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 		IndexMeta.initIndexes(this)
 		UniqueKeyMeta.initUniqueKeys(this)
+		
 
 		initPattern()
 	}
@@ -123,6 +124,11 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 	protected void initConstraints() {
 		getClass().getFields().findAll({it.getAnnotation(UniqueKey)!=null})
+		
+		ForeignKeys foreignKeys=getClass().getAnnotation(ForeignKeys)
+		if (foreignKeys!=null) {
+			foreignKeys.value().each {ForeignKeyMeta.initForeignKey(it,this,null)}			
+		}
 	}
 
 	protected void initColumn(Field f) {
@@ -158,11 +164,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 		ForeignKey foreignKey=f.getAnnotation(ForeignKey)
 		if (foreignKey!=null) {
-			foreignKeys.add(new ForeignKeyMeta(
-			sourceColumn: column.name,
-			targetTable: MetaFactory.create(foreignKey.targetTable()),
-			targetColumn: foreignKey.targetColumn()
-			))
+			ForeignKeyMeta.initForeignKey(foreignKey, this, column)
 		}
 
 		NotNull notNull=f.getAnnotation(NotNull)
@@ -180,9 +182,35 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	}
 
 	static class ForeignKeyMeta {
-		String name
-		String sourceColumn
+		String name		
 		Table targetTable
-		String targetColumn
+		List<String> sourceColumns=[]
+		List<String> targetColumns=[]
+		
+		public void setSourceColumn(String name) {
+			sourceColumns=name.split(',')
+		}
+		
+		public String getSourceColumn() {
+			sourceColumns.join(',')	
+		}
+		
+		public void setTargetColumn(String name) {
+			targetColumns=name.split(',')
+		}
+		
+		public String getTargetColumn() {
+			targetColumns.join(',')
+		}
+						
+		static void initForeignKey(ForeignKey foreignKey,Table table,Column column) {
+			Table targetTable=foreignKey.targetTable().equals(table.getClass()) ? table : MetaFactory.create(foreignKey.targetTable())
+			table.getForeignKeys().add new ForeignKeyMeta(
+				name: foreignKey.name(),
+				sourceColumn: column==null ? foreignKey.sourceColumn() : column.name,
+				targetTable: targetTable,
+				targetColumn: foreignKey.targetColumn()=='' ? targetTable.getPrimaryKeyColumns().join(',') : foreignKey.targetColumn()
+				)
+		}
 	}
 }
