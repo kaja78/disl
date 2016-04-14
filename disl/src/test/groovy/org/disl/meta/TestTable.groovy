@@ -17,13 +17,18 @@
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta
+import static org.junit.Assert.*
+
+import org.disl.meta.Table.ForeignKeyMeta
 import org.disl.pattern.TablePattern
 import org.disl.pattern.generic.CreateOrReplaceTablePattern
 import org.junit.Before
 import org.junit.Test
-import static org.junit.Assert.*
 
 @Indexes(@Index(columns=["A","B"]))
+@ForeignKeys([
+	@ForeignKey(name='PARENT1_FK',targetTable=TestTable,sourceColumn='PARENT1_B,PARENT1_C'),
+	@ForeignKey(name='PARENT2_FK',targetTable=TestTable,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])
 class TestTable extends Table {
 
 	CreateOrReplaceTablePattern pattern
@@ -40,7 +45,22 @@ class TestTable extends Table {
 	@DataType("VARCHAR(255)")
 	Column C
 	
+	@DataType("VARCHAR(255)")
+	Column PARENT1_B
 	
+	@DataType("VARCHAR(255)")
+	Column PARENT1_C
+	
+	@DataType("VARCHAR(255)")
+	Column PARENT2_B
+	
+	@DataType("VARCHAR(255)")
+	Column PARENT2_C
+	
+	@DataType("VARCHAR(255)")
+	@ForeignKey(targetTable=TestTable,targetColumn='A')
+	Column PARENT3_A
+
 	def DUMMY
 	
 	@Before
@@ -69,6 +89,31 @@ class TestTable extends Table {
 	@Test
 	void testGetPrimaryKeyColumns() {
 		assertEquals([B,C], getPrimaryKeyColumns())
+	}
+	
+	@Test
+	void testGetForeignKeys() {
+	 	ForeignKeyMeta f
+
+		f=getForeignKeys()[0]
+		assertEquals('',f.getName())
+		assertEquals('TestTable',f.getTargetTable().getName())
+		assertEquals('A',f.getTargetColumn())
+		assertEquals('PARENT3_A',f.getSourceColumn())
+ 
+		f=getForeignKeys()[1]
+		assertEquals('PARENT1_FK',f.getName())
+		assertEquals('TestTable',f.getTargetTable().getName())
+		assertEquals('B,C',f.getTargetColumn())
+		assertEquals('PARENT1_B,PARENT1_C',f.getSourceColumn())
+ 
+		f=getForeignKeys()[2]
+		assertEquals('PARENT2_FK',f.getName())
+		assertEquals('TestTable',f.getTargetTable().getName())
+		assertEquals('B,C',f.getTargetColumn())
+		assertEquals('PARENT2_B,PARENT2_C',f.getSourceColumn())
+ 
+		
 	}
 	
 	
