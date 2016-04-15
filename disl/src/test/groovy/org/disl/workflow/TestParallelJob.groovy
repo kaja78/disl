@@ -18,8 +18,12 @@
  */
 package org.disl.workflow
 
+import groovy.sql.Sql;
+
 import org.disl.meta.Context
 import org.disl.pattern.AbstractExecutable
+import org.disl.pattern.ExecuteSQLQueryStep;
+import org.disl.pattern.ExecuteSQLScriptStep;
 import org.disl.test.DislTestCase
 import org.junit.Before
 import org.junit.Test
@@ -29,6 +33,7 @@ class TestParallelJob extends DislTestCase {
 	@Before
     void init() {
 		Context.setContextName("disl-test")
+		Context.getContext().setExecutionMode('testing')
 	}
 	
 	@Test
@@ -49,11 +54,25 @@ class TestParallelJob extends DislTestCase {
 		}
 	}
 
-	static class TestingExecutable extends AbstractExecutable {
-		int executeInternal() {
+	static class TestingExecutable extends  ExecuteSQLQueryStep {
+		
+		@Override
+		public Sql getSql() {
+			return Context.getContext().getSql('default');
+		}
+		
+		@Override
+		public String getCode() {
+			'select * from DUAL'
+		}
+		
+		int executeInternal() {			
+			assert Context.getContext().getExecutionMode().equals('testing')
+			super.executeInternal()
 			Thread.sleep(500)
 			return 0
 		}
+		
 		void simulate(){}
 	}
 

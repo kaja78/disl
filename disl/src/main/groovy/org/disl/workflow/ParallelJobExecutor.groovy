@@ -111,11 +111,11 @@ class ParallelJobExecutor {
 	}
 	
 	protected Callable createCallable(Executable executable) {
-		String parentContext=Context.getContextName()
+		Context parentContext=Context.getContext()
 		return new Callable() {
 			Object call() {
 				try {
-					Context.setContextName(parentContext)
+					Context.init(parentContext)
 					executable.execute();
 				} catch (Exception e) {
 					e.printStackTrace();

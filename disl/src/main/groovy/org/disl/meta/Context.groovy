@@ -29,7 +29,7 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService;
  * Each context is defined by configuration file [context name].context.properties. Default context name is "default".</p>
  * Currently the only supported resource is database schema.
  * */
-public class Context {
+public class Context implements Cloneable {
 	public static final String CONTEXT_DEFAULT="default"
 	public static final String EXECUTION_MODE_DEFAULT="default"
 	
@@ -65,6 +65,11 @@ public class Context {
 			localContext.set(new Context(name: getContextName()))
 		}
 		localContext.get()
+	}
+	
+	public static void init(Context context) {
+		localContext.set(context.clone())
+		localContextName.set(context.getName())
 	}
 
 	public static Sql getSql(String logicalSchemaName) {
@@ -134,5 +139,12 @@ public class Context {
 			value=defaultValue
 		}
 		return value
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Context clone=super.clone()
+		clone.setSchemaMap(new HashMap<String, PhysicalSchema>())
+		return clone
 	}
 }
