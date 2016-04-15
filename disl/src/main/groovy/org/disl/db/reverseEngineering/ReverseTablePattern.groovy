@@ -69,7 +69,7 @@ package $pattern.packageName
 
 import org.disl.meta.*
 
-@Description(\"""$pattern.table.description\""")
+@Description(\"""$pattern.table.description\""")$foreignKeyDefinition
 class $pattern.table.name extends ${pattern.parentClassName} {
 
 $columnDefinitions
@@ -78,6 +78,14 @@ $columnDefinitions
 
 	String getColumnDefinitions() {
 		pattern.table.getColumns().collect {getColumnDefinitionCode(it)}.join("\n\n")
+	}
+	
+	String getForeignKeyDefinition() {
+		if (pattern.table.foreignKeys.size()==0) {
+			return ''
+		}
+		return """
+@ForeignKeys([${pattern.table.foreignKeys.collect({"@ForeignKey(name='${it.name}',targetTable=${it.targetTableClassName},sourceColumn='${it.sourceColumn}',targetColumn=('${it.targetColumn}'))"}).join(',\n')}])"""
 	}
 
 	String getColumnDefinitionCode(Column column) {

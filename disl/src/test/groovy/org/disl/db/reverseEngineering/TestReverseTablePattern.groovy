@@ -22,6 +22,7 @@ import static org.junit.Assert.*
 
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestDimensionTable
+import org.disl.meta.Table.ForeignKeyMeta
 import org.junit.Before
 import org.junit.Test
 
@@ -32,8 +33,10 @@ class TestReverseTablePattern {
 	
 	@Before
 	void initTest() {
+	TestDimensionTable testTable=MetaFactory.create(TestDimensionTable)
+	testTable.getForeignKeys().add(new ForeignKeyMeta(name:'FK1',targetTableClassName:'org.disl.test.MyTable',sourceColumn:'NAME',targetColumn:'NAME'))	
 	pattern=new ReverseTablePattern(
-	table: MetaFactory.create(TestDimensionTable),
+	table: testTable,
 	outputDir: new File("build/test"),
 	parentClassName: "AbstractL2Table", 
 	packageName: "l2")
@@ -53,6 +56,7 @@ package l2
 import org.disl.meta.*
 
 @Description(\"""This is testing dimension.\""")
+@ForeignKeys([@ForeignKey(name='FK1',targetTable=org.disl.test.MyTable,sourceColumn='NAME',targetColumn=('NAME'))])
 class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Surrogate key.\""")

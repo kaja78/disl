@@ -184,8 +184,15 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	static class ForeignKeyMeta {
 		String name		
 		Table targetTable
+		String targetTableClassName
+		
 		List<String> sourceColumns=[]
 		List<String> targetColumns=[]
+		
+		public void setTargetTable(Table targetTable) {			
+			this.targetTable=targetTable
+			setTargetTableClassName(targetTable.getClass().getName())						
+		}
 		
 		public void setSourceColumn(String name) {
 			sourceColumns=name.split(',')
