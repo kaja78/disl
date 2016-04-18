@@ -37,11 +37,15 @@ class MetaFactory {
 	}
 
 	private static <T> T createInstance(Class<T> type, Closure initClosure) {
-		Constructor<T> constructor=type.getDeclaredConstructor(new Class[0])
-		constructor.setAccessible(true)		 
-		T instance=constructor.newInstance(new Object[0])
+		T instance=newInstance(type)
 		initInstance(instance,initClosure)
-		instance
+		return instance
+	}
+	
+	public static <T> T newInstance(Class<T> type) {
+		Constructor<T> constructor=type.getDeclaredConstructor(new Class[0])
+		constructor.setAccessible(true)
+		return constructor.newInstance(new Object[0])
 	}
 
 	private static void initInstance(Object instance,Closure initClosure=null) {

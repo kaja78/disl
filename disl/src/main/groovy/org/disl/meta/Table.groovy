@@ -91,6 +91,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	public void init() {
 		initColumns()
 		initConstraints()
+		initForeignKey()
 
 		Description desc=this.getClass().getAnnotation(Description)
 		if (desc!=null) {
@@ -103,6 +104,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 		initPattern()
 	}
+	
 
 	protected void initPattern() {
 		initPatternField()
@@ -123,11 +125,21 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	}
 
 	protected void initConstraints() {
-		getClass().getFields().findAll({it.getAnnotation(UniqueKey)!=null})
+		getClass().getFields().findAll({it.getAnnotation(UniqueKey)!=null})		
+	}
+	
+	protected void initForeignKey() {
+		getFieldsByType(Column).each {
+			Field f=it
+			ForeignKey foreignKey=f.getAnnotation(ForeignKey)
+			if (foreignKey!=null) {
+				ForeignKeyMeta.initForeignKey(foreignKey, this, this[f.getName()])
+			}
+		}
 		
 		ForeignKeys foreignKeys=getClass().getAnnotation(ForeignKeys)
 		if (foreignKeys!=null) {
-			foreignKeys.value().each {ForeignKeyMeta.initForeignKey(it,this,null)}			
+			foreignKeys.value().each {ForeignKeyMeta.initForeignKey(it,this,null)}
 		}
 	}
 
@@ -160,11 +172,6 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		DefaultMapping defaultMapping=f.getAnnotation(DefaultMapping)
 		if (defaultMapping!=null) {
 			column.setDefaultMapping(defaultMapping.value())
-		}
-
-		ForeignKey foreignKey=f.getAnnotation(ForeignKey)
-		if (foreignKey!=null) {
-			ForeignKeyMeta.initForeignKey(foreignKey, this, column)
 		}
 
 		NotNull notNull=f.getAnnotation(NotNull)
@@ -211,7 +218,10 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		}
 						
 		static void initForeignKey(ForeignKey foreignKey,Table table,Column column) {
-			Table targetTable=foreignKey.targetTable().equals(table.getClass()) ? table : MetaFactory.create(foreignKey.targetTable())
+			//Hence foreign keys may build circular dependencies in DISL data model, foreign key target table may not be fully initialized.
+			Table targetTable=MetaFactory.newInstance(foreignKey.targetTable())
+			targetTable.initColumns()
+			
 			table.getForeignKeys().add new ForeignKeyMeta(
 				name: foreignKey.name(),
 				sourceColumn: column==null ? foreignKey.sourceColumn() : column.name,
