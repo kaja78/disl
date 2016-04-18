@@ -64,12 +64,21 @@ class MetaFactory {
 	 * MetaFactory.createAll(com.yourDw.AbstractDwTable,"com.yourDw",AbstractDwTable).each({it.generate})
 	 * */
 	static Collection createAll(Class sourceClass,String rootPackage,Class assignableType) {
-		Collection<Class> typesToCreate=ClassFinder.createClassFinder(sourceClass).findNonAbstractTypes(rootPackage,assignableType)
+		Collection<Class> typesToCreate=findTypes(sourceClass, rootPackage, assignableType)
 		if (typesToCreate.size()==0) {
 			throw new RuntimeException('No classes found!')
 		}
 		typesToCreate.collect {create(it)}
 	}
+	
+	/**
+	 * Returns classes in given rootPackage (including subpackages) which are assignable to assignableType.
+	 * Only classes located in the same class path element (jar file or directory) as the sourceClass will be found!
+	 * */
+	static Collection<Class> findTypes(Class sourceClass,String rootPackage,Class assignableType) {
+		ClassFinder.createClassFinder(sourceClass).findNonAbstractTypes(rootPackage,assignableType)
+	}
+	
 	
 	/**
 	 * Traverse all class files in traversePath and creates instances for all found classes in given rootPackage (including subpackages) which are assignable to assignableType.
