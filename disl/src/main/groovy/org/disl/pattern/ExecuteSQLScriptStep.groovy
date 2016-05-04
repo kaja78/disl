@@ -26,20 +26,18 @@ abstract class ExecuteSQLScriptStep extends Step {
 
 	public static final String BACKSLASH_NEW_LINE = "\\\\\n"
 	
-	boolean ignoreErrors=false;
 	String commandSeparator=";";
 
 	abstract Sql getSql();
 
 	public int executeInternal() {
-		try {
-			
-		int processedRows=0
-		getCommands().each {
-			processedRows=processedRows+executeSqlStatement(it)
-		}
-		getSql().commit()
-		return processedRows
+		try {			
+			int processedRows=0
+			getCommands().each {
+				processedRows=processedRows+executeSqlStatement(it)
+			}
+			getSql().commit()
+			return processedRows
 		} catch (Exception e) {
 			getSql().rollback()
 			throw e
@@ -57,15 +55,11 @@ abstract class ExecuteSQLScriptStep extends Step {
 		try {
 			return executeSqlStatementInternal(sqlCommand)
 		} catch (Exception e) {
-			if (!isIgnoreErrors()) {
-				throw new RuntimeException("Error executing ${this}. SQL statement: $sqlCommand",e)
-			}
-			return 0
+			throw new RuntimeException("Error executing ${this}. SQL statement: $sqlCommand",e)
 		}
 	}
-
+	
 	protected int executeSqlStatementInternal(String sqlCommand) {
 		return getSql().executeUpdate(sqlCommand)
-	}
-	
+	}	
 }

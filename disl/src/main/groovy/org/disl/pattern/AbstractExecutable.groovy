@@ -22,6 +22,7 @@ import org.disl.meta.MetaFactory;
 
 abstract class AbstractExecutable implements Executable {
 	
+	boolean ignoreErrors=false
 	ExecutionInfo executionInfo=new ExecutionInfo()
 	
 	public ExecutionInfo getExecutionInfo() {
@@ -42,9 +43,15 @@ abstract class AbstractExecutable implements Executable {
 			executionInfo.finish()
 		} catch (Exception e) {
 			executionInfo.error(e)
-			throw e
+			handleException(e)		
 		} finally {
 			postExecute()
+		}
+	}
+	
+	public void handleException(Exception e) {
+		if (!isIgnoreErrors()) {
+			throw e
 		}
 	}
 	
