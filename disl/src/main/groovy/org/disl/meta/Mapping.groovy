@@ -309,6 +309,10 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	String getQueryColumnList() {
 		getColumns().collect {"${it.getAliasedMappingExpression()}"}.join(",\n			")
 	}
+	
+	String getRefferenceColumnList() {
+		getColumns().collect {"${it.alias}"}.join(",")
+	}
 
 	Collection<String> getTargetColumnNames() {
 		getColumns().collect({it.alias})

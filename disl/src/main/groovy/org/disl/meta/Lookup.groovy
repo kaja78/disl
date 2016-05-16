@@ -80,6 +80,10 @@ abstract class Lookup extends MappingSource {
 	public String getLookupQuery() {
 		"select * from ${physicalSchema.recordsToSubquery(createRecordsFromList())}"
 	}
+	
+	String getRefferenceColumnList() {
+		getColumns().collect {"${it.name}"}.join(",")
+	}
 
 	protected List<Map> createRecordsFromList() {
 		List recordList=getRecords()

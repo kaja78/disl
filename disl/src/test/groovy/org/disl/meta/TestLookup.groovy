@@ -56,6 +56,11 @@ where
 AND SRC.DUMMY_KEY=SRC.DUMMY_KEY)""",l.getRefference())
 	}
 	
+	@Test
+	public void testGetRefferenceColumnList() {
+		assertEquals("A,B",l.getRefferenceColumnList())
+	}
+	
 	static class TestingLookup extends Lookup {
 		
 		Column A

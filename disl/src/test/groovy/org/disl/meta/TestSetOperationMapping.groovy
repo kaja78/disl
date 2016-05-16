@@ -58,7 +58,7 @@ class TestSetOperationMapping extends DislTestCase {
 
 	@Test
 	void testGetSetOperationClause() {
-		assertEquals("""\n\tUNION select * from (\n	/*Mapping TestingMapping*/
+		assertEquals("""\n\tUNION select A,c,B from (\n	/*Mapping TestingMapping*/
 		SELECT
 			s1.A as A,
 			C as c,

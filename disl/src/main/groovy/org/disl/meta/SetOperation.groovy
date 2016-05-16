@@ -30,28 +30,32 @@ public abstract class SetOperation {
 	
 	public abstract String getSetOperationClause();
 	
+	protected String getSourceQuery() {
+		"select ${source.getRefferenceColumnList()} from ${source.getRefference()}"
+	}
+	
 	static class UNION extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"UNION select * from ${source.getRefference()}"
+			"UNION ${sourceQuery}"
 		}
 	}
 	static class UNION_ALL extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"UNION ALL select * from ${source.getRefference()}"
+			"UNION ALL ${sourceQuery}"
 		}
 	}
 	static class INTERSECT extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"INTERSECT select * from ${source.getRefference()}"
+			"INTERSECT ${sourceQuery}"
 		}
 	}
 	static class MINUS extends SetOperation {
 		@Override
 		public String getSetOperationClause() {
-			"MINUS select * from ${source.getRefference()}"
+			"MINUS ${sourceQuery}"
 		}
 	}
 

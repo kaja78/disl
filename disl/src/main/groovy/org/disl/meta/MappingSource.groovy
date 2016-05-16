@@ -27,6 +27,8 @@ abstract class MappingSource extends Base {
 
 	public abstract String getRefference();
 	
+	public abstract String getRefferenceColumnList();
+	
 	public String toString() {
 		return getClass().getSimpleName()
 	}

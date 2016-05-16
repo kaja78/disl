@@ -112,8 +112,11 @@ class TestTable extends Table {
 		assertEquals('TestTable',f.getTargetTable().getName())
 		assertEquals('B,C',f.getTargetColumn())
 		assertEquals('PARENT2_B,PARENT2_C',f.getSourceColumn())
- 
-		
+ 	}
+	
+	@Test
+	void testGetRefferenceColumnList() {
+		assertEquals(getRefferenceColumnList(),"A,B,C,PARENT1_B,PARENT1_C,PARENT2_B,PARENT2_C,PARENT3_A")
 	}
 	
 	
