@@ -71,7 +71,7 @@ class TestMapping extends DislTestCase {
 			LEFT OUTER JOIN PUBLIC.TestTable s3  ON (s2.A=s3.A)
 			RIGHT OUTER JOIN PUBLIC.TestTable s4  ON (s2.A=s4.A)
 			FULL OUTER JOIN PUBLIC.TestTable s5  ON (s2.A=s5.A)
-			,PUBLIC.TestTable s6
+			CROSS JOIN PUBLIC.TestTable s6
 		WHERE
 			s1.A=s1.A
 		GROUP BY

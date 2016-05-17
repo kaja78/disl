@@ -65,7 +65,7 @@ public abstract class Join {
 	
 	public static class CARTESIAN extends Join{
 		public String getFromClause() {
-			",$source.refference"
+			"CROSS JOIN $source.refference"
 		}
 	}
 }
