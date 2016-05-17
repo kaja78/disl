@@ -18,11 +18,9 @@
  */
 package org.disl.meta
 
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field
 
 /**
  * Creates logical SQL query containing constant record set, which can be used as MappingSource.
@@ -88,7 +86,7 @@ abstract class Lookup extends MappingSource {
 	protected List<Map> createRecordsFromList() {
 		List recordList=getRecords()
 		recordList.collect { values->
-			Map record=new HashMap()
+			Map record=new LinkedHashMap()
 			columns.each {column ->
 				record.put(column.name, values[columns.indexOf(column)])
 			}
