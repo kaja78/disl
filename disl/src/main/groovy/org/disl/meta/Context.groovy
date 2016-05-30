@@ -33,6 +33,8 @@ public class Context implements Cloneable {
 	public static final String CONTEXT_DEFAULT="default"
 	public static final String EXECUTION_MODE_DEFAULT="default"
 	
+	public static String contextClassName='org.disl.meta.Context'
+	
 	String name
 	String executionMode=EXECUTION_MODE_DEFAULT
 	Properties config
@@ -62,15 +64,25 @@ public class Context implements Cloneable {
 
 	public static Context getContext() {
 		if (localContext.get()==null) {
-			localContext.set(new Context(name: getContextName()))
+			localContext.set(createContext())
 		}
 		localContext.get()
 	}
 	
-	public static void init(Context context) {
-		localContext.set(context.clone())
-		localContextName.set(context.getName())
+	private static Context createContext() {
+		Context context=Class.forName(contextClassName).newInstance()
+		context.setName(getContextName())
+		return context		
 	}
+	
+	public static void init(Context parentContext) {
+		Context currentContext=localContext.get()
+		if (currentContext==null || !parentContext.getName().equals(currentContext.getName())) {
+			localContext.set(parentContext.clone())
+			localContextName.set(parentContext.getName())
+		}
+	}
+	
 
 	public static Sql getSql(String logicalSchemaName) {
 		getContext().getPhysicalSchema(logicalSchemaName).getSql()
