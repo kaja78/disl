@@ -46,6 +46,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	 * */
 	private boolean earlyInitialized=doEarlyInit()
 	private String groupBy
+	private String orderBy
 
 	String description
 	List<ColumnMapping> columns=[]
@@ -193,13 +194,13 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	public void groupBy() {
 		groupBy(getColumns().findAll {it instanceof ExpressionColumnMapping})
 	}
-
+	
 	public void groupBy(Object... expressions) {
 		ArrayList l=new ArrayList(expressions.length)
 		l.addAll(expressions)
 		groupBy(l)
 	}
-
+	
 	public void groupBy(Collection expressions) {
 		String clause=expressions.collect({
 			if (it instanceof ExpressionColumnMapping) {
@@ -212,6 +213,33 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 
 	public void groupBy(String clause) {
 		groupBy=clause
+	}
+	
+	/**
+	 * Explicitly generate orderBy clause for all expression mappings.
+	 * */
+	public void orderBy() {
+		orderBy(getColumns().findAll {it instanceof ExpressionColumnMapping})
+	}
+	
+	public void orderBy(Object... expressions) {
+		ArrayList l=new ArrayList(expressions.length)
+		l.addAll(expressions)
+		orderBy(l)
+	}
+	
+	public void orderBy(Collection expressions) {
+		String clause=expressions.collect({
+			if (it instanceof ExpressionColumnMapping) {
+				it=it.expression
+			}
+			it.toString()
+		}).join(',')
+		orderBy(clause)
+	}
+
+	public void orderBy(String clause) {
+		orderBy=clause
 	}
 
 	public void union(Mapping source) {
@@ -302,7 +330,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			${getSources().collect({it.fromClause}).join("\n			")}
 		WHERE
 			${filter}
-		${getGroupByClause()}${getSetOperationClause()}
+		${getGroupByClause()}${getOrderByClause()}${getSetOperationClause()}
 	/*End of mapping $name*/"""
 	}
 
@@ -322,6 +350,15 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		if  (groupBy!=null) {
 			return """GROUP BY
 			${groupBy}"""
+		}
+		return ""
+	}
+	
+	String getOrderByClause() {
+		if (orderBy!=null) {
+			return """
+		ORDER BY
+			${orderBy}"""
 		}
 		return ""
 	}
