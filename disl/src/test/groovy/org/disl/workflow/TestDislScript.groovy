@@ -18,7 +18,8 @@
  */
 package org.disl.workflow
 
-import org.disl.meta.MetaFactory;
+import org.disl.meta.MetaFactory
+import org.junit.Assert
 import org.junit.Test
 
 class TestDislScript {
@@ -28,6 +29,12 @@ class TestDislScript {
 	@Test
 	void testExecute() {
 		s.execute()
+	}
+	
+	@Test
+	void testEncode() {
+		Assert.assertNotEquals ('A',DislScript.encode('A'))
+		Assert.assertEquals ('A',DislScript.decode( s.encode('A')))
 	}
 
 }

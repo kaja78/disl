@@ -27,7 +27,6 @@ import org.disl.meta.PhysicalSchema;
 class OracleSchema extends PhysicalSchema {
 	String host
 	String port=1521
-	String databaseName
 	String jdbcDriver="oracle.jdbc.OracleDriver"
 
 	@Override

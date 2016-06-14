@@ -29,7 +29,6 @@ import org.disl.meta.PhysicalSchema;
 class HsqldbSchema extends PhysicalSchema {
 
 	String jdbcDriver="org.hsqldb.jdbcDriver"
-	String databaseName="mem:inmemoryDb"
 	
 	HsqldbSchema() {
 		user="sa"
@@ -42,7 +41,7 @@ class HsqldbSchema extends PhysicalSchema {
 	@Override
 	public void init() {
 		super.init();
-		databaseName=getSchemaProperty("databaseName", databaseName)		
+		databaseName=getSchemaProperty("databaseName", "mem:inmemoryDb")		
 	}
 	
 	@Override

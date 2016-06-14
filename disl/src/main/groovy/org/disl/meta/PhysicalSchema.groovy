@@ -18,13 +18,11 @@
  */
 package org.disl.meta;
 
-import java.util.List;
-import java.util.Map;
-
-import org.disl.db.reverseEngineering.ReverseEngineeringService;
-
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+
+import org.disl.db.reverseEngineering.ReverseEngineeringService
+import org.disl.workflow.DislScript;
 
 /**
  * Generic physical database schema. 
@@ -38,6 +36,7 @@ public abstract class PhysicalSchema {
 	String user
 	String password
 	String schema
+	String databaseName
 	SqlProxy sqlProxy
 	
 	abstract String getJdbcDriver()
@@ -50,10 +49,19 @@ public abstract class PhysicalSchema {
 	
 	public void init() {
 		Context context=Context.getContext();
-		user=getSchemaProperty("user",user)
-		password=getSchemaProperty("password",password)
+		user=getSchemaProperty("user",user)		
 		jdbcDriver=getSchemaProperty("jdbcDriver",jdbcDriver)
 		schema=getSchemaProperty("schema",schema)
+		databaseName=getSchemaProperty("databaseName", databaseName)
+		initPassword()
+	}
+	
+	protected String initPassword() {
+		password=getSchemaProperty("password",password)
+		String encodedPassword=getSchemaProperty("encodedPassword")
+		if (encodedPassword) {
+			password=DislScript.decode(encodedPassword)
+		}		
 	}
 	
 	protected String getSchemaProperty(String key, String defaultValue) {
@@ -78,6 +86,8 @@ public abstract class PhysicalSchema {
 	
 	protected Sql createSql() {
 		def sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
+		
+		println getJdbcUrl()
 		sql.getConnection().setAutoCommit(false)
 		sql.cacheConnection=true
 		sql.cacheStatements=false

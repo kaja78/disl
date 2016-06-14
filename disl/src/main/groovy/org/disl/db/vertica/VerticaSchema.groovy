@@ -27,7 +27,6 @@ class VerticaSchema extends PhysicalSchema {
 	
 	String host
 	int port=5433
-	String databaseName
 	String jdbcDriver="com.vertica.Driver"
 	
 	@Override

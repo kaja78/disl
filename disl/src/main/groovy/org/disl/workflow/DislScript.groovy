@@ -148,4 +148,12 @@ abstract class DislScript extends Script implements Executable{
 		}
 	}
 	
+	public static String encode(String value) {
+		return value.getBytes().encodeBase64()
+	}
+	
+	public static String decode(String value) {
+		return new String(value.decodeBase64())
+	}
+	
 }

@@ -18,6 +18,7 @@
  */
 package org.disl.db.hsqldb
 
+import org.disl.meta.Context
 import org.disl.test.DislTestCase
 import org.junit.Test
 
@@ -25,6 +26,7 @@ class TestHsqldbSchema extends DislTestCase {
 
 	@Test
 	void testSql() {
-		new HsqldbSchema().getSql().execute("CREATE TABLE A (A CHAR(1))")
+		Context.setContextName('disl-test')
+		Context.getContext().getPhysicalSchema('default').getSql().execute("CREATE TABLE A (A CHAR(1))")
 	}
 }

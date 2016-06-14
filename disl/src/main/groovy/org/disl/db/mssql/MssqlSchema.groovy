@@ -27,7 +27,6 @@ import org.disl.meta.PhysicalSchema;
 class MssqlSchema extends PhysicalSchema {
 	String host
 	int port
-	String databaseName
 	String instance
 
 	String jdbcDriver="net.sourceforge.jtds.jdbc.Driver"
