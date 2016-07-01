@@ -18,9 +18,9 @@
  */
 package org.disl.pattern;
 
-import org.disl.meta.Table;
-
 import groovy.sql.Sql
+
+import java.sql.SQLException
 
 abstract class ExecuteSQLScriptStep extends Step {
 
@@ -54,8 +54,10 @@ abstract class ExecuteSQLScriptStep extends Step {
 		}
 		try {
 			return executeSqlStatementInternal(sqlCommand)
+		} catch (SQLException e) {
+			throw new RuntimeException("${e.errorCode}: $e.message executing ${this}. SQL statement: $sqlCommand",e)
 		} catch (Exception e) {
-			throw new RuntimeException("Error executing ${this}. SQL statement: $sqlCommand",e)
+			throw new RuntimeException("${e.class.name}: $e.message executing ${this}. SQL statement: $sqlCommand",e)
 		}
 	}
 	
