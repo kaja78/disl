@@ -25,9 +25,12 @@ import java.util.Properties;
 
 import org.disl.db.reverseEngineering.ReverseEngineeringService;
 /**
- * <p>Abstraction of execution environment. Context maps logical resource name to physical deployment.
+ * <p>Abstraction of execution environment. 
+ * Context maps logical resource name to physical deployment.
  * Each context is defined by configuration file [context name].context.properties. Default context name is "default".</p>
  * Currently the only supported resource is database schema.
+ * Context may be also used to define properties, which may be used to parametrize DISL processes. Context properties may be defined in configuration file. 
+ * Context property values may be overriden by values of system properties and environment variables. System property values take precedence before environment values.
  * */
 public class Context implements Cloneable {
 	public static final String CONTEXT_DEFAULT="default"
@@ -141,6 +144,10 @@ public class Context implements Cloneable {
 		Object systemProperty=System.getProperties().get(key)
 		if (systemProperty!=null) {
 			return systemProperty.toString()
+		}
+		String environmentVariable=System.getenv(key)
+		if (environmentVariable!=null) {
+			return environmentVariable
 		}
 		return getConfig()[key]
 	}
