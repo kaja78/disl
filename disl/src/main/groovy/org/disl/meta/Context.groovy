@@ -25,16 +25,21 @@ import java.util.Properties;
 
 import org.disl.db.reverseEngineering.ReverseEngineeringService;
 /**
- * <p>Abstraction of execution environment. Context maps logical resource name to physical deployment.
+ * <p>Abstraction of execution environment. 
+ * Context maps logical resource name to physical deployment.
  * Each context is defined by configuration file [context name].context.properties. Default context name is "default".</p>
  * Currently the only supported resource is database schema.
+ * Context may be also used to define properties, which may be used to parametrize DISL processes. Context properties may be defined in configuration file. 
+ * Context property values may be overriden by values of system properties.
+ * Environment variables are available as context properties with env. prefix.
+ * For exmple PATH environment variable is available as env.PATH context property.
  * */
 public class Context implements Cloneable {
 	public static final String CONTEXT_DEFAULT="default"
 	public static final String EXECUTION_MODE_DEFAULT="default"
-	
+
 	public static String contextClassName='org.disl.meta.Context'
-	
+
 	String name
 	String executionMode=EXECUTION_MODE_DEFAULT
 	Properties config
@@ -68,13 +73,13 @@ public class Context implements Cloneable {
 		}
 		localContext.get()
 	}
-	
+
 	private static Context createContext() {
 		Context context=Class.forName(contextClassName).newInstance()
 		context.setName(getContextName())
-		return context		
+		return context
 	}
-	
+
 	public static void init(Context parentContext) {
 		Context currentContext=localContext.get()
 		if (currentContext==null || !parentContext.getName().equals(currentContext.getName())) {
@@ -82,7 +87,7 @@ public class Context implements Cloneable {
 			localContextName.set(parentContext.getName())
 		}
 	}
-	
+
 
 	public static Sql getSql(String logicalSchemaName) {
 		getContext().getPhysicalSchema(logicalSchemaName).getSql()
@@ -94,11 +99,11 @@ public class Context implements Cloneable {
 		}
 		return getContext().getPhysicalSchema(logicalSchemaName).getSchema()
 	}
-	
+
 	public static String getContextProperty(String key) {
 		return getContext().getProperty(key)
 	}
-	
+
 	public static String getContextProperty(String key, String defaultValue) {
 		return getContext().getProperty(key,defaultValue)
 	}
@@ -107,16 +112,15 @@ public class Context implements Cloneable {
 		ReverseEngineeringService res=getContext().getPhysicalSchema(logicalSchemaName).getReverseEngineeringService()
 		res.setLogicalSchemaName(logicalSchemaName)
 		return res
-
 	}
-	
+
 	public PhysicalSchema getPhysicalSchema(String schemaName) {
 		if (schemaMap[schemaName]==null) {
 			createSchema(schemaName)
 		}
 		schemaMap[schemaName]
 	}
-	
+
 	protected void createSchema(String schemaName) {
 		String schemaType=getProperty(schemaName)
 		if (schemaType==null) {
@@ -142,6 +146,12 @@ public class Context implements Cloneable {
 		if (systemProperty!=null) {
 			return systemProperty.toString()
 		}
+		if (key.startsWith('env.')) {
+			String environmentVariable=System.getenv(key.substring(4))
+			if (environmentVariable!=null) {
+				return environmentVariable
+			}
+		}
 		return getConfig()[key]
 	}
 
@@ -152,7 +162,7 @@ public class Context implements Cloneable {
 		}
 		return value
 	}
-	
+
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Context clone=super.clone()

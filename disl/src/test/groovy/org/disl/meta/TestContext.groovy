@@ -36,5 +36,10 @@ class TestContext extends DislTestCase {
 	void testGetSql() {
 		Context.getSql("default").execute("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_TABLES")
 	}
+	
+	@Test
+	void testGetContextProperty() {
+		println Context.getContextProperty('env.PATH')
+	}
 
 }
