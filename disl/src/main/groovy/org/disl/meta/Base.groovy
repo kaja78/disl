@@ -30,6 +30,7 @@ abstract class Base {
 	
 	public String getName() {
 		if (name==null) {
+			println this.getClass().getSimpleName()
 			return this.getClass().getSimpleName()
 		}
 		name

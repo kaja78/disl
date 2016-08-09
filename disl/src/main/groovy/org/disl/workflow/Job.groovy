@@ -21,13 +21,16 @@ package org.disl.workflow
 import org.disl.meta.MetaFactory
 import org.disl.pattern.AbstractExecutable
 import org.disl.pattern.Executable
+
+import groovy.util.logging.Slf4j;
 /**
  * Job executes list of job entries in serial order.
  * */
+@Slf4j
 abstract class Job extends AbstractExecutable {
 
 	List<JobEntry> jobEntries=[]
-	
+
 	/**
 	 * Add executable instance to job entry list.
 	 * */
@@ -42,24 +45,24 @@ abstract class Job extends AbstractExecutable {
 		add(MetaFactory.create(type))
 		return this
 	}
-	
+
 	/**
 	 * Create list of Executable instances and add it to job entry list.
 	 * */
 	public Job addTypes(List<Class<Executable>> types) {
-		types.each({addType(it)})
+		types.each({ addType(it) })
 		return this
 	}
-	
+
 	/**
 	 * Add list of executables to job entry list.
 	 * */
 
 	public Job addAll(List<Executable> executables) {
-		executables.each {add(it)}
+		executables.each { add(it) }
 		return this
 	}
-	
+
 	/**
 	 * Find, create and add executables in job package and all subpackages to job entry list. 
 	 * Compiled executables must be located in the same classpath element (directory or jar).
@@ -78,7 +81,7 @@ abstract class Job extends AbstractExecutable {
 	public Job addAll(String rootPackage,Class assignableType) {
 		addAll(MetaFactory.createAll(this.getClass(),rootPackage,assignableType));
 	}
-	
+
 	/**
 	 * Find, create and add executables to job entry list.
 	 * @param traversePath Root path to look for executables classes in.
@@ -91,11 +94,13 @@ abstract class Job extends AbstractExecutable {
 	}
 
 	protected int executeInternal() {
-			int processedRows=0
-			jobEntries.each {it.execute(); processedRows+=it.executionInfo.processedRows}
-			return processedRows
+		int processedRows=0
+		jobEntries.each {
+			it.execute(); processedRows+=it.executionInfo.processedRows
+		}
+		return processedRows
 	}
-	
+
 	@Override
 	public void postExecute() {
 		super.postExecute();
@@ -103,26 +108,32 @@ abstract class Job extends AbstractExecutable {
 	}
 
 	public void simulate() {
-		jobEntries.each {it.simulate()}
+		jobEntries.each { it.simulate() }
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()
 	}
+
 	
-	public synchronized void traceStatus() {
+	public void traceStatus() {
 		String name=toString().padRight(50).toString().substring(0,50)
 		String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
 		String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
 		String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
-		
-		println "*********************************************************************************************"
-		println "* ${name} * ${stat} * ${dur} * ${processedRows} *"
-		println "*********************************************************************************************"
-		jobEntries.each({println it})
-		println "*********************************************************************************************"
+
+		if (log.infoEnabled) {
+			String message=""" Execution results for ${name}:
+*********************************************************************************************
+*  Name                                              *   Status   *  Time (ms)*        Rows *
+*********************************************************************************************
+* ${name} * ${stat} * ${dur} * ${processedRows} *
+*********************************************************************************************
+${jobEntries.join('\n')}
+*********************************************************************************************
+"""
+				log.info(message)
+		}
 	}
-	
-	
 }

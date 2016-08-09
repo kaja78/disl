@@ -48,6 +48,11 @@ class TestParallelJob extends DislTestCase {
 			]).execute()
 	}
 	
+	@Test
+	public void testExecuteTestingExecutable() {
+		new TestingExecutable().execute()
+	}
+	
 	static class TestingJob extends ParallelJob {
 		TestingJob() {
 			addAll([new TestingExecutable()])

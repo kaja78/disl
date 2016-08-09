@@ -20,6 +20,7 @@ package org.disl.meta;
 
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j;
 
 import org.disl.db.reverseEngineering.ReverseEngineeringService
 import org.disl.workflow.DislScript;
@@ -29,6 +30,7 @@ import org.disl.workflow.DislScript;
  * Context is used to map logical schemas used in DISL model to physical schemas.
  * Physical schemas are specific for each execution environment (Context).
  * */
+@Slf4j
 @CompileStatic 
 public abstract class PhysicalSchema {
 	
@@ -86,11 +88,10 @@ public abstract class PhysicalSchema {
 	
 	protected Sql createSql() {
 		def sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
-		
-		println getJdbcUrl()
 		sql.getConnection().setAutoCommit(false)
 		sql.cacheConnection=true
 		sql.cacheStatements=false
+		log.info("${name} - Created new jdbcConnection for url: ${getJdbcUrl()}")
 		return sql
 	}
 	

@@ -18,6 +18,7 @@
  */
 package org.disl.db.reverseEngineering
 
+import org.disl.meta.Context;
 import org.disl.test.DislTestCase;
 import org.junit.Test;
 import static groovy.test.GroovyAssert.*
@@ -30,6 +31,11 @@ class TestReverseEngineeringService extends DislTestCase {
 	public void testReverseSchemaTables() {		
 		s.reverseSchemaTables("l2","%DUAL%",null,new File("build/test"))
 		assert new File("build/test/l2/DUAL.groovy").exists()
+	}
+	
+	@Test
+	public void testTraceColumnMappings() {
+		s.traceColumnMappings('select 1 one, 2 two from dual')
 	}
 	
 	@Test

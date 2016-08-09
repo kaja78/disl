@@ -18,7 +18,8 @@
  */
 package org.disl.pattern;
 
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j;
 
 import org.disl.meta.Context
 import org.disl.meta.Initializable;
@@ -31,7 +32,7 @@ import org.disl.meta.MetaFactory;
  * Pattern for mapping may generate or execute data integration logic.
  * Patterns are use to define generic transformation of DISL model objects into artifacts.
  * */
-
+@Slf4j
 public abstract class Pattern extends AbstractExecutable implements Initializable {
 	
 	private Collection<Step> steps=[]
@@ -60,10 +61,10 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	@Override
 	public int executeInternal() {
 		long timestamp=System.currentTimeMillis();
-		println "Executing pattern $this:"
+		log.info("Executing pattern $this:")
 		int processedRows=0		
 		getSteps().each {it.execute();processedRows+=it.executionInfo.processedRows}		
-		println "${this} executed in ${System.currentTimeMillis()-timestamp} ms"
+		log.info("${this} processed ${processedRows} rows in ${System.currentTimeMillis()-timestamp} ms.")
 		return processedRows		
 	}
 	

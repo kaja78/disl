@@ -33,5 +33,12 @@ class TestPhysicalSchema {
 		Assert.assertEquals('secure',s1.password)
 		Assert.assertEquals('secure',s2.password)
 	}
+	
+	@Test
+	void testGetSql() {
+		Context.setContextName('disl-test')
+		Context.getContext().getPhysicalSchema("default").getSql()
+		
+	}
 
 }

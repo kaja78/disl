@@ -18,6 +18,10 @@
  */
 package org.disl.test
 
+import groovy.sql.Sql
+
+import java.util.logging.Level;
+
 import org.disl.meta.Context
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestTable

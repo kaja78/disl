@@ -25,9 +25,12 @@ import java.util.concurrent.Future
 
 import org.disl.meta.Context
 import org.disl.pattern.Executable
+
+import groovy.util.logging.Slf4j;
 /**
  * Handles parallel execution of job entries.
  * */
+@Slf4j
 @Singleton(lazy=true,strict=false)
 class ParallelJobExecutor {
 	int parallelJobsInProgress=0
@@ -62,7 +65,6 @@ class ParallelJobExecutor {
 			throw new RuntimeException("Exception in asynchronous execution.",e)
 		} finally {
 			releaseParallelJob()
-			job.traceStatus()
 		}
 	}
 	
@@ -118,7 +120,6 @@ class ParallelJobExecutor {
 					Context.init(parentContext)
 					executable.execute();
 				} catch (Exception e) {
-					e.printStackTrace();
 					throw e;
 				}
 			}

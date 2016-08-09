@@ -18,12 +18,11 @@
  */
 package org.disl.meta;
 
-import groovy.sql.Sql;
+import groovy.sql.Sql
 
-import java.util.Map;
-import java.util.Properties;
+import java.util.logging.Level
 
-import org.disl.db.reverseEngineering.ReverseEngineeringService;
+import org.disl.db.reverseEngineering.ReverseEngineeringService
 /**
  * <p>Abstraction of execution environment. 
  * Context maps logical resource name to physical deployment.
@@ -46,6 +45,14 @@ public class Context implements Cloneable {
 	Map<String,PhysicalSchema> schemaMap=new HashMap<String, PhysicalSchema>();
 
 
+	static {
+		disableGroovySqlLogging()
+	}
+	
+	protected static void disableGroovySqlLogging() {
+		Sql.LOG.setLevel(Level.SEVERE)
+	}
+	
 	private final static ThreadLocal<String> localContextName=new ThreadLocal<String>() {
 		@Override
 		protected String initialValue() {

@@ -55,7 +55,7 @@ class CreateSqlSetRequest {
 		if (mapping instanceof TableMapping) {
 			queries.add new SqlDepQuery(sourceObject: mapping,sourceCode: "CREATE TABLE ${mapping.target.fullName} as ${sqlQuery}\n;")
 		} else {
-			queries.add new SqlDepQuery(sourceObject: mapping,sourceCode: "CREATE VIEW ${Context.getPhysicalSchemaName('default')}.${mapping.name} as ${sqlQuery};")
+			queries.add new SqlDepQuery(sourceObject: mapping,sourceCode: "CREATE VIEW ${Context.getPhysicalSchemaName(mapping.getSchema())}.${mapping.name} as ${sqlQuery};")
 		}
 	}
 	

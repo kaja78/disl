@@ -22,29 +22,36 @@ import static groovy.test.GroovyAssert.*
 
 import org.disl.meta.Base
 import org.disl.meta.Context
+import org.disl.meta.MetaFactory;
 import org.junit.Before
 import org.junit.Test
 
 class TestPattern  {
 	
+	TestingPattern testingPattern
+	
 	@Before
 	void initTest() {
 		Context.setContextName('disl-test')
+		testingPattern=MetaFactory.create(TestingPattern)
 	}
 
 	@Test
 	public void testSimulate() {
-		Context ctx=Context.getContext()
-		TestingPattern testingPattern=new TestingPattern(element:new BaseMock());
-		testingPattern.init()
 		testingPattern.simulate();
 		assertEquals("DROP \nBaseMock", testingPattern.steps[0].code)
 	}
+	
+	@Test
+	public void testExecute() {
+		testingPattern.execute();
+	}
 
-	private class BaseMock extends Base {}
+	private static class BaseMock extends Base {}
 
 	static class TestingPattern extends Pattern {
-		Base element;
+		BaseMock element=new BaseMock()
+		
 		@Override
 		public void init() {
 			add TestingStep
@@ -55,12 +62,12 @@ class TestPattern  {
 		String getCode() {
 			"""\
 DROP 
-${getPattern().element.name}"""
+${getPattern().element.getName()}"""
 		}
 		
 		@Override
 		protected int executeInternal() {
-			return 0;
+			return 1;
 		}
 	}
 }

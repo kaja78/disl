@@ -18,8 +18,11 @@
  */
 package org.disl.pattern;
 
-import org.disl.meta.MetaFactory;
+import org.disl.meta.MetaFactory
 
+import groovy.util.logging.Slf4j;;
+
+@Slf4j
 abstract class AbstractExecutable implements Executable {
 	
 	boolean ignoreErrors=false
@@ -51,6 +54,7 @@ abstract class AbstractExecutable implements Executable {
 	
 	public void handleException(Exception e) {
 		if (!isIgnoreErrors()) {
+			log.error("${e.class.name} executing $this: ${e.message}",e)
 			throw e
 		}
 	}

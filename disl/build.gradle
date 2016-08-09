@@ -39,8 +39,10 @@ repositories { mavenCentral() }
 
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.3.10'
+	compile 'org.slf4j:slf4j-api:1.7.21'
 	compile 'junit:junit:4.12'
 	testCompile 'org.hsqldb:hsqldb:2.3.2'
+	testRuntime 'org.slf4j:slf4j-simple:1.7.21'
 }
 
 license { 
