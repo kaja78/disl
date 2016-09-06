@@ -57,6 +57,7 @@ import org.disl.meta.*
 
 @Description(\"""This is testing dimension.\""")
 @ForeignKeys([@ForeignKey(name='FK1',targetTable=org.disl.test.MyTable,sourceColumn='NAME',targetColumn=('NAME'))])
+@groovy.transform.CompileStatic
 class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Surrogate key.\""")

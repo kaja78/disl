@@ -18,23 +18,26 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic
+
 
 /**
  * Holds unique key metadata in DISL data model.
  * */
+@CompileStatic
 class UniqueKeyMeta {
 	
 	String[] columns=[]
 
-	public static void initUniqueKeys(Table owner) {
-		UniqueKeys uniqueKeys=owner.getClass().getAnnotation(UniqueKeys)
+	public static void initUniqueKeys(Table table) {
+		UniqueKeys uniqueKeys=table.getClass().getAnnotation(UniqueKeys)
 		if (uniqueKeys!=null) {
-			uniqueKeys.value().each {initUniqueKey(owner,it)}
+			uniqueKeys.value().each {UniqueKeyMeta.initUniqueKey(table,(UniqueKey)it)}
 		}
 		
-		UniqueKeys uniqueKey=owner.getClass().getAnnotation(UniqueKey)
+		UniqueKey uniqueKey=table.getClass().getAnnotation(UniqueKey)
 		if (uniqueKey!=null) {
-			initUniqueKey(owner,uniqueKey)
+			UniqueKeyMeta.initUniqueKey(table,uniqueKey)
 		}
 		
 		

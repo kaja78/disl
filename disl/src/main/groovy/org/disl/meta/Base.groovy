@@ -18,12 +18,14 @@
  */
 package org.disl.meta
 
-import java.lang.reflect.Field;
-import java.util.List;
+import groovy.transform.CompileStatic
+
+import java.lang.reflect.Field
 
 /**
  * Abstract parent class for DISL meta classes.
  * */
+@CompileStatic
 abstract class Base {
 	
 	String name

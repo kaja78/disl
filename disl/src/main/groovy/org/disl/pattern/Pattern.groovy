@@ -33,6 +33,7 @@ import org.disl.meta.MetaFactory;
  * Patterns are use to define generic transformation of DISL model objects into artifacts.
  * */
 @Slf4j
+@CompileStatic
 public abstract class Pattern extends AbstractExecutable implements Initializable {
 	
 	private Collection<Step> steps=[]
@@ -50,7 +51,7 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	}
 	
 	public void add(Class<Step> type) {
-		Step step=MetaFactory.create(type)		
+		Step step=(Step)MetaFactory.create(type)		
 		add(step)
 	}
 	

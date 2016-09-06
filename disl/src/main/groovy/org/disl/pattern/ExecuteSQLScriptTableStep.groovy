@@ -19,16 +19,19 @@
 package org.disl.pattern
 
 import groovy.sql.Sql
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
-import org.disl.meta.Context;
+import org.disl.meta.Context
 import org.disl.meta.Table
 
+@CompileStatic
 abstract class ExecuteSQLScriptTableStep<T extends Table> extends ExecuteSQLScriptStep {
 
 	TablePattern getPattern() {
-		super.getPattern()
+		(TablePattern)super.getPattern()
 	}
-	
+		
 	T getTable() {
 		getPattern().getTable()
 	}
@@ -49,7 +52,7 @@ abstract class ExecuteSQLScriptTableStep<T extends Table> extends ExecuteSQLScri
 				Context.getSql(getPattern().getTable().getSchema())
 			}
 		}
-		step.name=stepName
+		step.setName(stepName)
 		return step
 	}
 

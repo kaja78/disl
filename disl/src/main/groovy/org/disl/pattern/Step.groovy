@@ -20,10 +20,13 @@ package org.disl.pattern;
 
 import org.disl.meta.Context
 
+import groovy.transform.CompileStatic;
+
 
 /**
  * Represents one operation to be performed as part of Pattern execution.
  * */
+@CompileStatic
 public abstract class Step extends AbstractExecutable {
 
 	String name;
@@ -50,6 +53,10 @@ public abstract class Step extends AbstractExecutable {
 			return this.getClass().getSimpleName()
 		}
 		return name
+	}
+	
+	public void setName(String name) {
+		this.name=name
 	}
 
 	@Override

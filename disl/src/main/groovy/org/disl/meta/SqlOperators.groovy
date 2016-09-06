@@ -18,9 +18,12 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic
+
 /**
  * Abstract implementation of basic SQLExpression operators.
  * */
+@CompileStatic
 abstract class AbstractSqlExpression {
 	
 	AbstractSqlExpression plus(Object o) {

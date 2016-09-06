@@ -18,8 +18,11 @@
  */
 package org.disl.pattern
 
-import java.io.File;
+import java.io.File
 
+import groovy.transform.CompileStatic;;
+
+@CompileStatic
 abstract class FileOutputStep extends Step {
 	abstract File getFile()
 	

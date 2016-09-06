@@ -19,9 +19,11 @@
 package org.disl.pattern;
 
 import groovy.sql.Sql
+import groovy.transform.CompileStatic;
 
 import java.sql.SQLException
 
+@CompileStatic
 abstract class ExecuteSQLScriptStep extends Step {
 
 	public static final String BACKSLASH_NEW_LINE = "\\\\\n"
@@ -45,7 +47,7 @@ abstract class ExecuteSQLScriptStep extends Step {
 	}
 	
 	protected Collection<String> getCommands() {
-		return code.split(getCommandSeparator())
+		return Arrays.asList(code.split(getCommandSeparator()))
 	}
 
 	protected int executeSqlStatement(String sqlCommand) {

@@ -19,6 +19,7 @@
 package org.disl.meta
 
 import groovy.io.FileType
+import groovy.transform.CompileStatic
 
 import java.lang.reflect.Constructor
 import java.util.regex.Pattern
@@ -27,6 +28,7 @@ import org.disl.workflow.ClassFinder
 /**
  * Factory for DISL model objects.
  * */
+@CompileStatic
 class MetaFactory {
 	static <T> T create(Class<T> type, Closure initClosure=null) {
 		try {
@@ -67,7 +69,7 @@ class MetaFactory {
 	 * //Generate all tables defined in disl model for your data warehouse.
 	 * MetaFactory.createAll(com.yourDw.AbstractDwTable,"com.yourDw",AbstractDwTable).each({it.generate})
 	 * */
-	static Collection createAll(Class sourceClass,String rootPackage,Class assignableType) {
+	static List createAll(Class sourceClass,String rootPackage,Class assignableType) {
 		Collection<Class> typesToCreate=findTypes(sourceClass, rootPackage, assignableType)
 		if (typesToCreate.size()==0) {
 			throw new RuntimeException('No classes found!')
@@ -79,7 +81,7 @@ class MetaFactory {
 	 * Returns classes in given rootPackage (including subpackages) which are assignable to assignableType.
 	 * Only classes located in the same class path element (jar file or directory) as the sourceClass will be found!
 	 * */
-	static Collection<Class> findTypes(Class sourceClass,String rootPackage,Class assignableType) {
+	static List<Class> findTypes(Class sourceClass,String rootPackage,Class assignableType) {
 		ClassFinder.createClassFinder(sourceClass).findNonAbstractTypes(rootPackage,assignableType)
 	}
 	
@@ -92,7 +94,7 @@ class MetaFactory {
 	 * MetaFactory.createAll("bin","com.yourDw",Table).each({it.generate})
 	 * */
 	@Deprecated	
-	static Collection createAll(String traversePath,String rootPackage,Class assignableType) {
+	static List createAll(String traversePath,String rootPackage,Class assignableType) {
 		
 		def typesToCreate=new DirectoryClassFinder(traversePath: traversePath).findNonAbstractTypes(rootPackage,assignableType)
 		typesToCreate.collect {create(it)}
@@ -102,7 +104,7 @@ class MetaFactory {
 	protected static class DirectoryClassFinder extends ClassFinder {
 		String traversePath
 		
-		public Collection<Class> findTypes(String rootPackage,Closure classFilter) {
+		public List<Class> findTypes(String rootPackage,Closure classFilter) {
 			File rootDir = new File(traversePath)
 			File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
 			Pattern filterClassFiles = ~/.*\.class$/
@@ -112,7 +114,7 @@ class MetaFactory {
 				Class type=Class.forName(getClassName(classFile))
 				types.add(type)
 			}
-			types.findAll classFilter
+			types.findAll(classFilter).toList()
 		}
 
 	}

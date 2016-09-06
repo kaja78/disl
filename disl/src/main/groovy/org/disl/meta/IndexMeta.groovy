@@ -18,10 +18,12 @@
  */
 package org.disl.meta;
 
-import java.util.List;
+import groovy.transform.CompileStatic
+
 /**
  * Holds index metadata in DISL data model.
  * */
+@CompileStatic
 class IndexMeta {
 	List<String> columnNames
 	
@@ -33,12 +35,12 @@ class IndexMeta {
 
 		Indexes indexes=object.getClass().getAnnotation(Indexes)
 		if (indexes!=null) {
-			indexes.value().each {initIndex(it,object)}
+			indexes.value().each {initIndex((Index)it,object)}
 		}
 	}
 	
 	protected static void initIndex(Index index, IndexOwner object) {
-		IndexMeta indexMeta=new IndexMeta(columnNames: index.columns())
+		IndexMeta indexMeta=new IndexMeta(columnNames: Arrays.asList(index.columns()))
 		object.indexes.add(indexMeta)
-	}
+	} 
 }

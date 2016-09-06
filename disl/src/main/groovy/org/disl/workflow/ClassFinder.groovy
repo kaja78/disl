@@ -56,33 +56,33 @@ abstract class ClassFinder {
 		throw new RuntimeException("Unsupported URL protocol for source class ${sourceClass.name}");
 	}
 	
-	public Collection<Class> findNonAbstractTypes(Class assignableType) {
+	public List<Class> findNonAbstractTypes(Class assignableType) {
 		findNonAbstractTypes(sourceClass.getPackage().getName(),assignableType)		
 	}
 	
-	public Collection<Class> findNonAbstractTypes(String rootPackage,Class assignableType) {
+	public List<Class> findNonAbstractTypes(String rootPackage,Class assignableType) {
 		findTypes(rootPackage,{assignableType.isAssignableFrom(((Class)it)) && !Modifier.isAbstract(((Class)it).getModifiers())})
 	}
 
-	public Collection<Class> findTypes(Closure classFilter) {
+	public List<Class> findTypes(Closure classFilter) {
 		return findTypes(sourceClass.getPackage().getName(),classFilter); 
 	}
 	
-	public abstract Collection<Class> findTypes(String rootPackage,Closure classFilter);
+	public abstract List<Class> findTypes(String rootPackage,Closure classFilter);
 
 	static class FileSystemFinder extends ClassFinder {
 			
-		public Collection<Class> findTypes(String rootPackage,Closure classFilter) {
+		public List<Class> findTypes(String rootPackage,Closure classFilter) {
 			File rootDir = getCodeSourceFile()
 			File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
 			Pattern filterClassFiles = ~/.*\.class$/
-			def types=[]
+			List<Class> types=[]
 			traverseDir.traverse ((Map<String,Object>)[type: FileType.FILES, nameFilter: filterClassFiles]) {
 				String classFile=it.absolutePath.substring(rootDir.absolutePath.length()+1)				
 				Class type=Class.forName(getClassName(classFile))
 				types.add(type)
 			}
-			types.findAll classFilter
+			types.findAll(classFilter).toList()
 		}
 
 	}
@@ -91,9 +91,9 @@ abstract class ClassFinder {
 		JarFile getJarFile() {
 			new JarFile(getCodeSourceFile())			
 		}
-		public Collection<Class> findTypes(String rootPackage,Closure classFilter) {
-			Collection<JarEntry> entries=getJarFile().entries().findAll {((JarEntry)it).name.startsWith(rootPackage.replace('.', '/')) && ((JarEntry)it).name.endsWith('.class')}
-			return entries.collect({Class.forName(getClassName(it.name))}).findAll(classFilter)
+		public List<Class> findTypes(String rootPackage,Closure classFilter) {
+			List<JarEntry> entries=getJarFile().entries().findAll({((JarEntry)it).name.startsWith(rootPackage.replace('.', '/')) && ((JarEntry)it).name.endsWith('.class')}).toList()
+			return entries.collect({Class.forName(getClassName(it.name))}).findAll(classFilter).toList()
 		}
 
 	}

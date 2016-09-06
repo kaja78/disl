@@ -19,6 +19,7 @@
 package org.disl.pattern
 
 import groovy.sql.Sql
+import groovy.transform.CompileStatic;
 
 import org.disl.meta.Context
 import org.disl.meta.Mapping
@@ -26,6 +27,7 @@ import org.disl.meta.Mapping
 /**
  * Pattern for mapping.
  * */
+@CompileStatic
 abstract class MappingPattern<M extends Mapping> extends Pattern {
 	M mapping
 	

@@ -19,6 +19,8 @@
 package org.disl.meta;
 
 import groovy.sql.Sql
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode;
 
 import java.util.logging.Level
 
@@ -33,6 +35,7 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService
  * Environment variables are available as context properties with env. prefix.
  * For exmple PATH environment variable is available as env.PATH context property.
  * */
+@CompileStatic
 public class Context implements Cloneable {
 	public static final String CONTEXT_DEFAULT="default"
 	public static final String EXECUTION_MODE_DEFAULT="default"
@@ -49,6 +52,7 @@ public class Context implements Cloneable {
 		disableGroovySqlLogging()
 	}
 	
+	@CompileStatic(TypeCheckingMode.SKIP)
 	protected static void disableGroovySqlLogging() {
 		Sql.LOG.setLevel(Level.SEVERE)
 	}
@@ -82,7 +86,7 @@ public class Context implements Cloneable {
 	}
 
 	private static Context createContext() {
-		Context context=Class.forName(contextClassName).newInstance()
+		Context context=(Context)Class.forName(contextClassName).newInstance()
 		context.setName(getContextName())
 		return context
 	}
@@ -90,7 +94,7 @@ public class Context implements Cloneable {
 	public static void init(Context parentContext) {
 		Context currentContext=localContext.get()
 		if (currentContext==null || !parentContext.getName().equals(currentContext.getName())) {
-			localContext.set(parentContext.clone())
+			localContext.set((Context)parentContext.clone())
 			localContextName.set(parentContext.getName())
 		}
 	}
@@ -134,7 +138,7 @@ public class Context implements Cloneable {
 			throw new RuntimeException("schemaType not defined for schema $schemaName in context ${Context.getContextName()}");
 		}
 		String schemaClassName="org.disl.db.${schemaType.toLowerCase()}.${schemaType}Schema"
-		PhysicalSchema schema=Class.forName(schemaClassName).newInstance()
+		PhysicalSchema schema=(PhysicalSchema)Class.forName(schemaClassName).newInstance()
 		schema.name=schemaName
 		schema.init()
 		schemaMap[schemaName]=schema
@@ -171,8 +175,8 @@ public class Context implements Cloneable {
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		Context clone=super.clone()
+	public Context clone() throws CloneNotSupportedException {
+		Context clone=(Context)super.clone()
 		clone.setSchemaMap(new HashMap<String, PhysicalSchema>())
 		return clone
 	}

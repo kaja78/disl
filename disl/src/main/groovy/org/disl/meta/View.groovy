@@ -18,9 +18,12 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic;
+
 /**
  * Representation of view in DISL data tranformation model.
  * */
+@CompileStatic
 abstract class View extends Mapping {
 
 	@Override

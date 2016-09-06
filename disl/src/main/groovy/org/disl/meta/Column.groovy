@@ -18,9 +18,12 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic;
+
 /**
  * Column of database table or view.
  * */
+@CompileStatic
 class Column extends AbstractSqlExpression {
 	String name
 	MappingSource parent

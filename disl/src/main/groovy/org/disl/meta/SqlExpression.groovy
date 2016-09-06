@@ -18,9 +18,12 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic
+
 /**
  * Represent SQL expression in DISL model.
  * */
+@CompileStatic
 class SqlExpression extends AbstractSqlExpression {
 	Object expression
 

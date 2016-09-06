@@ -41,6 +41,7 @@ public abstract class PhysicalSchema {
 	String databaseName
 	SqlProxy sqlProxy
 	
+	abstract void setJdbcDriver(String driver)
 	abstract String getJdbcDriver()
 	abstract String getJdbcUrl()
 	

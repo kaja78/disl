@@ -18,9 +18,12 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic
+
 /**
  * Data source of data transformation defined in Mapping.
  * */
+@CompileStatic
 abstract class MappingSource extends Base {
 	String sourceAlias
 	Join join=new Join.NONE(source:this)	

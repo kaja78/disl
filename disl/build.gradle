@@ -30,7 +30,7 @@ apply plugin: 'signing'
 
 project.group='com.github.kaja78'
 //project.version="${getVersionName()}"
-project.version="0.4-SNAPSHOT"
+project.version="0.4.1-SNAPSHOT"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7

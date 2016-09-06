@@ -22,11 +22,13 @@ import org.disl.meta.MetaFactory
 import org.disl.pattern.AbstractExecutable
 import org.disl.pattern.Executable
 
+import groovy.transform.CompileStatic;
 import groovy.util.logging.Slf4j;
 /**
  * Job executes list of job entries in serial order.
  * */
 @Slf4j
+@CompileStatic
 abstract class Job extends AbstractExecutable {
 
 	List<JobEntry> jobEntries=[]
@@ -41,15 +43,15 @@ abstract class Job extends AbstractExecutable {
 	/**
 	 * Create new instance of Executable and add it to job entry list.
 	 * */
-	public Job addType(Class<Executable> type) {
-		add(MetaFactory.create(type))
+	public Job addType(Class<? extends Executable> type) {
+		add((Executable)MetaFactory.create(type))
 		return this
 	}
 
 	/**
 	 * Create list of Executable instances and add it to job entry list.
 	 * */
-	public Job addTypes(List<Class<Executable>> types) {
+	public Job addTypes(List<Class<? extends Executable>> types) {
 		types.each({ addType(it) })
 		return this
 	}
@@ -58,7 +60,7 @@ abstract class Job extends AbstractExecutable {
 	 * Add list of executables to job entry list.
 	 * */
 
-	public Job addAll(List<Executable> executables) {
+	public Job addAll(List<? extends Executable> executables) {
 		executables.each { add(it) }
 		return this
 	}

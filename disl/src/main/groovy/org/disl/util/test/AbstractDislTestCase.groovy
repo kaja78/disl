@@ -20,6 +20,7 @@ package org.disl.util.test
 
 import groovy.sql.Sql
 import groovy.test.GroovyAssert
+import groovy.transform.CompileStatic;
 
 import org.disl.meta.Context
 import org.disl.meta.PhysicalSchema
@@ -29,6 +30,7 @@ import org.disl.meta.PhysicalSchema
  * Disl test cases support unit testing of SQL expression 
  * typically defined within Mappings or shared expression libraries.
  * */
+@CompileStatic
 abstract class AbstractDislTestCase {
 
 	public Sql getSql() {
@@ -44,11 +46,11 @@ abstract class AbstractDislTestCase {
 	}
 
 	public void assertExpressionTrue(expression) {
-		assertRowCount(1, physicalSchema.evaluateConditionQuery(expression))
+		assertRowCount(1, physicalSchema.evaluateConditionQuery(expression.toString()))
 	}
 
 	public void assertExpressionFalse(expression) {
-		assertRowCount(0, physicalSchema.evaluateConditionQuery(expression))
+		assertRowCount(0, physicalSchema.evaluateConditionQuery(expression.toString()))
 	}
 
 	public String recordsToSubquery(List<Map> records) {
@@ -63,7 +65,7 @@ ${sqlQuery}
 	}
 
 	public int getRowCount(String sqlQuery) {
-		getSql().firstRow("select count(1) from (${sqlQuery})".toString()).find().value
+		Integer.parseInt(getSql().firstRow("select count(1) from (${sqlQuery})".toString()).getAt(0).toString())		
 	}
 
 	public void assertExpressionEquals(expectedExpression,actualExpression) {
@@ -77,11 +79,11 @@ ${sqlQuery}
 	/**
 	 * Evaluate value of SQL expression.
 	 * */
-	public String evaluate(String expression) {
-		return getSql().firstRow(physicalSchema.evaluateExpressionQuery(expression)).getAt(0)
+	public String evaluate(def expression) {
+		return getSql().firstRow(physicalSchema.evaluateExpressionQuery(expression.toString())).getAt(0)
 	}
 	
-	public String evaluate(String expression,List<Map> records) {
-		getSql().firstRow("select ${expression} from ${recordsToSubquery(records)}".toString()).find().value
+	public String evaluate(def expression,List<Map> records) {
+		getSql().firstRow("select ${expression} from ${recordsToSubquery(records)}".toString()).getAt(0)
 	}
 }

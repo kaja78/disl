@@ -17,9 +17,13 @@
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.disl.meta;
+
+import groovy.transform.CompileStatic
+
 /**
  * Holds metadata for joining MappingSources in Mapping.
  * */
+@CompileStatic
 public abstract class Join {
 
 	/**

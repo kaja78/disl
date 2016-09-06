@@ -18,9 +18,12 @@
  */
 package org.disl.meta
 
+import groovy.transform.CompileStatic;
+
 /**
  * ColumnMapping defines data transformation for single column in Mapping.
  * */
+@CompileStatic
 abstract class ColumnMapping extends AbstractSqlExpression {
 
 	Mapping parent

@@ -18,11 +18,13 @@
  */
 package org.disl.pattern;
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import org.disl.meta.MetaFactory
 
-import groovy.util.logging.Slf4j;;
-
 @Slf4j
+@CompileStatic
 abstract class AbstractExecutable implements Executable {
 	
 	boolean ignoreErrors=false

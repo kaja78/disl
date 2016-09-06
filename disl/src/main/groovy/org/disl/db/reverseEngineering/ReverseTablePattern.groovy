@@ -70,6 +70,7 @@ package $pattern.packageName
 import org.disl.meta.*
 
 @Description(\"""$pattern.table.description\""")$foreignKeyDefinition
+@groovy.transform.CompileStatic
 class $pattern.table.name extends ${pattern.parentClassName} {
 
 $columnDefinitions

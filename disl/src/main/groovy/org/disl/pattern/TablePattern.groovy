@@ -19,6 +19,7 @@
 package org.disl.pattern
 
 import groovy.sql.Sql
+import groovy.transform.CompileStatic;
 
 import org.disl.meta.Context
 import org.disl.meta.Table
@@ -26,6 +27,7 @@ import org.disl.meta.Table
 /**
  * Pattern for Table.
  * */
+@CompileStatic
 abstract class TablePattern<T extends Table> extends Pattern {
 	T table
 	

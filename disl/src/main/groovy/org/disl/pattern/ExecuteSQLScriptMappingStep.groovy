@@ -24,10 +24,11 @@ import org.disl.meta.Context
 import org.disl.meta.Mapping
 import org.disl.meta.TableMapping;
 
+@groovy.transform.CompileStatic
 abstract class ExecuteSQLScriptMappingStep<M extends Mapping> extends ExecuteSQLScriptStep {
 
 	MappingPattern getPattern() {
-		super.getPattern()
+		(MappingPattern)super.getPattern()
 	}
 	
 	M getMapping() {
@@ -49,7 +50,7 @@ abstract class ExecuteSQLScriptMappingStep<M extends Mapping> extends ExecuteSQL
 				Context.getSql(getPattern().getMapping().getSchema())
 			}
 		}
-		step.name=name
+		step.setName(name)
 		return step
 	}
 

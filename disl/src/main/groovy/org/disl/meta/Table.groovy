@@ -24,11 +24,15 @@ import java.util.List;
 import org.disl.pattern.Executable;
 import org.disl.pattern.ExecutionInfo;
 import org.disl.pattern.Pattern;
-import org.disl.pattern.TablePattern;
+import org.disl.pattern.TablePattern
+
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode;;;
 
 /**
  * Representation of table or view in DISL data model.
  * */
+@CompileStatic
 abstract class Table extends MappingSource implements  Executable, IndexOwner, Initializable {
 
 	public abstract TablePattern getPattern()
@@ -137,21 +141,21 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 			Field f=it
 			ForeignKey foreignKey=f.getAnnotation(ForeignKey)
 			if (foreignKey!=null) {
-				ForeignKeyMeta.initForeignKey(foreignKey, this, this[f.getName()])
+				ForeignKeyMeta.initForeignKey(foreignKey, this, (Column)this[f.getName()])
 			}
 		}
 		
 		ForeignKeys foreignKeys=getClass().getAnnotation(ForeignKeys)
 		if (foreignKeys!=null) {
-			foreignKeys.value().each {ForeignKeyMeta.initForeignKey(it,this,null)}
+			foreignKeys.value().each {ForeignKeyMeta.initForeignKey((ForeignKey)it,this,null)}
 		}
 	}
 
 	protected void initColumn(Field f) {
-		Column column=this[f.getName()]
+		Column column=(Column)this[f.getName()]
 
 		if (column==null) {
-			column=f.getType().newInstance()
+			column=(Column)f.getType().newInstance()
 			column.parent=this
 			this[f.getName()]=column
 			columns.add(column)
@@ -175,7 +179,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 		DefaultMapping defaultMapping=f.getAnnotation(DefaultMapping)
 		if (defaultMapping!=null) {
-			column.setDefaultMapping(defaultMapping.value())
+			initDefaultMapping(column, defaultMapping.value())
 		}
 
 		NotNull notNull=f.getAnnotation(NotNull)
@@ -183,13 +187,18 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 			column.setNotNull(true)
 		}
 	}
+	
+	@CompileStatic(TypeCheckingMode.SKIP)
+	void initDefaultMapping(Column column, String defaultMapping) {
+		column.setDefaultMapping(defaultMapping)		
+	}
 
 	public Iterable<String> getColumnDefinitions() {
 		columns.collect {it.columnDefinition}
 	}
 	
 	public List<Column> getPrimaryKeyColumns() {
-		columns.findAll {it.isPrimaryKey()}
+		(List<Column>)columns.findAll {it.isPrimaryKey()}
 	}
 
 	static class ForeignKeyMeta {
@@ -206,7 +215,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		}
 		
 		public void setSourceColumn(String name) {
-			sourceColumns=name.split(',')
+			sourceColumns=Arrays.asList(name.split(','))
 		}
 		
 		public String getSourceColumn() {
@@ -214,7 +223,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		}
 		
 		public void setTargetColumn(String name) {
-			targetColumns=name.split(',')
+			targetColumns=Arrays.asList(name.split(','))
 		}
 		
 		public String getTargetColumn() {

@@ -26,6 +26,8 @@ import org.disl.meta.MetaFactory;
 import org.junit.Before
 import org.junit.Test
 
+import groovy.transform.CompileStatic;
+
 class TestPattern  {
 	
 	TestingPattern testingPattern
@@ -33,10 +35,12 @@ class TestPattern  {
 	@Before
 	void initTest() {
 		Context.setContextName('disl-test')
+		Context.getContext().setExecutionMode(Context.EXECUTION_MODE_DEFAULT)
 		testingPattern=MetaFactory.create(TestingPattern)
 	}
 
 	@Test
+	@CompileStatic
 	public void testSimulate() {
 		testingPattern.simulate();
 		assertEquals("DROP \nBaseMock", testingPattern.steps[0].code)

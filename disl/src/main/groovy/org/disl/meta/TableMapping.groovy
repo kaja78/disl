@@ -18,13 +18,14 @@
  */
 package org.disl.meta
 
-import org.disl.pattern.Executable;
-import org.disl.pattern.ExecutionInfo;
-import org.disl.pattern.Pattern;
+import groovy.transform.CompileStatic
+
+import org.disl.pattern.Executable
 
 /**
  * Abstract parent for Mappings defining loading of target table using pattern. 
  * */
+@CompileStatic
 abstract class TableMapping<T extends Table> extends Mapping implements Executable {
 	
 	public abstract T getTarget()
@@ -37,7 +38,7 @@ abstract class TableMapping<T extends Table> extends Mapping implements Executab
 	}
 	
 	public void checkColumnsMissingInTarget() {
-		if (getColumnsMissingInTarget().size>0) {
+		if (getColumnsMissingInTarget().size()>0) {
 			throw new AssertionError("Found columns missing in target: ${getColumnsMissingInTarget().join(',')}")
 		}
 	}
