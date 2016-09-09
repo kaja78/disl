@@ -35,6 +35,7 @@ class TestTable extends Table {
 	
 	@Description("Column A.")
 	@DataType("VARCHAR(255)")
+	@DefaultValue("A")
 	Column A
 	
 	@PrimaryKey
@@ -72,6 +73,7 @@ class TestTable extends Table {
 	void testGetColumns() {
 		assert A==getColumns().get(0)
 		assert A.dataType=="VARCHAR(255)"
+		assert A.defaultValue=="A"
 		assert B==getColumns().get(1)
 		assert "Column A."==A.description
 		assert A.parent==this

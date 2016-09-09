@@ -186,6 +186,11 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		if (notNull!=null) {
 			column.setNotNull(true)
 		}
+		
+		DefaultValue defaultValue=f.getAnnotation(DefaultValue)
+		if (defaultValue) {
+			column.setDefaultValue(defaultValue.value())
+		}
 	}
 	
 	@CompileStatic(TypeCheckingMode.SKIP)
