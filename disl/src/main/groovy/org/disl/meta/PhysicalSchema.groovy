@@ -143,6 +143,34 @@ ${joinCondition}"""
 		return getRecordQuery(index,expressions)
 	}
 	
+	
+	String getColumnDefinition(Column column) {
+		"${column.getName()} ${column.getDataType()}${getDefaultValueClause(column)}${getNotNullConstraint(column)}${getCheckConstraint(column)}"
+	}
+	
+	String getNotNullConstraint(Column column) {
+		if (column.isNotNull()) {
+			return " NOT NULL"
+		}
+		return ''
+	}
+	
+	
+	String getDefaultValueClause(Column column) {
+		if (column.getDefaultValue()==null) {
+			return ''
+		}
+		return " DEFAULT ${column.getDefaultValue()}"
+		
+	}
+	
+	String getCheckConstraint(Column column) {
+		if (column.getCheck()) {
+			return " CHECK (${column.getCheck()})"
+		}
+		return ''
+	}
+	
 	public ReverseEngineeringService getReverseEngineeringService() {
 		return new ReverseEngineeringService()
 	}

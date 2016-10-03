@@ -16,21 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.test
+package org.disl.meta
 
-import org.disl.meta.Context
-import org.disl.meta.MetaFactory
-import org.disl.meta.TestTable.TestingTable
-import org.disl.util.test.AbstractDislTestCase
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
 
-class DislTestCase extends AbstractDislTestCase {
-	
-	static {
-		Context.setContextName("disl-test")
-		def sql=Context.getSql("default")
-		sql.execute("CREATE TABLE DUAL (dummy char(1))")
-		sql.execute("INSERT INTO DUAL VALUES ('X')")
-		MetaFactory.create(TestingTable).execute()		
-	}
-	
+/**
+ * Defines check constraint.
+ * */
+@Retention(RetentionPolicy.RUNTIME)
+@interface Check {
+	String value()
 }

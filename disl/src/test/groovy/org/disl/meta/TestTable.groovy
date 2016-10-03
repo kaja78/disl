@@ -18,19 +18,25 @@
  */
 package org.disl.meta
 import static org.junit.Assert.*
+import groovy.transform.CompileStatic
 
 import org.disl.meta.Table.ForeignKeyMeta
 import org.disl.pattern.TablePattern
 import org.disl.pattern.generic.CreateOrReplaceTablePattern
+import org.disl.test.DislTestCase
 import org.junit.Before
 import org.junit.Test
 
-@Indexes(@Index(columns=["A","B"]))
-@ForeignKeys([
-	@ForeignKey(name='PARENT1_FK',targetTable=TestTable,sourceColumn='PARENT1_B,PARENT1_C'),
-	@ForeignKey(name='PARENT2_FK',targetTable=TestTable,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])
-class TestTable extends Table {
+@CompileStatic
+class TestTable {
 
+	@Indexes(@Index(columns=["A","B"]))
+	@ForeignKeys([
+		@ForeignKey(name='PARENT1_FK',targetTable=TestingTable,sourceColumn='PARENT1_B,PARENT1_C'),
+		@ForeignKey(name='PARENT2_FK',targetTable=TestingTable,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])	
+	static class TestingTable extends Table {
+		
+	
 	CreateOrReplaceTablePattern pattern
 	
 	@Description("Column A.")
@@ -52,6 +58,9 @@ class TestTable extends Table {
 	@DataType("VARCHAR(255)")
 	Column PARENT1_C
 	
+	@Check("PARENT2_B<>'XNA'")
+	@DefaultValue("'XUN'")
+	@NotNull
 	@DataType("VARCHAR(255)")
 	Column PARENT2_B
 	
@@ -59,30 +68,35 @@ class TestTable extends Table {
 	Column PARENT2_C
 	
 	@DataType("VARCHAR(255)")
-	@ForeignKey(targetTable=TestTable,targetColumn='A')
+	@ForeignKey(targetTable=TestingTable,targetColumn='A')
 	Column PARENT3_A
 
 	def DUMMY
 	
+	}
+	
+	TestingTable table
+	
 	@Before
-	void initTest() {
-		init()
+	void init() {
+		Context.setContextName("disl-test")
+		table=MetaFactory.create(TestingTable)
 	}
 	
 	@Test
 	void testGetColumns() {
-		assert A==getColumns().get(0)
-		assert A.dataType=="VARCHAR(255)"
-		assert A.defaultValue=="'A'"
-		assert B==getColumns().get(1)
-		assert "Column A."==A.description
-		assert A.parent==this
-		
+		assert table.A==table.getColumns().get(0)
+		assert table.A.dataType=="VARCHAR(255)"
+		assert table.A.defaultValue=="'A'"
+		assert table.B==table.getColumns().get(1)
+		assert "Column A."==table.A.description
+		assert table.A.parent==table
+		assert table.PARENT2_B.check=="PARENT2_B<>'XNA'"
 	}
 	
 	@Test
 	void testGetIndexes() {
-		Collection indexes=getIndexes()
+		Collection indexes=table.getIndexes()
 		assert indexes!=null
 		assert indexes[0].columnNames[0]=="A"
 		assert indexes[0].columnNames[1]=="B"
@@ -90,35 +104,40 @@ class TestTable extends Table {
 	
 	@Test
 	void testGetPrimaryKeyColumns() {
-		assertEquals([B,C], getPrimaryKeyColumns())
+		assertEquals([table.B,table.C], table.getPrimaryKeyColumns())
+	}
+	
+	@Test
+	void testGetColumnDefinition() {
+		assertEquals("PARENT2_B VARCHAR(255) DEFAULT 'XUN' NOT NULL CHECK (PARENT2_B<>'XNA')", table.PARENT2_B.getColumnDefinition())
 	}
 	
 	@Test
 	void testGetForeignKeys() {
 	 	ForeignKeyMeta f
 
-		f=getForeignKeys()[0]
+		f=table.getForeignKeys()[0]
 		assertEquals('',f.getName())
-		assertEquals('TestTable',f.getTargetTable().getName())
+		assertEquals('TestingTable',f.getTargetTable().getName())
 		assertEquals('A',f.getTargetColumn())
 		assertEquals('PARENT3_A',f.getSourceColumn())
  
-		f=getForeignKeys()[1]
+		f=table.getForeignKeys()[1]
 		assertEquals('PARENT1_FK',f.getName())
-		assertEquals('TestTable',f.getTargetTable().getName())
+		assertEquals('TestingTable',f.getTargetTable().getName())
 		assertEquals('B,C',f.getTargetColumn())
 		assertEquals('PARENT1_B,PARENT1_C',f.getSourceColumn())
  
-		f=getForeignKeys()[2]
+		f=table.getForeignKeys()[2]
 		assertEquals('PARENT2_FK',f.getName())
-		assertEquals('TestTable',f.getTargetTable().getName())
+		assertEquals('TestingTable',f.getTargetTable().getName())
 		assertEquals('B,C',f.getTargetColumn())
 		assertEquals('PARENT2_B,PARENT2_C',f.getSourceColumn())
  	}
 	
 	@Test
 	void testGetRefferenceColumnList() {
-		assertEquals(getRefferenceColumnList(),"A,B,C,PARENT1_B,PARENT1_C,PARENT2_B,PARENT2_C,PARENT3_A")
+		assertEquals(table.getRefferenceColumnList(),"A,B,C,PARENT1_B,PARENT1_C,PARENT2_B,PARENT2_C,PARENT3_A")
 	}
 	
 	

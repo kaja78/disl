@@ -21,6 +21,7 @@ package org.disl.meta
 import static org.disl.meta.TestLibrary.*
 import static org.junit.Assert.*
 
+import org.disl.meta.TestTable.TestingTable
 import org.disl.test.DislTestCase
 import org.junit.Test
 
@@ -29,12 +30,12 @@ class TestMapping extends DislTestCase {
 
 	static class TestingMapping extends Mapping {
 
-		TestTable s1
-		TestTable s2
-		TestTable s3
-		TestTable s4
-		TestTable s5
-		TestTable s6
+		TestingTable s1
+		TestingTable s2
+		TestingTable s3
+		TestingTable s4
+		TestingTable s5
+		TestingTable s6
 
 		ColumnMapping A=e s1.A
 		ColumnMapping c=e "C"
@@ -66,12 +67,12 @@ class TestMapping extends DislTestCase {
 			C as c,
 			REPEAT(s2.B,3) as B
 		FROM
-			PUBLIC.TestTable s1
-			INNER JOIN PUBLIC.TestTable s2  ON (s1.A=s2.A)
-			LEFT OUTER JOIN PUBLIC.TestTable s3  ON (s2.A=s3.A)
-			RIGHT OUTER JOIN PUBLIC.TestTable s4  ON (s2.A=s4.A)
-			FULL OUTER JOIN PUBLIC.TestTable s5  ON (s2.A=s5.A)
-			CROSS JOIN PUBLIC.TestTable s6
+			PUBLIC.TestingTable s1
+			INNER JOIN PUBLIC.TestingTable s2  ON (s1.A=s2.A)
+			LEFT OUTER JOIN PUBLIC.TestingTable s3  ON (s2.A=s3.A)
+			RIGHT OUTER JOIN PUBLIC.TestingTable s4  ON (s2.A=s4.A)
+			FULL OUTER JOIN PUBLIC.TestingTable s5  ON (s2.A=s5.A)
+			CROSS JOIN PUBLIC.TestingTable s6
 		WHERE
 			s1.A=s1.A
 		GROUP BY

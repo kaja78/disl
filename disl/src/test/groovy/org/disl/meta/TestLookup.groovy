@@ -42,7 +42,23 @@ class TestLookup {
 	
 	@Test
 	public void testGetQuery() {
-		println m.getSQLQuery()
+		assertEquals("""\
+	/*Mapping TestingLookupMapping*/
+		SELECT
+			l.A+l.B as C
+		FROM
+			(
+select * from (select 1 as DUMMY_KEY,1 as A,2 as B from (VALUES(0))
+union all
+select 2 as DUMMY_KEY,2 as A,4 as B from (VALUES(0))
+) SRC
+where
+1=1
+AND SRC.DUMMY_KEY=SRC.DUMMY_KEY) l
+		WHERE
+			1=1
+		
+	/*End of mapping TestingLookupMapping*/""",m.getSQLQuery())
 	}
 	
 	@Test

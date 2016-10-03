@@ -37,6 +37,7 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService
  * */
 @CompileStatic
 public class Context implements Cloneable {
+	public static final String CONTEXT_PROPERTY="disl.context"
 	public static final String CONTEXT_DEFAULT="default"
 	public static final String EXECUTION_MODE_DEFAULT="default"
 
@@ -60,7 +61,7 @@ public class Context implements Cloneable {
 	private final static ThreadLocal<String> localContextName=new ThreadLocal<String>() {
 		@Override
 		protected String initialValue() {
-			CONTEXT_DEFAULT
+			System.getProperty(CONTEXT_PROPERTY, CONTEXT_DEFAULT)
 		}
 	};
 
@@ -103,7 +104,7 @@ public class Context implements Cloneable {
 	public static Sql getSql(String logicalSchemaName) {
 		getContext().getPhysicalSchema(logicalSchemaName).getSql()
 	}
-
+	
 	public static String getPhysicalSchemaName(String logicalSchemaName) {
 		if (logicalSchemaName==null) {
 			return null

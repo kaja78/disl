@@ -19,10 +19,11 @@
 package org.disl.workflow
 
 import org.disl.meta.MetaFactory
+import org.disl.test.DislTestCase
 import org.junit.Assert
 import org.junit.Test
 
-class TestDislScript {
+class TestDislScript extends DislTestCase {
 	
 	TestingScript s=MetaFactory.create(TestingScript)
 	

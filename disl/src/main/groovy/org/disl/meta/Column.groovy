@@ -30,6 +30,7 @@ class Column extends AbstractSqlExpression {
 	String description
 	String dataType
 	String defaultValue
+	String check
 	boolean notNull=false
 	boolean primaryKey = false
 
@@ -41,23 +42,14 @@ class Column extends AbstractSqlExpression {
 	}
 	
 	String getColumnDefinition() {
-		"${getName()} ${getDataType()}${getDefaultValueClause()}${getConstraint()}"
+		getPhysicalSchema().getColumnDefinition(this)		
 	}
 	
-	String getConstraint() {
-		if (isNotNull()) {
-			return " NOT NULL"
-		}
-		return ""
+	PhysicalSchema getPhysicalSchema() {
+		Context.getContext().getPhysicalSchema(getParent().getSchema())
 	}
 	
-	String getDefaultValueClause() {
-		if (getDefaultValue()==null) {
-			return ""
-		}
-		return " DEFAULT ${getDefaultValue()}"
-		
-	}
+
 	
 	String toString(){
 		if (parent==null || parent.getSourceAlias()==null) {

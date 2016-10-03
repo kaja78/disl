@@ -46,14 +46,55 @@ class TestSetOperationMapping extends DislTestCase {
 
 	TestingSetOperationMapping mapping=MetaFactory.create(TestingSetOperationMapping)
 	
-	@Before
-	void createTestTable() {
-		MetaFactory.create(TestTable).execute()
-	}
-
 	@Test
 	void testGetSQLQuery() {
-		println mapping.getSQLQuery()
+		assertEquals("""\
+	/*Mapping TestingSetOperationMapping*/
+		SELECT
+			subquery1.A as A,
+			C as c,
+			subquery1.B as B
+		FROM
+			(
+	/*Mapping TestingMapping*/
+		SELECT
+			s1.A as A,
+			C as c,
+			REPEAT(s2.B,3) as B
+		FROM
+			PUBLIC.TestingTable s1
+			INNER JOIN PUBLIC.TestingTable s2  ON (s1.A=s2.A)
+			LEFT OUTER JOIN PUBLIC.TestingTable s3  ON (s2.A=s3.A)
+			RIGHT OUTER JOIN PUBLIC.TestingTable s4  ON (s2.A=s4.A)
+			FULL OUTER JOIN PUBLIC.TestingTable s5  ON (s2.A=s5.A)
+			CROSS JOIN PUBLIC.TestingTable s6
+		WHERE
+			s1.A=s1.A
+		GROUP BY
+			s1.A,C,REPEAT(s2.B,3)
+	/*End of mapping TestingMapping*/) subquery1
+		WHERE
+			1=1
+		
+	UNION select A,c,B from (
+	/*Mapping TestingMapping*/
+		SELECT
+			s1.A as A,
+			C as c,
+			REPEAT(s2.B,3) as B
+		FROM
+			PUBLIC.TestingTable s1
+			INNER JOIN PUBLIC.TestingTable s2  ON (s1.A=s2.A)
+			LEFT OUTER JOIN PUBLIC.TestingTable s3  ON (s2.A=s3.A)
+			RIGHT OUTER JOIN PUBLIC.TestingTable s4  ON (s2.A=s4.A)
+			FULL OUTER JOIN PUBLIC.TestingTable s5  ON (s2.A=s5.A)
+			CROSS JOIN PUBLIC.TestingTable s6
+		WHERE
+			s1.A=s1.A
+		GROUP BY
+			s1.A,C,REPEAT(s2.B,3)
+	/*End of mapping TestingMapping*/) subquery2
+	/*End of mapping TestingSetOperationMapping*/""", mapping.getSQLQuery())
 	}
 
 	@Test
@@ -64,12 +105,12 @@ class TestSetOperationMapping extends DislTestCase {
 			C as c,
 			REPEAT(s2.B,3) as B
 		FROM
-			PUBLIC.TestTable s1
-			INNER JOIN PUBLIC.TestTable s2  ON (s1.A=s2.A)
-			LEFT OUTER JOIN PUBLIC.TestTable s3  ON (s2.A=s3.A)
-			RIGHT OUTER JOIN PUBLIC.TestTable s4  ON (s2.A=s4.A)
-			FULL OUTER JOIN PUBLIC.TestTable s5  ON (s2.A=s5.A)
-			CROSS JOIN PUBLIC.TestTable s6
+			PUBLIC.TestingTable s1
+			INNER JOIN PUBLIC.TestingTable s2  ON (s1.A=s2.A)
+			LEFT OUTER JOIN PUBLIC.TestingTable s3  ON (s2.A=s3.A)
+			RIGHT OUTER JOIN PUBLIC.TestingTable s4  ON (s2.A=s4.A)
+			FULL OUTER JOIN PUBLIC.TestingTable s5  ON (s2.A=s5.A)
+			CROSS JOIN PUBLIC.TestingTable s6
 		WHERE
 			s1.A=s1.A
 		GROUP BY

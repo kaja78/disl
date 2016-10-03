@@ -163,33 +163,38 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		column.setName(f.getName());
 
 		Description desc=f.getAnnotation(Description)
-		if (desc!=null) {
+		if (desc) {
 			column.setDescription(desc.value())
 		}
 
 		DataType dataType=f.getAnnotation(DataType)
-		if (dataType!=null) {
+		if (dataType) {
 			column.setDataType(dataType.value())
 		}
 
 		PrimaryKey primaryKey=f.getAnnotation(PrimaryKey)
-		if (primaryKey!=null) {
+		if (primaryKey) {
 			column.setPrimaryKey(true)
 		}
 
 		DefaultMapping defaultMapping=f.getAnnotation(DefaultMapping)
-		if (defaultMapping!=null) {
+		if (defaultMapping) {
 			initDefaultMapping(column, defaultMapping.value())
 		}
 
 		NotNull notNull=f.getAnnotation(NotNull)
-		if (notNull!=null) {
+		if (notNull) {
 			column.setNotNull(true)
 		}
 		
 		DefaultValue defaultValue=f.getAnnotation(DefaultValue)
 		if (defaultValue) {
 			column.setDefaultValue(defaultValue.value())
+		}
+		
+		Check check=f.getAnnotation(Check)
+		if (check) {
+			column.setCheck(check.value())
 		}
 	}
 	
