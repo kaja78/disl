@@ -20,7 +20,6 @@ package org.disl.meta
 import static org.junit.Assert.*
 import groovy.transform.CompileStatic
 
-import org.disl.meta.Table.ForeignKeyMeta
 import org.disl.pattern.TablePattern
 import org.disl.pattern.generic.CreateOrReplaceTablePattern
 import org.disl.test.DislTestCase
@@ -31,6 +30,8 @@ import org.junit.Test
 class TestTable {
 
 	@Indexes(@Index(columns=["A","B"]))
+	@CheckConstraints(
+		@Check(name='CHECK_1',value='1=1'))
 	@ForeignKeys([
 		@ForeignKey(name='PARENT1_FK',targetTable=TestingTable,sourceColumn='PARENT1_B,PARENT1_C'),
 		@ForeignKey(name='PARENT2_FK',targetTable=TestingTable,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])	
@@ -100,6 +101,13 @@ class TestTable {
 		assert indexes!=null
 		assert indexes[0].columnNames[0]=="A"
 		assert indexes[0].columnNames[1]=="B"
+	}
+	
+	@Test
+	void testGetCheckConstraints() {
+		CheckMeta check=table.getCheckConstraints().get(0)
+		assertEquals('CHECK_1', check.name)
+		assertEquals('1=1', check.check)
 	}
 	
 	@Test

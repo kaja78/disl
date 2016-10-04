@@ -42,6 +42,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	List<IndexMeta> indexes=[]
 	List<UniqueKeyMeta> uniqueKeys=[]
 	List<ForeignKeyMeta> foreignKeys=[]
+	List<CheckMeta> checkConstraints=[]
 
 
 	public String getSchema() {
@@ -97,18 +98,17 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	}
 
 	public void init() {
-		initColumns()
-		initConstraints()
-		initForeignKey()
-
 		Description desc=this.getClass().getAnnotation(Description)
 		if (desc!=null) {
 			description=desc.value()
 		}
+		
+		initColumns()
 
 		IndexMeta.initIndexes(this)
 		UniqueKeyMeta.initUniqueKeys(this)
-		
+		CheckMeta.initCheckConstraints(this)
+		ForeignKeyMeta.initForeignKey(this)
 
 		initPattern()
 	}
@@ -130,25 +130,6 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 
 	protected void initColumns() {
 		getFieldsByType(Column).each {initColumn(it)}
-	}
-
-	protected void initConstraints() {
-		getClass().getFields().findAll({it.getAnnotation(UniqueKey)!=null})		
-	}
-	
-	protected void initForeignKey() {
-		getFieldsByType(Column).each {
-			Field f=it
-			ForeignKey foreignKey=f.getAnnotation(ForeignKey)
-			if (foreignKey!=null) {
-				ForeignKeyMeta.initForeignKey(foreignKey, this, (Column)this[f.getName()])
-			}
-		}
-		
-		ForeignKeys foreignKeys=getClass().getAnnotation(ForeignKeys)
-		if (foreignKeys!=null) {
-			foreignKeys.value().each {ForeignKeyMeta.initForeignKey((ForeignKey)it,this,null)}
-		}
 	}
 
 	protected void initColumn(Field f) {
@@ -209,48 +190,5 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	
 	public List<Column> getPrimaryKeyColumns() {
 		(List<Column>)columns.findAll {it.isPrimaryKey()}
-	}
-
-	static class ForeignKeyMeta {
-		String name		
-		Table targetTable
-		String targetTableClassName
-		
-		List<String> sourceColumns=[]
-		List<String> targetColumns=[]
-		
-		public void setTargetTable(Table targetTable) {			
-			this.targetTable=targetTable
-			setTargetTableClassName(targetTable.getClass().getName())						
-		}
-		
-		public void setSourceColumn(String name) {
-			sourceColumns=Arrays.asList(name.split(','))
-		}
-		
-		public String getSourceColumn() {
-			sourceColumns.join(',')	
-		}
-		
-		public void setTargetColumn(String name) {
-			targetColumns=Arrays.asList(name.split(','))
-		}
-		
-		public String getTargetColumn() {
-			targetColumns.join(',')
-		}
-						
-		static void initForeignKey(ForeignKey foreignKey,Table table,Column column) {
-			//Hence foreign keys may build circular dependencies in DISL data model, foreign key target table may not be fully initialized.
-			Table targetTable=MetaFactory.newInstance(foreignKey.targetTable())
-			targetTable.initColumns()
-			
-			table.getForeignKeys().add new ForeignKeyMeta(
-				name: foreignKey.name(),
-				sourceColumn: column==null ? foreignKey.sourceColumn() : column.name,
-				targetTable: targetTable,
-				targetColumn: foreignKey.targetColumn()=='' ? targetTable.getPrimaryKeyColumns().join(',') : foreignKey.targetColumn()
-				)
-		}
 	}
 }

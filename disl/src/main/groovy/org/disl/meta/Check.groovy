@@ -26,5 +26,13 @@ import java.lang.annotation.RetentionPolicy
  * */
 @Retention(RetentionPolicy.RUNTIME)
 @interface Check {
+	/**
+	 * Check condition SQL expression.
+	 * */
 	String value()
+	
+	/**
+	 * Name of check constraint.
+	 */
+	String name() default ''
 }

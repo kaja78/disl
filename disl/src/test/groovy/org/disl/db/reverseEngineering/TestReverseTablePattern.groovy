@@ -20,9 +20,9 @@ package org.disl.db.reverseEngineering
 
 import static org.junit.Assert.*
 
+import org.disl.meta.ForeignKeyMeta
 import org.disl.meta.MetaFactory
 import org.disl.meta.TestDimensionTable
-import org.disl.meta.Table.ForeignKeyMeta
 import org.junit.Before
 import org.junit.Test
 

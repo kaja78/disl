@@ -28,7 +28,7 @@ import groovy.transform.CompileStatic
 class UniqueKeyMeta {
 	
 	String[] columns=[]
-
+	
 	public static void initUniqueKeys(Table table) {
 		UniqueKeys uniqueKeys=table.getClass().getAnnotation(UniqueKeys)
 		if (uniqueKeys!=null) {
