@@ -179,7 +179,7 @@ ${joinCondition}"""
 	protected void finalize() throws Throwable {
 		if (sql!=null) {
 			sql.close()
-			sql=null
+			setSqlProxy(null)
 		}
 	}
 	

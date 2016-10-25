@@ -69,8 +69,8 @@ class MetaFactory {
 	 * //Generate all tables defined in disl model for your data warehouse.
 	 * MetaFactory.createAll(com.yourDw.AbstractDwTable,"com.yourDw",AbstractDwTable).each({it.generate})
 	 * */
-	static List createAll(Class sourceClass,String rootPackage,Class assignableType) {
-		Collection<Class> typesToCreate=findTypes(sourceClass, rootPackage, assignableType)
+	static List createAll(String rootPackage,Class assignableType) {
+		Collection<Class> typesToCreate=findTypes(rootPackage, assignableType)
 		if (typesToCreate.size()==0) {
 			throw new RuntimeException('No classes found!')
 		}
@@ -81,45 +81,9 @@ class MetaFactory {
 	 * Returns classes in given rootPackage (including subpackages) which are assignable to assignableType.
 	 * Only classes located in the same class path element (jar file or directory) as the sourceClass will be found!
 	 * */
-	static List<Class> findTypes(Class sourceClass,String rootPackage,Class assignableType) {
-		ClassFinder.createClassFinder(sourceClass).findNonAbstractTypes(rootPackage,assignableType)
+	static List<Class> findTypes(String rootPackage,Class assignableType) {
+		ClassFinder.createClassFinder(rootPackage).findNonAbstractTypes(rootPackage,assignableType)
 	}
 	
-	
-	/**
-	 * Traverse all class files in traversePath and creates instances for all found classes in given rootPackage (including subpackages) which are assignable to assignableType.
-	 * 
-	 * Example: 
-	 * //Generate all tables defined in disl model for your data warehouse.
-	 * MetaFactory.createAll("bin","com.yourDw",Table).each({it.generate})
-	 * */
-	@Deprecated	
-	static List createAll(String traversePath,String rootPackage,Class assignableType) {
-		
-		def typesToCreate=new DirectoryClassFinder(traversePath: traversePath).findNonAbstractTypes(rootPackage,assignableType)
-		typesToCreate.collect {create(it)}
-	}
-	
-	@Deprecated
-	protected static class DirectoryClassFinder extends ClassFinder {
-		String traversePath
-		
-		public List<Class> findTypes(String rootPackage,Closure classFilter) {
-			File rootDir = new File(traversePath)
-			File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
-			Pattern filterClassFiles = ~/.*\.class$/
-			def types=[]
-			traverseDir.traverse ((Map<String,Object>)[type: FileType.FILES, nameFilter: filterClassFiles]) {
-				String classFile=it.absolutePath.substring(rootDir.absolutePath.length()+1)				
-				Class type=Class.forName(getClassName(classFile))
-				types.add(type)
-			}
-			types.findAll(classFilter).toList()
-		}
-
-	}
-	
-	
-
 
 }

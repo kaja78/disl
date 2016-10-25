@@ -21,6 +21,7 @@ package org.disl.workflow
 import groovy.io.FileType
 import groovy.transform.CompileStatic
 
+import java.lang.invoke.SwitchPoint;
 import java.lang.reflect.Modifier
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
@@ -33,39 +34,44 @@ import java.util.regex.Pattern
 abstract class ClassFinder {
 	
 	URL sourceURL
-	Class sourceClass
+	String rootDir
 	
 	protected String getClassName(String fileName) {
 		return fileName.substring(0,fileName.length()-6).replace('/', '.').replace('\\', '.')
 	}
 	
-	protected File getCodeSourceFile() {
-		new File(URLDecoder.decode(sourceClass.getProtectionDomain().getCodeSource().getLocation().file))
-	}
 	
-	public static ClassFinder createClassFinder(Class sourceClass) {
-		URL sourceURL=sourceClass.getResource('/'+sourceClass.getName().replace('.', '/')+".class");
-		switch (sourceURL.getProtocol()) {
-			case 'jar':
-				return new JarFinder(sourceClass: sourceClass,sourceURL: sourceURL)
-				break
-			case 'file':
-				return new FileSystemFinder(sourceClass: sourceClass,sourceURL: sourceURL)
-				break
+	public static ClassFinder createClassFinder(String rootPackage) {
+		List<ClassFinder> finders=[]
+		String rootDir=rootPackage.replace('.','/')
+		ClassLoader classLoader=Thread.currentThread().getContextClassLoader()
+		classLoader.getResources(rootDir).each {
+			URL url=(URL)it
+			
+			switch (url.getProtocol()) {
+				case 'jar':
+					finders.add new JarFinder(rootDir: rootDir,sourceURL: url)
+					break
+				case 'file':
+					finders.add new FileSystemFinder(rootDir: rootDir,sourceURL: url)
+					break
+				default :
+					throw new RuntimeException("Unsupported URL protocol for resource $url");
+			}
 		}
-		throw new RuntimeException("Unsupported URL protocol for source class ${sourceClass.name}");
+		return new CompositeFinder(finders:finders,rootDir:rootDir)		
 	}
 	
 	public List<Class> findNonAbstractTypes(Class assignableType) {
-		findNonAbstractTypes(sourceClass.getPackage().getName(),assignableType)		
+		findNonAbstractTypes(rootDir,assignableType)		
 	}
 	
-	public List<Class> findNonAbstractTypes(String rootPackage,Class assignableType) {
-		findTypes(rootPackage,{assignableType.isAssignableFrom(((Class)it)) && !Modifier.isAbstract(((Class)it).getModifiers())})
+	public List<Class> findNonAbstractTypes(String rootDir,Class assignableType) {
+		findTypes(rootDir,{assignableType.isAssignableFrom(((Class)it)) && !Modifier.isAbstract(((Class)it).getModifiers())})
 	}
 
 	public List<Class> findTypes(Closure classFilter) {
-		return findTypes(sourceClass.getPackage().getName(),classFilter); 
+		return findTypes(rootDir,classFilter); 
 	}
 	
 	public abstract List<Class> findTypes(String rootPackage,Closure classFilter);
@@ -73,12 +79,12 @@ abstract class ClassFinder {
 	static class FileSystemFinder extends ClassFinder {
 			
 		public List<Class> findTypes(String rootPackage,Closure classFilter) {
-			File rootDir = getCodeSourceFile()
-			File traverseDir = new File (rootDir,rootPackage.replace('.', '/'))
+			
+			File traverseDir = new File (sourceURL.toURI())
 			Pattern filterClassFiles = ~/.*\.class$/
 			List<Class> types=[]
 			traverseDir.traverse ((Map<String,Object>)[type: FileType.FILES, nameFilter: filterClassFiles]) {
-				String classFile=it.absolutePath.substring(rootDir.absolutePath.length()+1)				
+				String classFile=rootDir+'/'+it.absolutePath.substring(traverseDir.absolutePath.length()+1)				
 				Class type=Class.forName(getClassName(classFile))
 				types.add(type)
 			}
@@ -89,12 +95,32 @@ abstract class ClassFinder {
 
 	static class JarFinder extends ClassFinder {
 		JarFile getJarFile() {
-			new JarFile(getCodeSourceFile())			
+			((JarURLConnection)sourceURL.openConnection()).getJarFile()			
 		}
-		public List<Class> findTypes(String rootPackage,Closure classFilter) {
-			List<JarEntry> entries=getJarFile().entries().findAll({((JarEntry)it).name.startsWith(rootPackage.replace('.', '/')) && ((JarEntry)it).name.endsWith('.class')}).toList()
+		public List<Class> findTypes(String rootDir,Closure classFilter) {
+			JarFile jarFile=getJarFile()
+			
+			Collection<JarEntry> entries=getJarFile().entries().findAll()
+			entries=entries.findAll({
+				String name=((JarEntry)it).getName()
+				(name.startsWith(rootDir) && name.endsWith('.class'))})
+			
 			return entries.collect({Class.forName(getClassName(it.name))}).findAll(classFilter).toList()
 		}
 
 	}
+	
+	static class CompositeFinder extends ClassFinder {
+		
+		List<ClassFinder> finders
+		
+		public List<Class> findTypes(String rootPackage,Closure classFilter) {
+			List<Class> types=[]
+			finders.each {
+				types.addAll(it.findTypes(rootPackage,classFilter))
+			}
+			return types
+		}
+		
+	} 
 }

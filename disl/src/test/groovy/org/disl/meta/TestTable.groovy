@@ -26,7 +26,6 @@ import org.disl.test.DislTestCase
 import org.junit.Before
 import org.junit.Test
 
-@CompileStatic
 class TestTable {
 
 	@Indexes(@Index(columns=["A","B"]))

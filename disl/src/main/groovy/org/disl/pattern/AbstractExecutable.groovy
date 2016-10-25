@@ -74,7 +74,7 @@ abstract class AbstractExecutable implements Executable {
 	}
 	
 	Collection createAll(String packageName,Class assignableFrom) {
-		return MetaFactory.createAll(this.getClass(), packageName, assignableFrom)		
+		return MetaFactory.createAll(packageName, assignableFrom)		
 	}
 
 }

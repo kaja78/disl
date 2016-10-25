@@ -24,6 +24,8 @@ import org.hsqldb.lib.HsqlArrayHeap
 import org.junit.Assert
 import org.junit.Test
 
+import groovy.transform.CompileStatic;
+@CompileStatic
 class TestClassFinder {
 
 	@Test
@@ -34,7 +36,7 @@ class TestClassFinder {
 		Class typeInParentPackage=org.junit.ComparisonFailure
 		Class typeInOtherPackage=org.junit.validator.AnnotationValidator
 
-		ClassFinder jarFinder=ClassFinder.createClassFinder(sourceClass)
+		ClassFinder jarFinder=ClassFinder.createClassFinder('org.junit.runner')
 		Assert.assertEquals(0,jarFinder.findTypes({false}).size())
 		
 		Collection<Class> types=jarFinder.findTypes {true}
@@ -49,16 +51,16 @@ class TestClassFinder {
 	
 	@Test
 	public void testFindTypesDir() {
-		Class sourceClass=org.disl.meta.Base
+		Class testingClass=org.disl.meta.Base
 		Class typeInSamePackage=org.disl.meta.Table
 		Class typeInOtherPackage=org.disl.workflow.Job
 
-		ClassFinder fsFinder=ClassFinder.createClassFinder(sourceClass)
+		ClassFinder fsFinder=ClassFinder.createClassFinder('org.disl.meta')
 		Assert.assertEquals(0,fsFinder.findTypes({false}).size())
 		
 		Collection<Class> types=fsFinder.findTypes {true}
 		
-		Assert.assertTrue(types.contains(sourceClass))
+		Assert.assertTrue(types.contains(testingClass))
 		Assert.assertTrue(types.contains(typeInSamePackage))
 		
 		Assert.assertFalse(types.contains(typeInOtherPackage))

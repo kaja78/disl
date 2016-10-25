@@ -18,9 +18,10 @@
  */
 package org.disl.pattern;
 
-import org.disl.meta.Context
+import groovy.transform.CompileStatic
 
-import groovy.transform.CompileStatic;
+import org.disl.meta.Context
+import org.disl.meta.Table
 
 
 /**
@@ -28,7 +29,7 @@ import groovy.transform.CompileStatic;
  * */
 @CompileStatic
 public abstract class Step extends AbstractExecutable {
-
+	
 	String name;
 
 	/**

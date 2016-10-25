@@ -121,8 +121,8 @@ abstract class DislScript extends Script implements Executable{
 		executable.collect {MetaFactory.create(it)}
 	}
 	
-	public <T> Collection<T> createAll(Class sourceClass,String rootPackage,Class assignableType) {
-		MetaFactory.createAll(sourceClass, rootPackage, assignableType)
+	public <T> Collection<T> createAll(String rootPackage,Class assignableType) {
+		MetaFactory.createAll(rootPackage, assignableType)
 	}
 	
 	public void sqlDepPublish(String sqlDepUserAccountId,String sqlDepCustomSqlSetName,Collection objects) {
