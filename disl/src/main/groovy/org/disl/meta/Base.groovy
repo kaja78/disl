@@ -26,7 +26,7 @@ import java.lang.reflect.Field
  * Abstract parent class for DISL meta classes.
  * */
 @CompileStatic
-abstract class Base {
+abstract class Base implements Comparable<Base> {
 	
 	String name
 	
@@ -75,6 +75,11 @@ abstract class Base {
 	
 	public List<String> getPropertyNamesByType(Class type) {
 		return metaClass.properties.findAll({type.isAssignableFrom(it.type)}).collect({it.name});
+	}
+	
+	@Override
+	public int compareTo(Base o) {
+		return this.getName().compareTo(o.getName())
 	}
 
 }

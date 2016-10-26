@@ -18,13 +18,16 @@
  */
 package org.disl.util.doc
 
+import org.disl.meta.Lookup
 import org.disl.meta.Mapping
 import org.disl.meta.Table
 
 interface IDocumentationStep {
 	
-	abstract void execute()
-	abstract void simulate()
+	void execute()
+	void simulate()	
+	DocGenerator getDocGenerator()
+	void setDocGenerator(DocGenerator docGenerator)
 	
 	static interface ITableDocumentationStep extends IDocumentationStep {
 		void setTable(Table table)
@@ -33,4 +36,13 @@ interface IDocumentationStep {
 	static interface IMappingDocumentationStep extends IDocumentationStep {
 		void setMapping(Mapping mapping)
 	}
+	
+	static interface ILookupDocumentationStep extends IDocumentationStep {
+		void setLookup(Lookup lookup)
+	}
+	
+	static interface IPackageDocumentationStep extends IDocumentationStep {
+		void setPackageName(String packageName)
+	}
+		
 }

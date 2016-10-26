@@ -34,14 +34,14 @@ import org.disl.workflow.ClassFinder
 @CompileStatic
 class MetaManager {
 
-	Map<String,Base> elementMap=new HashMap()
-	Map<String,Set<String>> sourceUsage=new HashMap()
-	Map<String,Set<String>> targetUsage=new HashMap()
+	Map<String,Base> elementMap=new TreeMap()
+	Map<String,Set<String>> sourceUsage=new TreeMap()
+	Map<String,Set<String>> targetUsage=new TreeMap()
 
 	/**
-	 * Map holding set of model Stringes by package name string key.
+	 * Map holding set of model element names by package name string key.
 	 * */
-	Map<String,Set<String>> packageContent=new HashMap()
+	Map<String,Set<String>> packageContent=new TreeMap()
 
 	void addRootPackage(String rootPackage) {
 		ClassFinder cf=ClassFinder.createClassFinder(rootPackage)
@@ -49,7 +49,7 @@ class MetaManager {
 		cf.findTypes({
 			Class type=(Class)it
 			int modifiers=type.getModifiers()
-			(MappingSource.isAssignableFrom(type)/*Table.isAssignableFrom(type) || Mapping.isAssignableFrom(type)*/) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalOrAnonymousClass())
+			(MappingSource.isAssignableFrom(type)) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalOrAnonymousClass())
 		}).each {
 			add(it)
 		}
@@ -66,7 +66,7 @@ class MetaManager {
 	void addPackageContent(String packageName,Base modelElement) {
 		Set<String> l=packageContent.get(packageName)
 		if (!l) {
-			l=new HashSet()
+			l=new TreeSet()
 			packageContent.put(packageName,l)
 		}
 		if (l.add(modelElement.class.name)) {
@@ -96,7 +96,7 @@ class MetaManager {
 	void addSourceUsage(String className,String usedByClassName) {
 		Set<String> l=sourceUsage.get(className)
 		if (!l) {
-			l=new HashSet()
+			l=new TreeSet()
 			sourceUsage.put(className,l)
 		}
 		l.add(usedByClassName)
@@ -105,9 +105,15 @@ class MetaManager {
 	void addTargetUsage(String className,String usedByClassName) {
 		Set<String> l=targetUsage.get(className)
 		if (!l) {
-			l=new HashSet()
+			l=new TreeSet()
 			targetUsage.put(className,l)
 		}
 		l.add(usedByClassName)
+	}
+	
+	List<Base> getPackageElements(String packageName) {
+		packageContent.get(packageName).collect() {
+			elementMap.get(it)
+		}
 	}
 }
