@@ -18,9 +18,11 @@
  */
 package org.disl.util.doc
 
+import org.disl.meta.Base
 import org.disl.meta.Lookup
 import org.disl.meta.Mapping
 import org.disl.meta.Table
+import org.disl.workflow.Job
 
 interface IDocumentationStep {
 	
@@ -43,6 +45,14 @@ interface IDocumentationStep {
 	
 	static interface IPackageDocumentationStep extends IDocumentationStep {
 		void setPackageName(String packageName)
+	}
+	
+	static interface IJobDocumentationStep extends IDocumentationStep {
+		void setJob(Job job)
+	}
+	
+	static interface ILineageStep extends IDocumentationStep {
+		void setElementClassName(String elementClassName)
 	}
 		
 }

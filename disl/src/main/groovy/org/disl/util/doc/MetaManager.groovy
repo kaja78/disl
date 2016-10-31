@@ -20,6 +20,7 @@ package org.disl.util.doc
 
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
+import groovy.util.logging.Slf4j
 
 import java.lang.reflect.Modifier
 
@@ -30,48 +31,77 @@ import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.meta.TableMapping
 import org.disl.workflow.ClassFinder
+import org.disl.workflow.Job
 
+@Slf4j
 @CompileStatic
 class MetaManager {
 
-	Map<String,Base> elementMap=new TreeMap()
-	Map<String,Set<String>> sourceUsage=new TreeMap()
-	Map<String,Set<String>> targetUsage=new TreeMap()
+	List<Class> dislClasses=[]
+
+	Set<String> elements=new TreeSet(new ClassNameComparator())
+	Map<String,String> elementDescriptionMap=new HashMap()
+	Map<String,Set<String>> sourceUsage=new TreeMap(new ClassNameComparator())
+	Map<String,Set<String>> targetUsage=new TreeMap(new ClassNameComparator())
 
 	/**
 	 * Map holding set of model element names by package name string key.
 	 * */
 	Map<String,Set<String>> packageContent=new TreeMap()
+	Map<String,Set<String>> packageTables=new TreeMap()
+	Map<String,Set<String>> packageMappings=new TreeMap()
 
 	void addRootPackage(String rootPackage) {
+		log.info("Searching for DISL classes in root package $rootPackage")
 		ClassFinder cf=ClassFinder.createClassFinder(rootPackage)
-
-		cf.findTypes({
+		List<Class> classes=cf.findTypes({
 			Class type=(Class)it
 			int modifiers=type.getModifiers()
-			(MappingSource.isAssignableFrom(type)) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalOrAnonymousClass())
-		}).each {
-			add(it)
-		}
+			(MappingSource.isAssignableFrom(type) || Job.isAssignableFrom(type)) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalOrAnonymousClass())
+		})
+		dislClasses.addAll(classes)
+		log.info("${classes.size()} DISL elements found for root package $rootPackage.")
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
-	void add(Class<Base> modelElement) {
-		String packageName=modelElement.getPackage().getName()
-		Base element=MetaFactory.create(modelElement)
-		addPackageContent(packageName,element)
-		addUsage(element)
+	void process(Closure closure) {
+		dislClasses.each {
+			log.info("Processing ${it.name}.")
+			Class<Base> modelElement=it
+			String packageName=modelElement.getPackage().getName()
+			try {
+				Base element=MetaFactory.create(modelElement)				
+				closure.call(element)
+				addPackageContent(packageName,element)
+				addUsage(element)
+				if (element instanceof MappingSource) {
+					elementDescriptionMap.put(element.class.name,element.description)
+				}
+			} catch (Exception e) {
+				log.error(e.getMessage())
+				e.printStackTrace()
+			}
+		}
 	}
 
 	void addPackageContent(String packageName,Base modelElement) {
-		Set<String> l=packageContent.get(packageName)
+		elements.add(modelElement.class.name)
+		addContent(packageContent,packageName,modelElement.class.name)
+		if (modelElement instanceof Mapping) {
+			addContent(packageMappings,packageName,modelElement.class.name)
+		}
+		if (modelElement instanceof Table) {
+			addContent(packageTables,packageName,modelElement.class.name)
+		}		
+	}
+
+	void addContent(Map<String,Set<String>> map,String packageName, String className) {
+		Set<String> l=map.get(packageName)
 		if (!l) {
-			l=new TreeSet()
-			packageContent.put(packageName,l)
+			l=new TreeSet(new ClassNameComparator())
+			map.put(packageName,l)
 		}
-		if (l.add(modelElement.class.name)) {
-			elementMap.put(modelElement.class.name,modelElement)
-		}
+		l.add(className)
 	}
 
 	void addUsage(Mapping mapping) {
@@ -86,6 +116,13 @@ class MetaManager {
 		if (mapping instanceof TableMapping) {
 			addTargetUsage(mapping.target.class.name,mapping.class.name)
 			addSourceUsage(mapping.class.name,mapping.target.class.name)
+		}
+	}
+
+	void addUsage(Job job) {
+		job.jobEntries.each {
+			addSourceUsage(it.executable.class.name,job.class.name)
+			addTargetUsage(job.class.name,it.executable.class.name)
 		}
 	}
 
@@ -110,10 +147,24 @@ class MetaManager {
 		}
 		l.add(usedByClassName)
 	}
-	
-	List<Base> getPackageElements(String packageName) {
-		packageContent.get(packageName).collect() {
-			elementMap.get(it)
+
+	public static String getElementName(String className) {
+		if (className.contains('$')) {
+			return className.substring(className.lastIndexOf('$')+1)
+		}
+		if (className.contains('.')) {
+			return className.substring(className.lastIndexOf('.')+1)
+		}
+		return className
+	}
+
+
+	static class ClassNameComparator implements Comparator<String> {
+		@Override
+		public int compare(String o1, String o2) {
+			o1=MetaManager.getElementName(o1)+o1
+			o2=MetaManager.getElementName(o2)+o2
+			return o1.compareTo(o2)
 		}
 	}
 }

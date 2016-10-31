@@ -18,41 +18,29 @@
  */
 package org.disl.util.doc.step
 
-import java.io.File;
+import org.disl.util.doc.LineageRenderer
+import org.disl.util.doc.IDocumentationStep.IJobDocumentationStep
+import org.disl.workflow.Job
 
-import org.disl.meta.Table
-import org.disl.pattern.FileOutputStep
-import org.disl.util.doc.LineageRenderer;
-import org.disl.util.doc.IDocumentationStep.ITableDocumentationStep
-
-class DefaultTableDocumentationStep extends AbstractDocStep implements ITableDocumentationStep {
+class DefaultJobDocumentationStep extends AbstractDocStep implements IJobDocumentationStep {
+	Job job
 	
-	Table table
-	
-	public String getFileName() {
-		"model/${table.class.name}.html"
+	@Override
+	protected String getFileName() {
+		"model/${job.class.name}.html"
 	}
 
 	@Override
 	public String getCode() {
-"""\
+		"""\
 <link rel="stylesheet" type="text/css" href="../disldoc.css">
-${table.class.name}
-<H1>Table ${table.name} (${table.schema})</H1> 
-${table.description}
+${job.class.name}
+<H1>Job ${job.name}</H1> 
 
-${LineageRenderer.renderContainer(table.class.name)}
-
-<H2>Columns</H2>
-<table>
-<tr><th>Name</th><th>Data type</th><th>Decription</th></tr>
-${table.columns.collect({"""<tr><td class="nowrap">$it.name</td><td class="nowrap">$it.dataType</td><td>$it.description</td></tr>\n"""}).join()}
-</table>
-"""	}
-	
-	
+${LineageRenderer.renderContainer(job.class.name)}
+"""
+	}
 	
 
-	
 
 }

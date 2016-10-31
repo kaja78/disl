@@ -35,13 +35,17 @@ class DefaultMappingDocumentationStep extends AbstractDocStep implements IMappin
 	@Override
 	public String getCode() {
 """\
-<link rel="stylesheet" type="text/css" href="../disldoc.css">
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../disldoc.css">
+</head>
+<body>
 ${mapping.class.name}
-<H1>${mapping.name}</H1>
+<H1>Mapping ${mapping.name}</H1>
 ${mapping.pattern?"Pattern: ${mapping.pattern.class.simpleName}":''} 
 ${mapping.description}
 
-${lineage}
+${LineageRenderer.renderContainer(mapping.class.name)}
 
 ${targetSection}
 
@@ -60,6 +64,7 @@ $sources
 <textarea>
 ${mapping.getSQLQuery()}
 </textarea>
+</body></html>
 """	}
 	
 	String getSources() {"""\
@@ -86,15 +91,6 @@ ${mapping.setOperations.collect {
 	}
 	
 	
-	String getLineage() {
-		"""\
-<H2>Linage</H2>
-<div>
-<pre><code>
-${new LineageRenderer(metaManager,mapping).toHtml()}
-</code></pre>
-</div>
-"""
-	}
+
 
 }

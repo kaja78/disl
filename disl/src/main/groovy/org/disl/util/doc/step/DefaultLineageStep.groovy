@@ -18,41 +18,24 @@
  */
 package org.disl.util.doc.step
 
-import java.io.File;
-
-import org.disl.meta.Table
-import org.disl.pattern.FileOutputStep
+import org.disl.meta.Base
 import org.disl.util.doc.LineageRenderer;
-import org.disl.util.doc.IDocumentationStep.ITableDocumentationStep
+import org.disl.util.doc.IDocumentationStep.ILineageStep;
 
-class DefaultTableDocumentationStep extends AbstractDocStep implements ITableDocumentationStep {
+class DefaultLineageStep extends AbstractDocStep implements ILineageStep {
+
+	String elementClassName
 	
-	Table table
-	
-	public String getFileName() {
-		"model/${table.class.name}.html"
+	private LineageRenderer r=new LineageRenderer()
+
+	@Override
+	protected String getFileName() {
+		"model/${elementClassName}-lineage.html"
 	}
 
 	@Override
 	public String getCode() {
-"""\
-<link rel="stylesheet" type="text/css" href="../disldoc.css">
-${table.class.name}
-<H1>Table ${table.name} (${table.schema})</H1> 
-${table.description}
-
-${LineageRenderer.renderContainer(table.class.name)}
-
-<H2>Columns</H2>
-<table>
-<tr><th>Name</th><th>Data type</th><th>Decription</th></tr>
-${table.columns.collect({"""<tr><td class="nowrap">$it.name</td><td class="nowrap">$it.dataType</td><td>$it.description</td></tr>\n"""}).join()}
-</table>
-"""	}
-	
-	
-	
-
-	
+		new LineageRenderer(metaManager,elementClassName).renderLineage()
+	}
 
 }

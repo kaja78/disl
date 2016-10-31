@@ -34,6 +34,10 @@ abstract class MappingSource extends Base {
 	
 	public abstract String getSchema()
 	
+	public String getDescription() {
+		''
+	}
+	
 	public String toString() {
 		return getClass().getSimpleName()
 	}

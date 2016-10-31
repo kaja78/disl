@@ -21,11 +21,12 @@ package org.disl.pattern;
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
+import org.disl.meta.Base
 import org.disl.meta.MetaFactory
 
 @Slf4j
 @CompileStatic
-abstract class AbstractExecutable implements Executable {
+abstract class AbstractExecutable extends Base implements Executable {
 	
 	boolean ignoreErrors=false
 	ExecutionInfo executionInfo=new ExecutionInfo()

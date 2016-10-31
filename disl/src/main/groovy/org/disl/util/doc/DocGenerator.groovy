@@ -18,10 +18,14 @@
  */
 package org.disl.util.doc
 
+import groovy.util.logging.Slf4j
+
 import org.disl.meta.Base
 import org.disl.meta.Lookup
 import org.disl.meta.Mapping
 import org.disl.meta.Table
+import org.disl.util.doc.IDocumentationStep.IJobDocumentationStep
+import org.disl.util.doc.IDocumentationStep.ILineageStep
 import org.disl.util.doc.IDocumentationStep.ILookupDocumentationStep
 import org.disl.util.doc.IDocumentationStep.IMappingDocumentationStep
 import org.disl.util.doc.IDocumentationStep.IPackageDocumentationStep
@@ -29,15 +33,18 @@ import org.disl.util.doc.IDocumentationStep.ITableDocumentationStep
 import org.disl.util.doc.step.DefaultAllElementsFrame
 import org.disl.util.doc.step.DefaultCssStep
 import org.disl.util.doc.step.DefaultIndexStep
+import org.disl.util.doc.step.DefaultJobDocumentationStep
+import org.disl.util.doc.step.DefaultLineageStep
+import org.disl.util.doc.step.DefaultLookupDocumentationStep
 import org.disl.util.doc.step.DefaultMappingDocumentationStep
 import org.disl.util.doc.step.DefaultOverviewFrameStep
 import org.disl.util.doc.step.DefaultOverviewSummaryStep
 import org.disl.util.doc.step.DefaultPackageFrameStep
 import org.disl.util.doc.step.DefaultPackageSummaryStep
 import org.disl.util.doc.step.DefaultTableDocumentationStep
-import org.disl.util.doc.step.DefaultLookupDocumentationStep
+import org.disl.workflow.Job
 
-
+@Slf4j
 class DocGenerator {
 	String outputFolder='build/docs/disldoc'
 	MetaManager metaManager=new MetaManager()
@@ -52,18 +59,16 @@ class DocGenerator {
 	ILookupDocumentationStep lookupDocumentationStep=new DefaultLookupDocumentationStep(docGenerator:this)
 	IPackageDocumentationStep packageFrameStep=new DefaultPackageFrameStep(docGenerator:this)
 	IPackageDocumentationStep packageSummaryStep=new DefaultPackageSummaryStep(docGenerator:this)
+	IJobDocumentationStep jobDocumentationStep=new DefaultJobDocumentationStep(docGenerator:this)
+	ILineageStep lineageStep=new DefaultLineageStep(docGenerator:this)
 
 
 	static String link(Base base,String urlPrefix='') {
-		"<a href='${urlPrefix}${base.class.name}.html' target='main'>$base.name</a>"
+		link(base.class.name,urlPrefix)
 	}
-	
-	String link(String baseClassName,String urlPrefix='') {
-		Base base=metaManager.elementMap.get(baseClassName)
-		if (base) {
-			return link(base)
-		}
-		return ''
+
+	static String link(String baseClassName,String urlPrefix='') {
+		"<a href='${urlPrefix}${baseClassName}.html' target='main'>${MetaManager.getElementName(baseClassName)}</a>"
 	}
 
 	void addRootPackage(String rootPackage) {
@@ -73,42 +78,52 @@ class DocGenerator {
 	public void generate() {
 		clean()
 		org.codehaus.groovy.runtime.NullObject.metaClass.toString = {return ''}
+		metaManager.process({generate(it)})
+		generatePackages()
+		generateLineage()
 		indexStep.execute()
 		cssStep.execute()
 		allElementsStep.execute()
 		overviewFrameStep.execute()
 		overviewSummaryStep.execute()
-		generateTables()
-		generateMappings()
-		generatePackages()
-		generateLookups()
 	}
-	
+
 	void clean() {
 		new File(getOutputFolder()).deleteDir()
 	}
 
-	protected void generateTables() {
-		metaManager.elementMap.values().findAll({it instanceof Table}).each {
-			tableDocumentationStep.setTable(it)
-			tableDocumentationStep.execute()
-		}
+	protected void generate(Table table) {
+		tableDocumentationStep.setTable(table)
+		tableDocumentationStep.execute()
+		generateEmptyLineage(table)
+	}
+
+	protected void generate(Mapping mapping) {
+		mappingDocumentationStep.setMapping(mapping)
+		mappingDocumentationStep.execute()
+		generateEmptyLineage(mapping)
+	}
+
+	protected void generate(Lookup lookup) {
+		lookupDocumentationStep.setLookup(lookup)
+		lookupDocumentationStep.execute()
+		generateEmptyLineage(lookup)
+	}
+
+	protected void generate(Job job) {
+		jobDocumentationStep.setJob(job)
+		jobDocumentationStep.execute()
+		generateEmptyLineage(job)
 	}
 	
-	protected void generateMappings() {
-		metaManager.elementMap.values().findAll({it instanceof Mapping}).each {
-			mappingDocumentationStep.setMapping(it)
-			mappingDocumentationStep.execute()
-		}
+	protected void generateEmptyLineage(Base base) {
+		new File(outputFolder,"model/${base.class.name}-lineage.html").createNewFile()
 	}
 	
-	protected void generateLookups() {
-		metaManager.elementMap.values().findAll({it instanceof Lookup}).each {
-			lookupDocumentationStep.setLookup(it)
-			lookupDocumentationStep.execute()
-		}
+	protected void generate(Base source) {
+		log.warn("No documentation generated for ${source.class.name}.")
 	}
-	
+
 	protected void generatePackages() {
 		metaManager.packageContent.keySet().each {
 			packageFrameStep.setPackageName(it)
@@ -116,5 +131,19 @@ class DocGenerator {
 			packageSummaryStep.setPackageName(it)
 			packageSummaryStep.execute()
 		}
+	}
+	
+	/**
+	 * Generate lineage. Overwrite default empty lineage.
+	 * */
+	protected void generateLineage() {
+		Set lineageElements=new HashSet()
+		lineageElements.addAll(metaManager.sourceUsage.keySet())
+		lineageElements.addAll(metaManager.targetUsage.keySet())
+		lineageElements.each {
+			lineageStep.setElementClassName(it)
+			lineageStep.execute()
+		}
+		
 	}
 }

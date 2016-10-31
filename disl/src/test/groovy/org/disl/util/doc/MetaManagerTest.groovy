@@ -28,6 +28,7 @@ public class MetaManagerTest {
 	@Test
 	public void testAddRootPackage() {
 		mm.addRootPackage('org.disl')
+		mm.process({})
 		assertTrue(mm.packageContent.get('org.disl.meta').contains('org.disl.meta.TestSubMapping$TestingSubMapping'))
 		assertTrue(mm.sourceUsage.get('org.disl.meta.TestMapping$TestingMapping').contains('org.disl.meta.TestSubMapping$TestingSubMapping'))
 		assertTrue(mm.targetUsage.get('org.disl.db.hsqldb.pattern.TestTruncateInsertMapping$TEST_TABLE').contains('org.disl.db.hsqldb.pattern.TestTruncateInsertMapping$TestMapping'))
