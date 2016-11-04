@@ -14,5 +14,6 @@ Core requirements and features:
 - Licensed under GNU General Public License
 
 
-##Getting started
+##More information
+[DISL WIKI](https://github.com/kaja78/disl/wiki)
 To see disl in action check sample disl project: https://github.com/kaja78/disl-hsqldb-sample
