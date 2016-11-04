@@ -16,4 +16,5 @@ Core requirements and features:
 
 ##More information
 [DISL WIKI](https://github.com/kaja78/disl/wiki)
+
 To see disl in action check sample disl project: https://github.com/kaja78/disl-hsqldb-sample
