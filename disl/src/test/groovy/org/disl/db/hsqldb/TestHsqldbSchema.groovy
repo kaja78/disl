@@ -21,12 +21,49 @@ package org.disl.db.hsqldb
 import org.disl.meta.Context
 import org.disl.test.DislTestCase
 import org.junit.Test
+import static org.junit.Assert.*
 
 class TestHsqldbSchema extends DislTestCase {
 
+	HsqldbSchema physicalSchema=Context.getContext().getPhysicalSchema('default')
+	
 	@Test
 	void testSql() {
 		Context.setContextName('disl-test')
-		Context.getContext().getPhysicalSchema('default').getSql().execute("CREATE TABLE A (A CHAR(1))")
+		physicalSchema.getSql().execute("SELECT 1 FROM (VALUES (0))")
 	}
+	
+	@Test
+	public void testEvaluate() {
+		assertEquals(2,physicalSchema.evaluateExpression("1+1"))
+		assertEquals(11,physicalSchema.evaluateAggregateExpression("sum(A)",[["A":6], ["A":5]]))
+		assertEquals(11,physicalSchema.evaluateAggregateExpression("sum(A)",[["A":6,"B.B":1], ["A":5,"B.B":1]]))
+		assertEquals(2,physicalSchema.evaluateAggregateExpression("sum(B.B)",[["A.A":6,"B.B":1], ["A.A":5,"B.B":1]]))
+	}
+	
+	@Test
+	public void testMapToSubQuery() {
+		assertEquals '''\
+(select 1 as DUMMY_KEY,1 as a,2 as b from (VALUES(0))
+union all
+select 2 as DUMMY_KEY,2 as a,4 as b from (VALUES(0))
+) SRC
+where
+1=1
+AND SRC.DUMMY_KEY=SRC.DUMMY_KEY''',physicalSchema.recordsToSubquery([["a":1,"b":2], ["a":2,"b":4]])
+		assertEquals '''\
+(select 1 as DUMMY_KEY,1 as a from (VALUES(0))
+union all
+select 2 as DUMMY_KEY,2 as a from (VALUES(0))
+) A,
+(select 1 as DUMMY_KEY,2 as b from (VALUES(0))
+union all
+select 2 as DUMMY_KEY,4 as b from (VALUES(0))
+) B
+where
+1=1
+AND A.DUMMY_KEY=A.DUMMY_KEY
+AND B.DUMMY_KEY=A.DUMMY_KEY''',physicalSchema.recordsToSubquery([["A.a":1,"B.b":2], ["A.a":2,"B.b":4]])
+	}
+
 }

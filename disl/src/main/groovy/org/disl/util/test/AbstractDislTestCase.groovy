@@ -53,37 +53,20 @@ abstract class AbstractDislTestCase {
 		assertRowCount(0, physicalSchema.evaluateConditionQuery(expression.toString()))
 	}
 
-	public String recordsToSubquery(List<Map> records) {
-		physicalSchema.recordsToSubquery(records)
-	}
-
-	public void assertRowCount(int expectedCount,String sqlQuery) {
-		int actualCount=getRowCount(sqlQuery)
+	public void assertRowCount(long expectedCount,String sqlQuery) {
+		long actualCount=physicalSchema.evaluateRowCount(sqlQuery)
 		GroovyAssert.assertEquals("""Invalid rowcount returned from query:
 ${sqlQuery}
-""",expectedCount,actualCount,0)
-	}
-
-	public int getRowCount(String sqlQuery) {
-		Integer.parseInt(getSql().firstRow("select count(1) from (${sqlQuery})".toString()).getAt(0).toString())		
+""",expectedCount,actualCount)
 	}
 
 	public void assertExpressionEquals(expectedExpression,actualExpression) {
-		GroovyAssert.assertEquals(evaluate(expectedExpression),evaluate(actualExpression))
+		GroovyAssert.assertEquals(physicalSchema.evaluateExpression(expectedExpression).toString(),physicalSchema.evaluateExpression(actualExpression).toString())
 	}
 
 	public void assertExpressionEquals(expectedExpression,actualExpression,List<Map> records) {
-		GroovyAssert.assertEquals(evaluate(expectedExpression),evaluate(actualExpression,records))
+		GroovyAssert.assertEquals(physicalSchema.evaluateExpression(expectedExpression).toString(),physicalSchema.evaluateAggregateExpression(actualExpression,records).toString())
 	}
 
-	/**
-	 * Evaluate value of SQL expression.
-	 * */
-	public String evaluate(def expression) {
-		return getSql().firstRow(physicalSchema.evaluateExpressionQuery(expression.toString())).getAt(0)
-	}
-	
-	public String evaluate(def expression,List<Map> records) {
-		getSql().firstRow("select ${expression} from ${recordsToSubquery(records)}".toString()).getAt(0)
-	}
+
 }

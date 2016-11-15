@@ -20,10 +20,12 @@ package org.disl.meta;
 
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j;
+import groovy.util.logging.Slf4j
+
+import java.sql.SQLException
 
 import org.disl.db.reverseEngineering.ReverseEngineeringService
-import org.disl.workflow.DislScript;
+import org.disl.workflow.DislScript
 
 /**
  * Generic physical database schema. 
@@ -48,6 +50,40 @@ public abstract class PhysicalSchema {
 	abstract String evaluateExpressionQuery(String expression)
 	abstract String evaluateConditionQuery(String expression)
 	abstract getRecordQuery(int index,String expressions);
+	
+	/**
+	 * Evaluate value of SQL expression.
+	 * */
+	public Object evaluateExpression(def expression) {
+		return getSql().firstRow(evaluateExpressionQuery(expression.toString())).getAt(0)
+	}
+	
+	
+	/**
+	 * Evaluate value of SQL agregate expression.
+	 * */
+	public Object evaluateAggregateExpression(def expression,List<Map> records) {
+		getSql().firstRow("select ${expression} from ${recordsToSubquery(records)}".toString()).getAt(0)
+	}
+	
+	/**
+	 * Evaluate rowcount returned by SQL query.
+	 * */
+	public long evaluateRowCount(String sqlQuery) {
+		Long.parseLong(getSql().firstRow("select count(1) from (${sqlQuery}) as s".toString()).getAt(0).toString())
+	}
+	
+	/**
+	 * Validate SQL query. Throw exception for invalid query
+	 * */
+	public void validateQuery(String sqlQuery) throws AssertionError {
+		try {
+			String sqlStatement = "select * from (${sqlQuery}) as s where 1=2"
+			getSql().rows(sqlStatement)
+		} catch (SQLException e) {
+			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${sqlQuery}")
+		}
+	}
 
 	
 	public void init() {

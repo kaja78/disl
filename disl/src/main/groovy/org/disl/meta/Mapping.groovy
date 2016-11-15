@@ -374,12 +374,8 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	 * Validate sql query in database. This is processed by preparing jdbc statement containing mapping sql query.
 	 * */
 	public void validate() {
-		try {
-			String sqlStatement = "select * from (${getSQLQuery()}) where 1=2"
-			getSql().rows(sqlStatement)
-		} catch (SQLException e) {
-			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${getSQLQuery()}")
-		}
+		PhysicalSchema physicalSchema=Context.getContext().getPhysicalSchema(getSchema())
+		physicalSchema.validateQuery(getSQLQuery())
 	}
 
 	public Sql getSql() {
