@@ -27,6 +27,9 @@ import org.junit.Test
 import groovy.transform.CompileStatic;
 @CompileStatic
 class TestClassFinder {
+	
+	ClassFinder fsFinder=ClassFinder.createClassFinder('org.disl.meta')
+	ClassFinder jarFinder=ClassFinder.createClassFinder('org.junit.runner')
 
 	@Test
 	public void testFindTypesJar() {
@@ -55,7 +58,7 @@ class TestClassFinder {
 		Class typeInSamePackage=org.disl.meta.Table
 		Class typeInOtherPackage=org.disl.workflow.Job
 
-		ClassFinder fsFinder=ClassFinder.createClassFinder('org.disl.meta')
+		
 		Assert.assertEquals(0,fsFinder.findTypes({false}).size())
 		
 		Collection<Class> types=fsFinder.findTypes {true}
@@ -64,6 +67,12 @@ class TestClassFinder {
 		Assert.assertTrue(types.contains(typeInSamePackage))
 		
 		Assert.assertFalse(types.contains(typeInOtherPackage))
+	}
+	
+	@Test
+	public void testToString() {
+		Assert.assertTrue fsFinder.toString().startsWith('org.disl.workflow.ClassFinder$CompositeFinder: org.disl.workflow.ClassFinder$FileSystemFinder: file:')
+		Assert.assertTrue jarFinder.toString().startsWith('org.disl.workflow.ClassFinder$CompositeFinder: org.disl.workflow.ClassFinder$JarFinder: jar:file:')
 	}
 
 	

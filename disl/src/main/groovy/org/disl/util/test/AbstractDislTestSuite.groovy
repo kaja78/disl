@@ -31,21 +31,36 @@ import org.junit.runners.AllTests
 @CompileStatic
 @RunWith(AllTests.class)
 abstract class AbstractDislTestSuite {
+
+	private String rootPackage=getClass().getPackage().getName()
+	private ClassFinder classFinder
+	protected TestSuite testSuite
+		
+	protected ClassFinder getClassFinder() {
+		if (!classFinder) {
+			classFinder=ClassFinder.createClassFinder(rootPackage)
+		}
+		return classFinder
+	}
 	
-	private String rootPackage=getClass().getPackage().getName()	
-	private ClassFinder cf=ClassFinder.createClassFinder(rootPackage)
-	private TestSuite testSuite
+	public void setRootPackage(String rootPackage) {
+		classFinder=null
+		this.rootPackage=rootPackage
+	}
 	
+	public String getRootPackage() {
+		return this.rootPackage
+	}
+		
 	TestSuite getTestSuite() {
-		if (!testSuite) {			
-			createTestSuite()
+		if (!testSuite) {
+			testSuite = new TestSuite(this.getClass().getName());
+			initTestSuite()
 		}
 		return testSuite
 	}
 
-
-	protected void createTestSuite() {		
-		testSuite = new TestSuite(this.getClass().getName());
+	protected void initTestSuite() {				
 		addTestSuite('mappings', Mapping)
 		addTestSuite('tables', Table)
 		addTestSuite('dislTestCase', AbstractDislTestCase)		
@@ -53,7 +68,7 @@ abstract class AbstractDislTestSuite {
 	
 	protected void addTestSuite(String name,Class assignableType) {
 		TestSuite suite=new TestSuite(name)
-		cf.findNonAbstractTypes(rootPackage, assignableType).each {
+		getClassFinder().findNonAbstractTypes(assignableType).each {
 			suite.addTest(new JUnit4TestAdapter(it))
 		}
 		this.testSuite.addTest(suite)		

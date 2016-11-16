@@ -40,6 +40,11 @@ abstract class ClassFinder {
 		return fileName.substring(0,fileName.length()-6).replace('/', '.').replace('\\', '.')
 	}
 	
+	@Override
+	public String toString() {
+		"${getClass().getName()}: $sourceURL"
+	}
+	
 	
 	public static ClassFinder createClassFinder(String rootPackage) {
 		List<ClassFinder> finders=[]
@@ -120,6 +125,11 @@ abstract class ClassFinder {
 				types.addAll(it.findTypes(rootPackage,classFilter))
 			}
 			return types
+		}
+		
+		@Override
+		public String toString() {
+			"${getClass().getName()}: ${finders.join(',\n')}"
 		}
 		
 	} 
