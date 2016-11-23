@@ -20,7 +20,7 @@ package org.disl.test
 
 import org.disl.meta.Context
 import org.disl.meta.MetaFactory
-import org.disl.meta.TestTable.TestingTable
+import org.disl.meta.TestTable.TESTING_TABLE
 import org.disl.util.test.AbstractDislTestCase
 
 class DislTestCase extends AbstractDislTestCase {
@@ -30,7 +30,7 @@ class DislTestCase extends AbstractDislTestCase {
 		def sql=Context.getSql("default")
 		sql.execute("CREATE TABLE DUAL (dummy char(1))")
 		sql.execute("INSERT INTO DUAL VALUES ('X')")
-		MetaFactory.create(TestingTable).execute()		
+		MetaFactory.create(TESTING_TABLE).execute()		
 	}
 	
 }

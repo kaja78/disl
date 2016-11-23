@@ -18,12 +18,17 @@
  */
 package org.disl.db.mssql
 
-import groovy.sql.Sql;
+import groovy.sql.GroovyRowResult
+import groovy.sql.Sql
+import groovy.transform.CompileStatic
 
-import org.disl.meta.PhysicalSchema;
+import org.disl.meta.Mapping
+import org.disl.meta.PhysicalSchema
+import org.junit.Assert
 /**
  * Implementation of MS SQL Server PhysicalSchema based on JTDS JDBC driver (groupId: net.sourceforge.jtds, artifactId: jtds). 
  * */
+@CompileStatic
 class MssqlSchema extends PhysicalSchema {
 	String host
 	int port
@@ -68,5 +73,22 @@ class MssqlSchema extends PhysicalSchema {
 	@Override
 	public String getRecordQuery(int index,String expressions) {
 		"select ${index} as DUMMY_KEY,${expressions}\n"
+	}
+	
+	@Override
+	public void validateViewDeployment(Mapping mapping, Sql sql=getSql()) {
+		super.validateViewDeployment(mapping, sql);
+		
+		String dataDictionaryQuery="select VIEW_DEFINITION from ${getDatabaseName()}.INFORMATION_SCHEMA.VIEWS where TABLE_NAME='${mapping.name}' and TABLE_SCHEMA='${getSchema()}' and TABLE_CATALOG='${databaseName}'"
+		GroovyRowResult result=sql.firstRow(dataDictionaryQuery)
+		if (!result) {
+			throw new AssertionError("View definition not found in data dictionary. Check ${dataDictionaryQuery}.")
+		}
+		String expected="""CREATE VIEW ${schema}.${mapping.name} AS
+${mapping.getSQLQuery()}
+"""
+		String actual=result[0]
+		
+		Assert.assertEquals("View definition of deployed ${mapping.refference} does not match to model.",expected,actual)
 	}
 }

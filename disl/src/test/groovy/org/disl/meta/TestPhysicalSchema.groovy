@@ -18,27 +18,58 @@
  */
 package org.disl.meta
 
-import org.disl.test.DislTestCase;
+import groovy.transform.CompileStatic
+
+import org.disl.meta.TestTable.TESTING_TABLE
+import org.disl.test.DislTestCase
 import org.junit.Assert
+import org.junit.ComparisonFailure
 import org.junit.Test
 
-class TestPhysicalSchema {
-	
+@CompileStatic
+class TestPhysicalSchema extends DislTestCase {
+
 
 	@Test
 	void testPassword() {
 		Context.setContextName('disl-test')
 		PhysicalSchema s1=Context.getContext().getPhysicalSchema("s1")
-		PhysicalSchema s2=Context.getContext().getPhysicalSchema("s2")	
+		PhysicalSchema s2=Context.getContext().getPhysicalSchema("s2")
 		Assert.assertEquals('secure',s1.password)
 		Assert.assertEquals('secure',s2.password)
 	}
-	
+
 	@Test
 	void testGetSql() {
 		Context.setContextName('disl-test')
 		Context.getContext().getPhysicalSchema("default").getSql()
-		
 	}
 
+	@Test
+	void testValidateTable() {
+		TESTING_TABLE testingTable=MetaFactory.create(TESTING_TABLE)
+		testingTable.execute()
+		PhysicalSchema defaultSchema=Context.getContext().getPhysicalSchema("default")
+		defaultSchema.validateTableDeployment(testingTable)
+
+		def A=testingTable.A
+		testingTable.columns.remove(testingTable.A)
+		try {
+			defaultSchema.validateTableDeployment(testingTable)
+			Assert.fail('ComparisonFailure expected')
+		} catch (ComparisonFailure e) {
+			println e
+			Assert.assertTrue(e.getMessage().startsWith('Column definition of deployed PUBLIC.TESTING_TABLE does not match to model. expected:<[]B'))
+		}
+		
+		testingTable.columns.add(A)
+		try {
+			defaultSchema.validateTableDeployment(testingTable)
+			Assert.fail('ComparisonFailure expected')
+		} catch (ComparisonFailure e) {
+			Assert.assertTrue(e.getMessage().startsWith('Column definition of deployed PUBLIC.TESTING_TABLE does not match to model. expected:<[B'))
+		}
+		
+		
+	}
 }

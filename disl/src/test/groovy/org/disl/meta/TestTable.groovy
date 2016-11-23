@@ -32,9 +32,9 @@ class TestTable {
 	@CheckConstraints(
 		@Check(name='CHECK_1',value='1=1'))
 	@ForeignKeys([
-		@ForeignKey(name='PARENT1_FK',targetTable=TestingTable,sourceColumn='PARENT1_B,PARENT1_C'),
-		@ForeignKey(name='PARENT2_FK',targetTable=TestingTable,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])	
-	static class TestingTable extends Table {
+		@ForeignKey(name='PARENT1_FK',targetTable=TESTING_TABLE,sourceColumn='PARENT1_B,PARENT1_C'),
+		@ForeignKey(name='PARENT2_FK',targetTable=TESTING_TABLE,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])	
+	static class TESTING_TABLE extends Table {
 		
 	
 	CreateOrReplaceTablePattern pattern
@@ -68,19 +68,19 @@ class TestTable {
 	Column PARENT2_C
 	
 	@DataType("VARCHAR(255)")
-	@ForeignKey(targetTable=TestingTable,targetColumn='A')
+	@ForeignKey(targetTable=TESTING_TABLE,targetColumn='A')
 	Column PARENT3_A
 
 	def DUMMY
 	
 	}
 	
-	TestingTable table
+	TESTING_TABLE table
 	
 	@Before
 	void init() {
 		Context.setContextName("disl-test")
-		table=MetaFactory.create(TestingTable)
+		table=MetaFactory.create(TESTING_TABLE)
 	}
 	
 	@Test
@@ -125,19 +125,19 @@ class TestTable {
 
 		f=table.getForeignKeys()[0]
 		assertEquals('',f.getName())
-		assertEquals('TestingTable',f.getTargetTable().getName())
+		assertEquals('TESTING_TABLE',f.getTargetTable().getName())
 		assertEquals('A',f.getTargetColumn())
 		assertEquals('PARENT3_A',f.getSourceColumn())
  
 		f=table.getForeignKeys()[1]
 		assertEquals('PARENT1_FK',f.getName())
-		assertEquals('TestingTable',f.getTargetTable().getName())
+		assertEquals('TESTING_TABLE',f.getTargetTable().getName())
 		assertEquals('B,C',f.getTargetColumn())
 		assertEquals('PARENT1_B,PARENT1_C',f.getSourceColumn())
  
 		f=table.getForeignKeys()[2]
 		assertEquals('PARENT2_FK',f.getName())
-		assertEquals('TestingTable',f.getTargetTable().getName())
+		assertEquals('TESTING_TABLE',f.getTargetTable().getName())
 		assertEquals('B,C',f.getTargetColumn())
 		assertEquals('PARENT2_B,PARENT2_C',f.getSourceColumn())
  	}

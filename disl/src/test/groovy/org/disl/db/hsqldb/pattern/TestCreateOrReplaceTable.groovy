@@ -20,27 +20,13 @@ package org.disl.db.hsqldb.pattern
 
 import org.disl.meta.Column
 import org.disl.meta.MetaFactory
-import org.disl.meta.Table
-import org.disl.pattern.Pattern
-import org.disl.pattern.generic.CreateOrReplaceTablePattern;
+import org.disl.meta.TestTable.TESTING_TABLE
 import org.disl.test.DislTestCase
 import org.junit.Test
 
 class TestCreateOrReplaceTable extends DislTestCase {
 
-	static class KEY extends Column {
-		String dataType="DECIMAL"
-	}
-
-	static class TESTING_TABLE extends Table {
-		CreateOrReplaceTablePattern pattern
-
-		KEY TT_KEY
-	}
-	
 	TESTING_TABLE t=MetaFactory.create(TESTING_TABLE)
-
-
 
 	@Test
 	public void testSimulate() {

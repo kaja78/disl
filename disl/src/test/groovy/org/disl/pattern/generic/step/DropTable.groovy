@@ -23,7 +23,7 @@ import org.disl.pattern.ExecuteSQLScriptTableStep;
 class DropTable extends ExecuteSQLScriptTableStep {
 
 	String getCode() {
-		"DROP TABLE ${table.name};"
+		"""DROP TABLE "${table.physicalSchema}"."${table.name}";"""
 	}
 
 	DropTable() {

@@ -24,7 +24,7 @@ class CreateTable extends ExecuteSQLScriptTableStep {
 
 		String getCode() {
 			"""\
-CREATE TABLE ${table.name} (
+CREATE TABLE "${table.physicalSchema}"."${table.name}" (
 	${table.columnDefinitions.join(",\n\t")});"""
 		}
 	}

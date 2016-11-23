@@ -20,7 +20,7 @@ package org.disl.meta
 
 import static groovy.test.GroovyAssert.*
 
-import org.disl.meta.TestTable.TestingTable
+import org.disl.meta.TestTable.TESTING_TABLE
 import org.disl.test.DislTestCase
 import org.junit.Test
 
@@ -36,14 +36,14 @@ class TestMappingSubquery extends DislTestCase {
 		SELECT
 			t.A as A
 		FROM
-			PUBLIC.TestingTable t
+			PUBLIC.TESTING_TABLE t
 		WHERE
 			t.A in (
 	/*Mapping Subquery*/
 		SELECT
 			t.B as B
 		FROM
-			PUBLIC.TestingTable t
+			PUBLIC.TESTING_TABLE t
 		WHERE
 			1=1
 		
@@ -60,7 +60,7 @@ class TestMappingSubquery extends DislTestCase {
 
 	static class TestingMapping extends Mapping {
 
-		TestingTable t
+		TESTING_TABLE t
 		Subquery s
 
 		ColumnMapping A=e t.A
@@ -74,7 +74,7 @@ ${s.SQLQuery}
 
 		static class Subquery extends Mapping {
 
-			TestingTable t
+			TESTING_TABLE t
 
 			ColumnMapping B=e t.B
 
