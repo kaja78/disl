@@ -45,7 +45,7 @@ public abstract class Step extends AbstractExecutable {
 
 	@Override
 	public void simulate() {
-		println "  Simulating step ${this}:"
+		println "/*  Simulating step ${this}:*/"
 		println """\t${code.replace("\n","\n\t")}""";
 	}
 

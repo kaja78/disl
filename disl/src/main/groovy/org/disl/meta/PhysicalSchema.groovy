@@ -79,11 +79,14 @@ public abstract class PhysicalSchema {
 	 * */
 	public void validateQuery(String sqlQuery) throws AssertionError {
 		try {
-			String sqlStatement = "select * from (${sqlQuery}) as s where 1=2"
-			getSql().rows(sqlStatement)
+			getSql().rows(getValidationQuery(sqlQuery))
 		} catch (SQLException e) {
 			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${sqlQuery}")
 		}
+	}
+	
+	protected String getValidationQuery(String sqlQuery) {
+		"select * from (${sqlQuery}) as s where 1=2"
 	}
 
 	

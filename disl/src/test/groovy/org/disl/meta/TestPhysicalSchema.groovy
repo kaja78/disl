@@ -47,7 +47,7 @@ class TestPhysicalSchema extends DislTestCase {
 
 	@Test
 	void testValidateTable() {
-		TESTING_TABLE testingTable=MetaFactory.create(TESTING_TABLE)
+		TESTING_TABLE testingTable=(TESTING_TABLE)MetaFactory.create(TESTING_TABLE)
 		testingTable.execute()
 		PhysicalSchema defaultSchema=Context.getContext().getPhysicalSchema("default")
 		defaultSchema.validateTableDeployment(testingTable)

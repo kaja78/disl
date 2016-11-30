@@ -70,6 +70,11 @@ class OracleSchema extends PhysicalSchema {
 	}
 	
 	@Override
+	protected String getValidationQuery(String sqlQuery) {
+		"select * from (${sqlQuery}) where 1=2"
+	}
+	
+	@Override
 	public ReverseEngineeringService getReverseEngineeringService() {
 		return new OracleReverseEngineeringService();
 	}
