@@ -71,9 +71,13 @@ public abstract class PhysicalSchema {
 	 * Evaluate rowcount returned by SQL query.
 	 * */
 	public long evaluateRowCount(String sqlQuery) {
-		Long.parseLong(getSql().firstRow("select count(1) from (${sqlQuery}) as s".toString()).getAt(0).toString())
+		Long.parseLong(getSql().firstRow(getEvaluateRowCountQuery(sqlQuery)).getAt(0).toString())
 	}
-	
+
+
+	protected String getEvaluateRowCountQuery(String sqlQuery) {
+		"select count(1) from (${sqlQuery}) as s"
+	}
 	/**
 	 * Validate SQL query. Throw exception for invalid query
 	 * */

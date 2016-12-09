@@ -109,13 +109,17 @@ abstract class Job extends AbstractExecutable {
 
 	
 	public void traceStatus() {
+		if (log.infoEnabled) {
+				log.info(getExecutionSummaryMessage())
+		}
+	}
+
+	public String getExecutionSummaryMessage() {
 		String name=toString().padRight(50).toString().substring(0,50)
 		String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
 		String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
 		String processedRows=executionInfo.processedRows.toString().padLeft(10).toString().substring(0,10)
-
-		if (log.infoEnabled) {
-			String message=""" Execution results for ${name}:
+		return """ Execution results for ${name}:
 *********************************************************************************************
 *  Name                                              *   Status   *  Time (ms)*        Rows *
 *********************************************************************************************
@@ -124,7 +128,5 @@ abstract class Job extends AbstractExecutable {
 ${jobEntries.join('\n')}
 *********************************************************************************************
 """
-				log.info(message)
-		}
 	}
 }

@@ -36,13 +36,13 @@ import org.disl.meta.MetaFactory;
 @CompileStatic
 public abstract class Pattern extends AbstractExecutable implements Initializable {
 	
-	private Collection<Step> steps=[]
+	private List<Step> steps=[]
 	
 	protected Pattern(){}
 	
-	public Collection<Step> getSteps() {
+	public List<Step> getSteps() {
 		String em=Context.getContext().getExecutionMode()
-		steps.findAll {it.executionMode.equals(Context.getContext().getExecutionMode())}
+		(List<Step>)steps.findAll {it.executionMode.equals(Context.getContext().getExecutionMode())}
 	}
 	
 	public void add(Step step) {
