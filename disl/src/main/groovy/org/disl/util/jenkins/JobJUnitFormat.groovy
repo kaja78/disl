@@ -99,7 +99,7 @@ class JobJUnitFormat {
 
     protected String formatCode(String code) {
         if (code) {
-            return "<system-out>${code}</system-out>"
+            return "<system-out><![CDATA[${code}]]></system-out>"
         }
         return ''
     }
@@ -107,7 +107,7 @@ class JobJUnitFormat {
     protected String formatStatus(ExecutionInfo executionInfo) {
         Status status=executionInfo.getStatus()
         if (status==Status.ERROR) {
-            return """<failure message="${getRootCause(executionInfo.exception).getMessage()}"></failure>"""
+            return """${formatStackTrace(executionInfo)}<failure message="${getRootCause(executionInfo.exception).getMessage()}"></failure>"""
         } else if (status==Status.FINISHED) {
             return ''
         } else {
@@ -128,6 +128,20 @@ class JobJUnitFormat {
         return e
     }
 
+    protected String formatStackTrace(ExecutionInfo executionInfo) {
+        if (executionInfo.exception) {
+            return "<system-err><![CDATA[${getStackTrace(executionInfo.exception)}]]></system-err>"
+        }
+        return ''
+    }
 
+    private String getStackTrace(Exception e) {
+        ByteArrayOutputStream out=new ByteArrayOutputStream()
+        PrintStream p=new PrintStream(out)
+        e.printStackTrace(p)
+        p.close()
+        return out.toString().trim()
+        //return e.stackTrace.join('\n')
+    }
 
 }

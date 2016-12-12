@@ -2,6 +2,7 @@
 /build/
 /.classpath
 /.project
+/.idea
 /gradle-app.setting
 /.*/
 /disl.iml
