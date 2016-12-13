@@ -76,14 +76,14 @@ abstract class ClassFinder {
 	}
 
 	public List<Class> findTypes(Closure classFilter) {
-		return findTypes(rootDir,classFilter); 
+		return findTypes(rootDir,classFilter);
 	}
 	
 	public abstract List<Class> findTypes(String rootPackage,Closure classFilter);
 
 	static class FileSystemFinder extends ClassFinder {
 			
-		public List<Class> findTypes(String rootPackage,Closure classFilter) {
+		public List<Class> findTypes(String rootDir,Closure classFilter) {
 			
 			File traverseDir = new File (sourceURL.toURI())
 			Pattern filterClassFiles = ~/.*\.class$/
@@ -102,7 +102,8 @@ abstract class ClassFinder {
 		JarFile getJarFile() {
 			((JarURLConnection)sourceURL.openConnection()).getJarFile()			
 		}
-		public List<Class> findTypes(String rootDir,Closure classFilter) {
+		public List<Class> findTypes(String rootPackage,Closure classFilter) {
+			String rootDir=rootPackage.replace('.','/')
 			JarFile jarFile=getJarFile()
 			
 			Collection<JarEntry> entries=getJarFile().entries().findAll()

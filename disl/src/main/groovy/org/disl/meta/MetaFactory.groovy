@@ -79,7 +79,6 @@ class MetaFactory {
 	
 	/**
 	 * Returns classes in given rootPackage (including subpackages) which are assignable to assignableType.
-	 * Only classes located in the same class path element (jar file or directory) as the sourceClass will be found!
 	 * */
 	static List<Class> findTypes(String rootPackage,Class assignableType) {
 		ClassFinder.createClassFinder(rootPackage).findNonAbstractTypes(rootPackage,assignableType)
