@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -18,12 +18,10 @@
  */
 package org.disl.meta
 
-import java.lang.reflect.Field;
-import java.util.List;
+import java.lang.reflect.Field
 
 import org.disl.pattern.Executable;
-import org.disl.pattern.ExecutionInfo;
-import org.disl.pattern.Pattern;
+import org.disl.pattern.ExecutionInfo
 import org.disl.pattern.TablePattern
 
 import groovy.transform.CompileStatic
@@ -41,9 +39,16 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	String description=""
 	List<IndexMeta> indexes=[]
 	List<UniqueKeyMeta> uniqueKeys=[]
-	List<ForeignKeyMeta> foreignKeys=[]
+	List<ForeignKeyMeta> foreignKeys=null
 	List<CheckMeta> checkConstraints=[]
 
+	List<ForeignKeyMeta> getForeignKeys() {
+		if(foreignKeys==null) {
+			foreignKeys=[]
+			ForeignKeyMeta.initForeignKey(this)
+		}
+		return foreignKeys
+	}
 
 	public String getSchema() {
 		'default'
@@ -108,7 +113,6 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 		IndexMeta.initIndexes(this)
 		UniqueKeyMeta.initUniqueKeys(this)
 		CheckMeta.initCheckConstraints(this)
-		ForeignKeyMeta.initForeignKey(this)
 
 		initPattern()
 	}
