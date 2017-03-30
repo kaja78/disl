@@ -24,10 +24,17 @@ import org.disl.meta.PhysicalSchema
  * Vertica analytic platform PhysicalSchema implementation.
  * */
 class VerticaSchema extends PhysicalSchema {
-	
+
 	String host
-	int port=5433
+	String port=5433
 	String jdbcDriver="com.vertica.Driver"
+
+	@Override
+	public void init() {
+		super.init();
+		host=getSchemaProperty("host", host)
+		port=getSchemaProperty("port", port)
+	}
 	
 	@Override
 	public String getJdbcUrl() {

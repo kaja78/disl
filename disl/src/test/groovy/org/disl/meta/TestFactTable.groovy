@@ -16,12 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.meta;
+package org.disl.meta
+
+import org.disl.pattern.TablePattern;
 
 
 @Description("Testing fact table.")
-public class TestFactTable {
-	
+public class TestFactTable extends Table {
+
+	@Override
+	TablePattern getPattern() {
+		return null
+	}
+
 	@PrimaryKey
 	Column ID
 	

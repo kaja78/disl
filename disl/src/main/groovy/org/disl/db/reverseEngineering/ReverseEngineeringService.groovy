@@ -97,7 +97,7 @@ class ReverseEngineeringService {
 		if (size==null || size==0 || isIgnoreSize(sqlDataType.intValue())) {
 			return "${dataTypeName}"
 		}
-		if (decimalDigits==null) {
+		if (decimalDigits==null || decimalDigits==0) {
 			return "${dataTypeName}(${size})"
 		}
 		return "${dataTypeName}(${size},${decimalDigits})"

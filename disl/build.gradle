@@ -43,6 +43,7 @@ dependencies {
 	compile 'junit:junit:4.12'
 	testCompile 'org.hsqldb:hsqldb:2.3.2'
 	testRuntime 'org.slf4j:slf4j-simple:1.7.21'
+	testRuntime fileTree(dir: 'lib', include: '*.jar')
 }
 
 license { 
@@ -56,7 +57,12 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.allSource
 }
 
-task groovydocJar(type: Jar) {
+groovydoc {
+	//exclude files causing groovydoc to fail
+	exclude 'org/disl/db/oracle/OracleReverseEngineeringService.groovy'
+}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
 	classifier = 'javadoc'
 	from groovydoc
 }

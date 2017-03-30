@@ -83,7 +83,7 @@ ${new RowRenderer().toString()}</code></pre>"""
 		}
 		
 		String valueAt(List<String> list, int maxLength,int row) {
-			int firstRowIndex=(int)(rowCount-list.size())/2
+			int firstRowIndex=(int)((rowCount-list.size())/2)
 			int lastRowIndex=firstRowIndex+list.size()-1
 			if (row>=firstRowIndex+1 && row<=lastRowIndex+1) {
 				return link(list.get(row-firstRowIndex-1),maxLength)
@@ -92,7 +92,7 @@ ${new RowRenderer().toString()}</code></pre>"""
 		}
 		
 		String valueAt(int listSize,String value,int row) {
-			int firstRowIndex=(int)(rowCount-listSize)/2
+			int firstRowIndex=(int)((rowCount-listSize)/2)
 			int lastRowIndex=firstRowIndex+listSize-1
 			if (row>=firstRowIndex+1 && row<=lastRowIndex+1) {
 				return value

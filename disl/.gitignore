@@ -5,4 +5,6 @@
 /.idea
 /gradle-app.setting
 /.*/
+/lib/*.jar
 /disl.iml
+/src/test/resources/*.db.test.context.properties
