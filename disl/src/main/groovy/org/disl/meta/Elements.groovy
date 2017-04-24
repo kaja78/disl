@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -16,34 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern
+package org.disl.meta
 
-import java.io.File
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
 
-import groovy.transform.CompileStatic
-
-import java.nio.charset.Charset;;
-
-@CompileStatic
-abstract class FileOutputStep extends Step {
-
-	String charset
-
-	abstract File getFile()
-
-	String getCharset() {
-		if (!charset) {
-			return Charset.defaultCharset()
-		}
-		return charset
-	}
-	
-	@Override
-	public int executeInternal() {
-		file.getParentFile().mkdirs()
-		file.createNewFile()
-		file.write(getCode(),getCharset())
-		return 1
-	}
-
+/**
+ * Set of DISL model elements.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@interface Elements {
+    Class<Base>[] value()
 }

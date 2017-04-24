@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -16,34 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern
+package org.disl.util.wiki
 
-import java.io.File
+import groovy.json.JsonBuilder
+import org.disl.meta.Table
+import org.disl.pattern.FileOutputStep
+import org.disl.util.wiki.visjs.MappingLineageNetwork
 
-import groovy.transform.CompileStatic
+/**
+ * Create file containg tadle data lineage in JSON format for vis.js network visualisation.
+ */
+class TableLineageDataStep extends FileOutputStep {
 
-import java.nio.charset.Charset;;
+    Table table
 
-@CompileStatic
-abstract class FileOutputStep extends Step {
+    @Override
+    File getFile() {
+        return WikiHelper.getLineageDataFile(table.class.name)
+    }
 
-	String charset
-
-	abstract File getFile()
-
-	String getCharset() {
-		if (!charset) {
-			return Charset.defaultCharset()
-		}
-		return charset
-	}
-	
-	@Override
-	public int executeInternal() {
-		file.getParentFile().mkdirs()
-		file.createNewFile()
-		file.write(getCode(),getCharset())
-		return 1
-	}
-
+    @Override
+    String getCode() {
+        new JsonBuilder(new MappingLineageNetwork(table)).toPrettyString()
+    }
 }

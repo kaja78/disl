@@ -21,6 +21,7 @@ package org.disl.util.doc
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.util.logging.Slf4j
+import org.disl.meta.Perspective
 
 import java.lang.reflect.Modifier
 
@@ -57,10 +58,14 @@ class MetaManager {
 		List<Class> classes=cf.findTypes({
 			Class type=(Class)it
 			int modifiers=type.getModifiers()
-			(MappingSource.isAssignableFrom(type) || Job.isAssignableFrom(type)) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalOrAnonymousClass())
+			return includeType(type) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalClass())
 		})
 		dislClasses.addAll(classes)
 		log.info("${classes.size()} DISL elements found for root package $rootPackage.")
+	}
+
+	protected boolean includeType(Class type) {
+		(MappingSource.isAssignableFrom(type) || Job.isAssignableFrom(type))
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
@@ -124,6 +129,10 @@ class MetaManager {
 			addSourceUsage(it.executable.class.name,job.class.name)
 			addTargetUsage(job.class.name,it.executable.class.name)
 		}
+	}
+
+	void addUsage(Perspective perspective) {
+		//do nothing
 	}
 
 	void addUsage(MappingSource source) {

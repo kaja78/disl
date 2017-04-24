@@ -26,7 +26,6 @@ import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 import java.lang.reflect.Field
 import java.sql.ResultSetMetaData
-import java.sql.SQLException
 
 import org.disl.pattern.Executable
 import org.disl.pattern.ExecutionInfo
@@ -48,7 +47,6 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	private String groupBy
 	private String orderBy
 
-	String description
 	List<ColumnMapping> columns=[]
 	List<MappingSource> sources=[]
 	List<SetOperation> setOperations=[]
@@ -72,6 +70,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	 * Implements early initialisation.
 	 * */
 	protected boolean doEarlyInit() {
+		super.init()
 		initSourceAliases()
 		return true
 	}
@@ -79,7 +78,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	public void init() {
 		initColumnAliases()
 		initMapping()
-		initDescription()
+		initColumnDescription()
 		if (getGroupBy()==null && getColumns().find({it instanceof AggregateColumnMapping})) {
 			groupBy()
 		}
@@ -100,14 +99,9 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		}
 	}
 
-	protected void initDescription() {
-		Description desc=this.getClass().getAnnotation(Description)
-		if (desc) {
-			setDescription(desc.value())
-		}
-
+	protected void initColumnDescription() {
 		getFieldsByType(ColumnMapping).each {
-			desc=it.getAnnotation(Description)
+			Description desc=it.getAnnotation(Description)
 			if (desc) {
 				((ColumnMapping)this[it.getName()]).setDescription(desc.value())
 			}
@@ -143,7 +137,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	void initSourceAlias(String property) {
-		MetaProperty metaProperty=metaClass.getProperties().find {it.name==property}
+		MetaProperty metaProperty=this.getMetaClass().getProperties().find {it.name==property}
 		MappingSource p=(MappingSource)MetaFactory.create(metaProperty.getType())
 		p.sourceAlias=property
 		this[property]=p

@@ -29,8 +29,7 @@ import java.lang.reflect.Field
 @CompileStatic
 abstract class Lookup extends MappingSource {
 	List<Column> columns
-	private boolean dummy=doEarlyInit()
-		
+
 	abstract List<List> getRecords();
 	
 	public String getSchema() {
@@ -41,13 +40,9 @@ abstract class Lookup extends MappingSource {
 		Context.getContext().getPhysicalSchema(getSchema())
 	}
 	
-	private Object doEarlyInit() {
-		columns=new LinkedList<Column>()
-		init()
-		return true
-	}
-
 	public void init() {
+		super.init()
+		columns=new LinkedList<Column>()
 		initColumns()
 	}
 

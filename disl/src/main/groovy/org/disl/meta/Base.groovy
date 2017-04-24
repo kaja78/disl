@@ -26,10 +26,46 @@ import java.lang.reflect.Field
  * Abstract parent class for DISL meta classes.
  * */
 @CompileStatic
-abstract class Base implements Comparable<Base> {
+abstract class Base implements Comparable<Base>,Initializable {
 	
 	String name
-	
+	String description=''
+	Set<String> tags=new HashSet<>()
+
+	@Override
+	void init() {
+		initDescription()
+		initName()
+		initTags()
+	}
+
+	protected void initDescription() {
+		Description desc=this.getClass().getAnnotation(Description)
+		if (desc) {
+			setDescription(desc.value())
+		}
+	}
+
+	/**
+	 * Init name by annotation value.
+	 * */
+	void initName() {
+		Name name=this.getClass().getAnnotation(Name)
+		if (name) {
+			this.name=name.value()
+		}
+	}
+
+	/**
+	 * Init tags by annotation value.
+	 * */
+	void initTags() {
+		Tags tags=this.getClass().getAnnotation(Tags)
+		if (tags) {
+			this.tags.addAll(tags.value())
+		}
+	}
+
 	public String getName() {
 		if (name==null) {
 			return this.getClass().getSimpleName()

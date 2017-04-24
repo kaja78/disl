@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2017 Karel Hübl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -16,34 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern
+package org.disl.util.wiki.visjs
 
-import java.io.File
+import org.disl.meta.Table
 
-import groovy.transform.CompileStatic
+/**
+ * Helper for building data model for vis.js network visualisation. See http://visjs.org/docs/network/.
+ */
+class DataModelNetwork {
 
-import java.nio.charset.Charset;;
+    Set<Node> nodes = new HashSet<Node>();
+    List<Edge> edges = [];
 
-@CompileStatic
-abstract class FileOutputStep extends Step {
+    public DataModelNetwork(){}
 
-	String charset
-
-	abstract File getFile()
-
-	String getCharset() {
-		if (!charset) {
-			return Charset.defaultCharset()
-		}
-		return charset
-	}
-	
-	@Override
-	public int executeInternal() {
-		file.getParentFile().mkdirs()
-		file.createNewFile()
-		file.write(getCode(),getCharset())
-		return 1
-	}
+    public DataModelNetwork(Table table) {
+        add(table)
+    }
+    void add(Table table) {
+        if (nodes.add(new Node(table))) {
+            table.foreignKeys.each {
+                add(it.targetTable)
+                edges.add(Edge.foreignKey(table,it))
+            }
+        }
+    }
 
 }

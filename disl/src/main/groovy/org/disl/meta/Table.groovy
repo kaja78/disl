@@ -103,11 +103,8 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	}
 
 	public void init() {
-		Description desc=this.getClass().getAnnotation(Description)
-		if (desc!=null) {
-			description=desc.value()
-		}
-		
+		super.init()
+
 		initColumns()
 
 		IndexMeta.initIndexes(this)
