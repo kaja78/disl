@@ -31,7 +31,7 @@ class WikiHelper extends MetaManager {
     Map<String,Set<LineageNode>> tableLineageUsage =new HashMap<>()
     Map<String,Set<LineageNode>> mappingTargetUsage =new HashMap<>()
 
-    static String wikiRootDir='../../spwr-bi-wiki'
+    static String wikiRootDir='../build/wiki'
 
     static String url(Table t) {
         "/data-model/${fileName(t)}"

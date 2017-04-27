@@ -30,7 +30,7 @@ class Node {
     String id
     String label
     String title
-    String color='LightBlue'
+    String color='LightGrey'
     String shape='box'
     String targetUrl
     int size=25
@@ -44,13 +44,10 @@ class Node {
         try {
             switch (t['stereotype']) {
                 case 'dimension':
-                    shape = 'triangle'
-                    size = 10
+                    color = 'LightBlue'
                     break
                 case 'fact':
-                    shape = 'square'
                     color = 'Yellow'
-                    size = 10
                     break
             }
         } catch (MissingPropertyException e) {
