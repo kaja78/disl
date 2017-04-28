@@ -46,6 +46,7 @@ class MappingPageStep extends FileOutputStep {
 +++
     title= "${mapping.name}"
     packages=["${mapping.getClass().getPackage().getName().replace('.','/')}"]
+    schemas=["${mapping.getSchema()}"]
 +++
 
 ${WikiHelper.renderElementDescription(mapping)}
