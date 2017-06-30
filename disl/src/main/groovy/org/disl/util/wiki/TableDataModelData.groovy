@@ -32,7 +32,7 @@ class TableDataModelData  extends FileOutputStep {
 
     @Override
     File getFile() {
-        return WikiHelper.getDataFile(table)
+        return WikiHelper.getDataModelDataFile(table.class.name)
     }
 
     @Override

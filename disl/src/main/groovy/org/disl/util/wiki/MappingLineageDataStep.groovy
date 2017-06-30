@@ -32,7 +32,7 @@ class MappingLineageDataStep extends FileOutputStep {
 
     @Override
     File getFile() {
-        return WikiHelper.getDataFile(mapping)
+        return WikiHelper.getLineageDataFile(mapping.class.name)
     }
 
     @Override

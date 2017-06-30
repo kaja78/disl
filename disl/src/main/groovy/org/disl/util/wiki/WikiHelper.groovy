@@ -32,6 +32,7 @@ class WikiHelper extends MetaManager {
     Map<String,Set<LineageNode>> mappingTargetUsage =new HashMap<>()
 
     static String wikiRootDir='../build/wiki'
+    static boolean uglyUrls=Boolean.parseBoolean(System.getProperty('uglyUrls','false'))
 
     static String url(Table t) {
         "/data-model/${fileName(t)}"
@@ -56,18 +57,17 @@ class WikiHelper extends MetaManager {
 
 
     static String fileName(Base base) {
-        fileName(base.class.name)
+        if (isUglyUrls()) {
+            return "${fileName(base.class.name)}.html"
+        }
+        return fileName(base.class.name)
     }
 
     static String fileName(String className) {
         "${className.toLowerCase().replace('.','/')}"
     }
 
-    static File getDataFile(Base base) {
-        new File("${wikiRootDir}/static${url(base)}.json")
-    }
-
-    static File getLineageDataFile(String className) {
+     static File getLineageDataFile(String className) {
         new File("${wikiRootDir}/static/data-mapping/${fileName(className)}.json")
     }
 
@@ -75,8 +75,20 @@ class WikiHelper extends MetaManager {
         new File("${wikiRootDir}/static/data-model/${fileName(className)}.json")
     }
 
-    static File getWikiPageFile(Base base) {
-        new File("${wikiRootDir}/content${url(base)}.md")
+    static File getWikiPageFile(Table table) {
+        new File("${wikiRootDir}/content/data-model/${fileName(table.class.name)}.md")
+    }
+
+    static File getWikiPageFile(Lookup lookup) {
+        new File("${wikiRootDir}/content/data-model/${fileName(lookup.class.name)}.md")
+    }
+
+    static File getWikiPageFile(Mapping mapping) {
+        new File("${wikiRootDir}/content/data-mapping/${fileName(mapping.class.name)}.md")
+    }
+
+    static File getWikiPageFile(Perspective perspective) {
+        new File("${wikiRootDir}/content/perspective/${fileName(perspective.class.name)}.md")
     }
 
     static void generate(Table table) {
@@ -102,15 +114,15 @@ class WikiHelper extends MetaManager {
         if (table.foreignKeys.isEmpty()) {
             return ''
         }
-        return """{{< datamodel "${fileName(table)}.json" >}}"""
+        return """{{< datamodel "${fileName(table.class.name)}.json" >}}"""
     }
 
     static String renderDataModel(Perspective perspective) {
-        return """{{< datamodel "${fileName(perspective)}.json" >}}"""
+        return """{{< datamodel "${fileName(perspective.class.name)}.json" >}}"""
     }
 
     static String renderDataLineage(MappingSource mapping) {
-        """{{< lineage "${fileName(mapping)}.json" >}}"""
+        """{{< lineage "${fileName(mapping.class.name)}.json" >}}"""
     }
 
     void generateWiki() {
