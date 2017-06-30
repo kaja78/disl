@@ -18,7 +18,7 @@
  */
 package org.disl.db.reverseEngineering
 
-
+import groovy.json.StringEscapeUtils
 import org.disl.meta.Column
 import org.disl.meta.Table
 import org.disl.pattern.FileOutputStep
@@ -62,6 +62,17 @@ class ReverseTablePattern extends TablePattern<ReverseEngineeredTable> {
 		File getFile() {
 			getPattern().getFile()
 		}
+
+		String description(String text) {
+			if (text) {
+				return "@Description(\"\"\"${escape(text)}\"\"\")"
+			}
+			return ''
+		}
+
+		String escape(String text) {
+			return StringEscapeUtils.escapeJava(text)
+		}
 		
 		String getCode() {
 			"""\
@@ -69,7 +80,7 @@ package $pattern.packageName
 
 import org.disl.meta.*
 
-@Description(\"""$pattern.table.description\""")$foreignKeyDefinition
+${description(pattern.table.description)}$foreignKeyDefinition
 @groovy.transform.CompileStatic
 class $pattern.table.name extends ${pattern.parentClassName} {
 
@@ -94,7 +105,7 @@ $columnDefinitions
 		String primaryKey =column.primaryKey?"\n\t\t@PrimaryKey":""
 		
 		"""\
-		@Description(\"""$column.description\""")
+		${description(column.description)}
 		@DataType("$column.dataType")$primaryKey$notNull
 		Column $column.name"""
 		}
