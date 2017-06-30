@@ -86,10 +86,15 @@ class ReverseEngineeringService {
 		res.close()
 		tables.each {
 			Table table=it
-			res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getName(), null)
-			eachRow(res,{table.columns.add(new Column(name: it.COLUMN_NAME,description: it.REMARKS,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE),parent: table))})
+			try {
+				res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getName(), null)
+				eachRow(res,{table.columns.add(new Column(name: it.COLUMN_NAME,description: it.REMARKS,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE),parent: table))})
+			} catch (Exception e) {
+				log.error("Exception reverse engineering table ${table.name}.",e)
+			} finally {
+				res.close()
+			}
 		}
-		res.close()
 		return tables
 	}
 	
