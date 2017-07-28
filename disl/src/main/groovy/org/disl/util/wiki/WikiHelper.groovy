@@ -91,23 +91,24 @@ class WikiHelper extends MetaManager {
         new File("${wikiRootDir}/content/perspective/${fileName(perspective.class.name)}.md")
     }
 
-    static void generate(Table table) {
+    void generate(Table table) {
         new TablePageStep(table:table).execute()
         new TableDataModelData(table:table).execute()
         new TableLineageDataStep(table:table).execute()
     }
 
-    static void generate(Lookup lookup) {
+    void generate(Lookup lookup) {
         new LookupPageStep(lookup:lookup).execute()
     }
 
-    static void generate(Mapping mapping) {
+    void generate(Mapping mapping) {
         new MappingPageStep(mapping:mapping).execute()
         new MappingLineageDataStep(mapping:mapping).execute()
     }
 
-    static void generate(Perspective perspective) {
-        perspective.execute()
+    void generate(Perspective perspective) {
+        new PerspectiveDataModelStep(perspective: perspective).execute()
+        new PerspectiveWikiPageStep(perspective: perspective).execute()
     }
 
      static String renderDataModel(Table table) {
@@ -128,7 +129,7 @@ class WikiHelper extends MetaManager {
     void generateWiki() {
         process {
             if (it instanceof Table || it instanceof Mapping || it instanceof Perspective) {
-                WikiHelper.generate(it)
+                generate(it)
             }
         }
         insertMappingLineageUsage()

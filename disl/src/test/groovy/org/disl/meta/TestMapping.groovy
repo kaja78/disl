@@ -27,7 +27,7 @@ import org.junit.Test
 
 
 class TestMapping extends DislTestCase {
-
+	@Description('Testing mapping.')
 	static class TestingMapping extends Mapping {
 
 		TESTING_TABLE s1
@@ -85,6 +85,13 @@ class TestMapping extends DislTestCase {
 		TestingMapping mapping=MetaFactory.create(TestingMapping)
 		assertEquals("1",(String)mapping.CONSTANT)
 		assertEquals("1+1",(String)mapping.CONSTANT+1)
+	}
+
+	@Test
+	void testDescrption() {
+		TestingMapping mapping=MetaFactory.create(TestingMapping)
+		assertEquals('Testing mapping.',mapping.description)
+
 	}
 	
 	@Test
