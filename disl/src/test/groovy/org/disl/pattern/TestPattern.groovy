@@ -18,6 +18,9 @@
  */
 package org.disl.pattern
 
+import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
+
 import static groovy.test.GroovyAssert.*
 
 import org.disl.meta.Base
@@ -44,6 +47,16 @@ class TestPattern  {
 	public void testSimulate() {
 		testingPattern.simulate();
 		assertEquals("DROP \nBaseMock", testingPattern.steps[0].code)
+	}
+
+	@Test
+	public void testCopyCodeToClipboard() {
+		testingPattern.copyCodeToClipboard()
+		String expected="""\
+DROP 
+BaseMock"""
+		assertEquals(expected,Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor))
+
 	}
 	
 	@Test

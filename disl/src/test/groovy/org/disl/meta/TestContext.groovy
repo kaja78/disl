@@ -18,6 +18,9 @@
  */
 package org.disl.meta
 
+import org.junit.Assert
+import org.junit.Ignore
+
 import static org.junit.Assert.*
 
 import org.disl.test.DislTestCase
@@ -39,7 +42,20 @@ class TestContext extends DislTestCase {
 	
 	@Test
 	void testGetContextProperty() {
-		println Context.getContextProperty('env.PATH')
+		Assert.assertEquals(System.getenv('PATH'),Context.getContextProperty('env.PATH'))
+	}
+
+	@Test
+	void testGetGlobalProperties() {
+		Assert.assertEquals('globalValue',Context.getContextProperty('global.value'))
+		Assert.assertEquals('disl-test',Context.getContextProperty('global.overridenValue'))
+	}
+
+	@Test
+	@Ignore
+	void testDislHomeProperties() {
+		Assert.assertEquals('disl',Context.getContextProperty('disl.test.global'))
+		Assert.assertEquals('disl-test',Context.getContextProperty('disl.test.user'))
 	}
 
 }

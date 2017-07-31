@@ -28,7 +28,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 project.group='com.github.kaja78'
-project.version="1.0"
+project.version="1.0.1-SNAPSHOT"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -69,13 +69,15 @@ artifacts {
 	archives groovydocJar, sourcesJar
 }
 
+/*
 signing {
 	sign configurations.archives
-}
+}*/
 
 String getVersionName() {
 	'git describe --tags'.execute(null,project.projectDir).text.trim()
 }
+
 
 uploadArchives {
 	repositories {

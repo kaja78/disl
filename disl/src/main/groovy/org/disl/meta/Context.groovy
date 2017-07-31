@@ -28,18 +28,38 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService
 /**
  * <p>Abstraction of execution environment. 
  * Context maps logical resource name to physical deployment.
- * Each context is defined by configuration file [context name].context.properties. Default context name is "default".</p>
+ * Each context is defined by configuration file [context name].context.properties. Configuration file must be available on classpath.
+ * Default context name is "default".</p>
  * Currently the only supported resource is database schema.
  * Context may be also used to define properties, which may be used to parametrize DISL processes. Context properties may be defined in configuration file. 
  * Context property values may be overriden by values of system properties.
  * Environment variables are available as context properties with env. prefix.
  * For exmple PATH environment variable is available as env.PATH context property.
+ * Global properties are defined in file global.context.properties. Global properties are valid in all contexts.
+ * The value of global property may be overiden in context configuration file [context name].context.properties.
+ * Context configuration files may be stored in DISL home directory and on classpath.
+ * DISL home directory is defined by disl.home system variable, default value is user.home/.disl.
+ * <p>Order of context variable value definitions:</p>
+ * <ol>System property</ol>
+ * <ol>Environment variable (for variables starting with env.)</ol>
+ * <ol>Context configuration file in classpath.</ol>
+ * <ol>Context configuratuon file in disl.home directory.</ol>
+ * <ol>Global context configuration file in classpath.</ol>
+ * <ol>Global context configuration file in disl.home directory.</ol>
+ * <p>
+ * Intention of variable definition options:
+ * <li>Use system properties to override any value in runtime.</li>
+ * <li>Use configuration files in disl.home to define sensitive information (passwords), which should not be stored in project source code.</li>
+ * <li>Use global properties to define variable calues common to multiple contexts.</li>
+ * </p>
  * */
 @CompileStatic
 public class Context implements Cloneable {
 	public static final String CONTEXT_PROPERTY="disl.context"
 	public static final String CONTEXT_DEFAULT="default"
+	public static final String DISL_HOME_PROPERTY="disl.home"
 	public static final String EXECUTION_MODE_DEFAULT="default"
+	public static final String GLOBAL_CONTEXT_CONFIG_FILENAME = 'global.context.properties'
 
 	public static String contextClassName='org.disl.meta.Context'
 
@@ -147,10 +167,45 @@ public class Context implements Cloneable {
 
 	protected Properties getConfig() {
 		if (config==null) {
-			config=new Properties()
-			config.load(getClass().getResourceAsStream("/${name}.context.properties"))
+			config = loadConfigFromFile()
 		}
 		config
+	}
+
+	/**
+	 *
+	 * */
+	protected Properties loadConfigFromFile() {
+		config = new Properties()
+		String configFileName="${name}.context.properties"
+		checkConfig(configFileName)
+		loadConfigFromFile(new File(dislHomeDirectory, GLOBAL_CONTEXT_CONFIG_FILENAME))
+		loadConfigFromResource(GLOBAL_CONTEXT_CONFIG_FILENAME)
+		loadConfigFromFile(new File(dislHomeDirectory, configFileName))
+		loadConfigFromResource(configFileName)
+		return config
+	}
+
+	protected void checkConfig(String configFileName) {
+		if (getClass().getResource("/${configFileName}")==null) {
+			throw new RuntimeException("Context configuration file ${configFileName} not available on classpath.")
+		}
+	}
+
+	protected void loadConfigFromFile(File file) {
+		if (file.exists()) {
+			config.load(new FileInputStream(file))
+		}
+	}
+	protected void loadConfigFromResource(String name) {
+		String resourcePath="/${name}"
+		if (getClass().getResource(resourcePath)) {
+			config.load(getClass().getResourceAsStream(resourcePath))
+		}
+	}
+
+	protected File getDislHomeDirectory() {
+		new File(System.getProperty(DISL_HOME_PROPERTY),"${System.getProperty('user.home')}/.disl")
 	}
 
 	public String getProperty(String key) {

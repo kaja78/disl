@@ -23,7 +23,10 @@ import groovy.util.logging.Slf4j;
 
 import org.disl.meta.Context
 import org.disl.meta.Initializable;
-import org.disl.meta.MetaFactory;
+import org.disl.meta.MetaFactory
+
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection;
 
 
 /**
@@ -78,6 +81,19 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName();
+	}
+
+	/**
+	 * Copy code from all pattern steps to clipboard.
+	 * */
+	public void copyCodeToClipboard() {
+		StringBuffer sb=new StringBuffer()
+		steps.each {sb.append(it.getCode())}
+		StringSelection ss = new StringSelection(sb.toString());
+		try {
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
+		} catch (Exception e) {
+		}
 	}
 	
 	public abstract void init();
