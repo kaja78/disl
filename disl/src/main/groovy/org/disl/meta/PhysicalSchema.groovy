@@ -242,13 +242,13 @@ ${joinCondition}"""
 
 	protected void validateTableColumns(Table reversedTable,Table modelTable) {
 
-		String reversedColumns=reversedTable.getColumns().collect({toString(it)}).join(',\n')
-		String modelColumns=modelTable.getColumns().collect({toString(it)}).join(',\n')
+		String reversedColumns=reversedTable.getColumns().collect({toString(it)}).join('')
+		String modelColumns=modelTable.getColumns().collect({toString(it)}).join('')
 		Assert.assertEquals("Column definition of deployed ${modelTable.refference} does not match to model.",modelColumns,reversedColumns)
 	}
 
 	protected String toString(Column c) {
-		"$c.name $c.dataType ${c.description ?: ''}"
+		"${c.name.padRight(30)} ${c.dataType.padRight(30)} ${c.description ?: ''}\n"
 	}
 
 	protected void validateMappingColumns(Table reversedTable,Mapping mapping) {
