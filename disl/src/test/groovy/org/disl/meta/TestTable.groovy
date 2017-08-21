@@ -33,7 +33,8 @@ class TestTable {
 		@Check(name='CHECK_1',value='1=1'))
 	@ForeignKeys([
 		@ForeignKey(name='PARENT1_FK',targetTable=TESTING_TABLE,sourceColumn='PARENT1_B,PARENT1_C'),
-		@ForeignKey(name='PARENT2_FK',targetTable=TESTING_TABLE,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])	
+		@ForeignKey(name='PARENT2_FK',targetTable=TESTING_TABLE,sourceColumn='PARENT2_B,PARENT2_C',targetColumn=('B,C'))])
+	@Description('Testing table.')
 	static class TESTING_TABLE extends Table {
 		
 	

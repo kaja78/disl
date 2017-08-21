@@ -58,7 +58,6 @@ class TestPhysicalSchema extends DislTestCase {
 			defaultSchema.validateTableDeployment(testingTable)
 			Assert.fail('ComparisonFailure expected')
 		} catch (ComparisonFailure e) {
-			println e
 			Assert.assertTrue(e.getMessage().startsWith('Column definition of deployed PUBLIC.TESTING_TABLE does not match to model. expected:<[]B'))
 		}
 		

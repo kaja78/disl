@@ -226,6 +226,7 @@ ${joinCondition}"""
 		} else if (tables.size()>1) {
 			throw new AssertionError("Multiple tables matching ${table.refference} deployed in database.")
 		}
+		Assert.assertEquals("Table comment of deployed ${table.refference} does not match to model.",table.description ?: '',tables[0].description ?: '')
 		validateTableColumns(tables[0],table)
 	}
 
@@ -240,11 +241,16 @@ ${joinCondition}"""
 	}
 
 	protected void validateTableColumns(Table reversedTable,Table modelTable) {
-		String reversedColumns=reversedTable.getColumns().collect({"$it.name"}).join(',\n')
-		String modelColumns=modelTable.getColumns().collect({"$it.name"}).join(',\n')
+
+		String reversedColumns=reversedTable.getColumns().collect({toString(it)}).join(',\n')
+		String modelColumns=modelTable.getColumns().collect({toString(it)}).join(',\n')
 		Assert.assertEquals("Column definition of deployed ${modelTable.refference} does not match to model.",modelColumns,reversedColumns)
 	}
-	
+
+	protected String toString(Column c) {
+		"$c.name $c.dataType ${c.description ?: ''}"
+	}
+
 	protected void validateMappingColumns(Table reversedTable,Mapping mapping) {
 		String reversedColumns=reversedTable.getColumns().collect({"$it.name"}).join(',\n')
 		String modelColumns=mapping.getColumns().collect({"$it.alias"}).join(',\n')

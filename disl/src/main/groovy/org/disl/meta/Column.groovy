@@ -27,7 +27,7 @@ import groovy.transform.CompileStatic;
 class Column extends AbstractSqlExpression {
 	String name
 	MappingSource parent
-	String description
+	String description=''
 	String dataType
 	String defaultValue
 	String check

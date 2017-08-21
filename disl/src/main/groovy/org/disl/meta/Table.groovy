@@ -36,7 +36,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	public abstract TablePattern getPattern()
 
 	List<Column> columns=[]
-	String description=""
+	String description=''
 	List<IndexMeta> indexes=[]
 	List<UniqueKeyMeta> uniqueKeys=[]
 	List<ForeignKeyMeta> foreignKeys=null
