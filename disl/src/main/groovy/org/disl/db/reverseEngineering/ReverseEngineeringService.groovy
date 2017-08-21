@@ -88,7 +88,12 @@ class ReverseEngineeringService {
 			Table table=it
 			try {
 				res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getName(), null)
-				eachRow(res,{table.columns.add(new Column(name: it.COLUMN_NAME,description: it.REMARKS,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE),parent: table))})
+				eachRow(res,{
+					String description=it.REMARKS
+					if ('null'.equals(description)) {
+						description=null
+					}
+					table.columns.add(new Column(name: it.COLUMN_NAME,description: description,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE),parent: table))})
 			} catch (Exception e) {
 				log.error("Exception reverse engineering table ${table.name}.",e)
 			} finally {
