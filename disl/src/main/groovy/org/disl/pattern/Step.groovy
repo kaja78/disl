@@ -60,6 +60,10 @@ public abstract class Step extends AbstractExecutable {
 		this.name=name
 	}
 
+	public Context getContext() {
+		Context.getContext()
+	}
+
 	@Override
 	public String toString() {
 		return getName()
