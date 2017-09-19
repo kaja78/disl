@@ -39,22 +39,21 @@ import java.awt.datatransfer.StringSelection;
 @CompileStatic
 public abstract class Pattern extends AbstractExecutable implements Initializable {
 	
-	private List<Step> steps=[]
+	List<Step> steps=[]
 	
 	protected Pattern(){}
 	
-	public List<Step> getSteps() {
-		String em=Context.getContext().getExecutionMode()
-		(List<Step>)steps.findAll {it.executionMode.equals(Context.getContext().getExecutionMode())}
-	}
+
 	
 	public void add(Step step) {
-		step.setPattern(this)
-		steps.add(step)
+		if (step.isToExecute()) {
+			step.setPattern(this)
+			steps.add(step)
+		}
 	}
 	
 	public void add(Class<Step> type) {
-		Step step=(Step)MetaFactory.create(type)		
+		Step step=(Step)MetaFactory.create(type)
 		add(step)
 	}
 	
@@ -67,7 +66,7 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 		long timestamp=System.currentTimeMillis();
 		log.info("Executing pattern $this:")
 		int processedRows=0		
-		getSteps().each {it.execute();processedRows+=it.executionInfo.processedRows}		
+		steps.each {it.execute();processedRows+=it.executionInfo.processedRows}
 		log.info("${this} processed ${processedRows} rows in ${System.currentTimeMillis()-timestamp} ms.")
 		return processedRows		
 	}
@@ -75,7 +74,7 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	@Override
 	public void simulate() {
 		println "Simulating pattern $this:"
-		getSteps().each {it.simulate()}		
+		steps.each {it.simulate()}
 	}
 	
 	@Override

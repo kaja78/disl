@@ -18,6 +18,8 @@
  */
 package org.disl.pattern
 
+import org.junit.Assert
+
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 
@@ -64,6 +66,11 @@ BaseMock"""
 		testingPattern.execute();
 	}
 
+	@Test
+	void testSteps() {
+		Assert.assertEquals(1,testingPattern.steps.size())
+	}
+
 	private static class BaseMock extends Base {}
 
 	static class TestingPattern extends Pattern {
@@ -72,6 +79,7 @@ BaseMock"""
 		@Override
 		public void init() {
 			add TestingStep
+			add TestingExcludedStep
 		}
 	}
 
@@ -85,6 +93,14 @@ ${getPattern().element.getName()}"""
 		@Override
 		protected int executeInternal() {
 			return 1;
+		}
+	}
+
+	static class TestingExcludedStep extends TestingStep {
+
+		@Override
+		String getExecutionMode() {
+			return 'doNotExecute'
 		}
 	}
 }

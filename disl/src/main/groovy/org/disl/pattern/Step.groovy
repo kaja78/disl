@@ -33,7 +33,14 @@ public abstract class Step extends AbstractExecutable {
 	String name;
 
 	/**
-	 * Step execution mode. For pattern only steps of the same execution mode as the context execution mode are created.  
+	 *  Decides if this should be executed. By default only steps of the same execution mode as the context execution mode are executed.
+	 * */
+	public boolean isToExecute() {
+		Context.EXECUTION_MODE_DEFAULT.equals(this.getExecutionMode())
+	}
+
+	/**
+	 * Step execution mode.
 	 * */
 	String getExecutionMode(){
 		Context.EXECUTION_MODE_DEFAULT
