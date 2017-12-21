@@ -56,6 +56,20 @@ class TestMapping extends DislTestCase {
 		
 	}
 
+	static class EmptyMapping extends Mapping {
+		TESTING_TABLE s1
+
+		@Override
+		void initMapping() {
+			from s1
+		}
+	}
+
+	@Test
+	void testGetImplicitMapping() {
+		EmptyMapping m=MetaFactory.create(EmptyMapping)
+		m.traceInitialColumnMapping()
+	}
 	
 
 	@Test

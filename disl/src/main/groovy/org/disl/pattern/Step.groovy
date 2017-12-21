@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.disl.pattern;
+package org.disl.pattern
 
 import groovy.transform.CompileStatic
 
@@ -36,7 +36,7 @@ public abstract class Step extends AbstractExecutable {
 	 *  Decides if this should be executed. By default only steps of the same execution mode as the context execution mode are executed.
 	 * */
 	public boolean isToExecute() {
-		Context.EXECUTION_MODE_DEFAULT.equals(this.getExecutionMode())
+		Context.getContext().getExecutionMode().equals(this.getExecutionMode())
 	}
 
 	/**
