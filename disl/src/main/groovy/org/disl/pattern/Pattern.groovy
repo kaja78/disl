@@ -97,4 +97,26 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	
 	public abstract void init();
 
+	void traceStepExecutionInfo() {
+		print stepExecutionInfoMessage
+	}
+
+	public String getStepExecutionInfoMessage() {
+		""" Step execution info:
+*********************************************************************************************
+*  Name                                              *   Status   *  Time (ms)*        Rows *
+*********************************************************************************************
+${steps.collect({ formatExecutionInfo(it.name, it.executionInfo) }).join('\n')}
+*********************************************************************************************
+"""
+	}
+
+	String formatExecutionInfo(String name,ExecutionInfo executionInfo) {
+		name=name.padRight(50).toString().substring(0,50)
+		String dur=executionInfo.duration.toString().padLeft(10).toString().substring(0,10)
+		String stat=executionInfo.status.toString().padLeft(10).toString().substring(0,10)
+		String processedRows=Integer.toString(executionInfo.processedRows).padLeft(10).toString().substring(0,10)
+		return "* ${name} * ${stat} * ${dur} * ${processedRows} *"
+	}
+
 }

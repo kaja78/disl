@@ -21,6 +21,7 @@ package org.disl.meta
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
@@ -422,7 +423,32 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
 		} catch (Exception e) {
 		}
-		
 	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	public void traceInitialColumnMapping() {
+		if (columns.size()==0) {
+			sources.each {
+				it.columns.each {println getInitialMapping(it.name)}
+			}
+		}
+	}
+
+	String getInitialMapping(String columnName) {
+		"ColumnMapping $columnName=e ${findSourceAlias(columnName)}.$columnName"
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	String findSourceAlias(String columnName) {
+		String sourceAlias='src'
+		getSources().each {
+			def c = it.columns.find { it.name.equals(columnName) }
+			if (c) {
+				sourceAlias=it.sourceAlias
+			}
+		}
+		return sourceAlias
+	}
+
 
 }

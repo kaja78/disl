@@ -44,7 +44,7 @@ abstract class TableMapping<T extends Table> extends Mapping implements Executab
 	}
 	
 	public void traceUnmappedColumns() {
-		getUnmappedTargetColumns().each {println "ColumnMapping $it.name=e src.${it.name}"}
+		getUnmappedTargetColumns().each {println getInitialMapping(it.name)}
 	}
 	
 	Collection<Column> getUnmappedTargetColumns() {

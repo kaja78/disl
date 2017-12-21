@@ -25,7 +25,9 @@ import org.disl.pattern.ExecutionInfo
 import org.disl.pattern.TablePattern
 
 import groovy.transform.CompileStatic
-import groovy.transform.TypeCheckingMode;;;
+import groovy.transform.TypeCheckingMode
+
+import java.lang.reflect.Modifier
 
 /**
  * Representation of table or view in DISL data model.
@@ -122,7 +124,7 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	private initPatternField() {
 		if (!getPattern()) {
 			Field patternField=getFieldByName('pattern')
-			if (patternField) {
+			if (patternField && !Modifier.isAbstract(patternField.getType().getModifiers())) {
 				patternField.setAccessible(true)
 				patternField.set(this,MetaFactory.create(patternField.getType(),{((TablePattern<Table>)it).setTable(this)}))
 			}

@@ -88,7 +88,7 @@ abstract class ClassFinder {
 			File traverseDir = new File (sourceURL.toURI())
 			Pattern filterClassFiles = ~/.*\.class$/
 			List<Class> types=[]
-			traverseDir.traverse ((Map<String,Object>)[type: FileType.FILES, nameFilter: filterClassFiles]) {
+			traverseDir.traverse ((Map)[type: FileType.FILES, nameFilter: filterClassFiles]) {
 				String classFile=rootDir+'/'+it.absolutePath.substring(traverseDir.absolutePath.length()+1)				
 				Class type=Class.forName(getClassName(classFile))
 				types.add(type)
