@@ -38,12 +38,14 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService
  * Global properties are defined in file global.context.properties. Global properties are valid in all contexts.
  * The value of global property may be overiden in context configuration file [context name].context.properties.
  * Context configuration files may be stored in DISL home directory and on classpath.
- * DISL home directory is defined by disl.home system variable, default value is user.home/.disl.
+ * DISL home directory is defined by disl.home system variable.
+ * If disl.home system variable is not specified and .disl directory from current working folder is used.
+ * If .disl directory does not exists in current working folder, user.home/.disl directory is used.
  * <p>Order of context variable value definitions:</p>
  * <ol>System property</ol>
  * <ol>Environment variable (for variables starting with env.)</ol>
- * <ol>Context configuration file in classpath.</ol>
  * <ol>Context configuratuon file in disl.home directory.</ol>
+ * <ol>Context configuration file in classpath.</ol>
  * <ol>Global context configuration file in classpath.</ol>
  * <ol>Global context configuration file in disl.home directory.</ol>
  * <p>
@@ -179,10 +181,10 @@ public class Context implements Cloneable {
 		config = new Properties()
 		String configFileName="${name}.context.properties"
 		checkConfig(configFileName)
-		loadConfigFromFile(new File(dislHomeDirectory, GLOBAL_CONTEXT_CONFIG_FILENAME))
 		loadConfigFromResource(GLOBAL_CONTEXT_CONFIG_FILENAME)
-		loadConfigFromFile(new File(dislHomeDirectory, configFileName))
+		loadConfigFromFile(new File(dislHomeDirectory, GLOBAL_CONTEXT_CONFIG_FILENAME))
 		loadConfigFromResource(configFileName)
+		loadConfigFromFile(new File(dislHomeDirectory, configFileName))
 		return config
 	}
 
@@ -205,7 +207,12 @@ public class Context implements Cloneable {
 	}
 
 	protected File getDislHomeDirectory() {
-		new File(System.getProperty(DISL_HOME_PROPERTY),"${System.getProperty('user.home')}/.disl")
+		String defaultDislHome="${System.getProperty('user.home')}/.disl"
+		File localDislHome=new File('.disl')
+		if (localDislHome.isDirectory()) {
+			defaultDislHome=localDislHome.getAbsolutePath()
+		}
+		new File(System.getProperty(DISL_HOME_PROPERTY),defaultDislHome)
 	}
 
 	public String getProperty(String key) {
