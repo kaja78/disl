@@ -42,9 +42,13 @@ class TablePageStep extends FileOutputStep {
     public String getCode() {
         """\
 +++
-    title= "${table.name}"
+    title= "${table.getClass().getName().substring(table.getClass().getPackage().getName().length()+1)}"
     packages=["${table.getClass().getPackage().getName().replace('.','/')}"]
-    schemas=["${table.getSchema()}"]
+    schemas=["${table.getSchema()}"]    
+    types=["Table"]
+    ${table.pattern ? "patterns=[\"${table.pattern.class.simpleName}\"]" : ''}
+    ${table.physicalSchema ? "physical-schemas=[\"${table.getPhysicalSchema()}\"]" : ''}
+    ${!table.tags.isEmpty() ? "tags=[${table.tags.collect({"\"${it}\""}).join(',')}]": ''}    
 +++
 ${WikiHelper.renderElementDescription(table)}
 

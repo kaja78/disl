@@ -64,7 +64,7 @@ class WikiHelper extends MetaManager {
     }
 
     static String fileName(String className) {
-        "${className.toLowerCase().replace('.','/')}"
+        "${className.toLowerCase().replace('.','/').replace('$','')}"
     }
 
      static File getLineageDataFile(String className) {
@@ -128,7 +128,7 @@ class WikiHelper extends MetaManager {
 
     void generateWiki() {
         process {
-            if (it instanceof Table || it instanceof Mapping || it instanceof Perspective) {
+            if (it instanceof Table || it instanceof Mapping || it instanceof Lookup || it instanceof Perspective) {
                 generate(it)
             }
         }
@@ -250,9 +250,9 @@ class WikiHelper extends MetaManager {
     static String renderElementDescription(Base base) {
         if (base.description && !'null'.equals(base.description)) {
             if (base.description.contains('.')) {
-                return base.description.replaceFirst('\\.','.\n<!--more-->\n')
+                return base.description.replaceFirst('\\.','.\n\n<!--more-->\n')
             }
-            return "${base.description}\n<!--more-->\n"
+            return "${base.description}\n\n<!--more-->\n"
         }
         return '<!--more-->'
     }

@@ -19,6 +19,7 @@
 package org.disl.meta
 
 import groovy.transform.CompileStatic
+import sun.security.krb5.internal.ccache.Tag
 
 import java.lang.reflect.Field
 
@@ -60,10 +61,18 @@ abstract class Base implements Comparable<Base>,Initializable {
 	 * Init tags by annotation value.
 	 * */
 	void initTags() {
-		Tags tags=this.getClass().getAnnotation(Tags)
-		if (tags) {
-			this.tags.addAll(tags.value())
+		tags=getTags(getClass())
+	}
+
+	Set<String> getTags(Class clazz) {
+		Set<String> tagValues=[]
+		if (clazz.getSuperclass()) {
+			tagValues=getTags(clazz.getSuperclass())
 		}
+		if (clazz.isAnnotationPresent(Tags)) {
+			tagValues.addAll(clazz.getAnnotation(Tags).value())
+		}
+		return tagValues
 	}
 
 	public String getName() {

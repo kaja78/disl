@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -20,7 +20,6 @@ package org.disl.workflow
 
 import org.disl.workflow.ClassFinder.FileSystemFinder
 import org.disl.workflow.ClassFinder.JarFinder
-import org.hsqldb.lib.HsqlArrayHeap
 import org.junit.Assert
 import org.junit.Test
 

@@ -44,21 +44,21 @@ class MappingPageStep extends FileOutputStep {
     String getCode() {
         """\
 +++
-    title= "${mapping.name}"
+    title= "${mapping.getClass().getName().substring(mapping.getClass().getPackage().getName().length()+1)}"
     packages=["${mapping.getClass().getPackage().getName().replace('.','/')}"]
     schemas=["${mapping.getSchema()}"]
+    types=["Mapping"]
+    ${mapping.pattern ? "patterns=[\"${mapping.pattern.class.simpleName}\"]" : ''}
 +++
-
 ${WikiHelper.renderElementDescription(mapping)}
 
 ${targetSection}
-${mapping.pattern ? "Pattern: ${mapping.pattern.class.simpleName}" : ''}
 
 ${WikiHelper.renderDataLineage(mapping)}
 
 <table>
-<tr><th>Name</th><th>Expression</th><th>Description</th></tr>
-${mapping.columns.collect({"<tr><td>$it.alias</td><td><code><pre>$it.expression</pre></code></td><td>${WikiHelper.renderColumnDescription(it.description)}</td></tr>\n"}).join()}
+<tr><th>Name</th><th>Description</th><th>Expression</th></tr>
+${mapping.columns.collect({"<tr><td><code><pre>$it.alias</pre></code></td><td><code><pre>${WikiHelper.renderColumnDescription(it.description)}</pre></code></td><td><code><pre>$it.expression</pre></code></td></tr>\n"}).join()}
 </table>
 
 $sources

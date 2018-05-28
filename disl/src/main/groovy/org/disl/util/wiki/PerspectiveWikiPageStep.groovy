@@ -43,6 +43,7 @@ class PerspectiveWikiPageStep extends FileOutputStep {
 +++
     title= "${perspective.name}"
     packages=["${perspective.getClass().getPackage().getName().replace('.','/')}"]
+    types=["Perspective"]
 +++
 ${WikiHelper.renderElementDescription(perspective)}
 
