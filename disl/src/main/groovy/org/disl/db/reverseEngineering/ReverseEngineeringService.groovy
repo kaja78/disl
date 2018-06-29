@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -21,7 +21,8 @@ package org.disl.db.reverseEngineering
 import groovy.sql.GroovyResultSet
 import groovy.sql.GroovyResultSetProxy
 import groovy.sql.Sql
-import groovy.util.logging.Slf4j;
+import groovy.util.logging.Slf4j
+import org.disl.db.reverseEngineering.ReverseTablePattern;
 
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
@@ -69,7 +70,7 @@ class ReverseEngineeringService {
 		List<Table> tables=reverseEngineerTables(sql,tablePattern,tableTypes,sourceSchemaFilterPattern)
 		tables.each {
 			Table t=it
-			ReverseTablePattern reverseTablePattern=new ReverseTablePattern()			
+			ReverseTablePattern reverseTablePattern=createReverseTablePattern()
 			reverseTablePattern.setPackageName(targetPackage)
 			reverseTablePattern.setOutputDir(outputDir)
 			reverseTablePattern.setParentClassName(parentClassName)			
@@ -77,6 +78,10 @@ class ReverseEngineeringService {
 			reverseTablePattern.init()			
 			reverseTablePattern.execute()
 		}
+	}
+
+	protected ReverseTablePattern createReverseTablePattern() {
+		return new ReverseTablePattern()
 	}
 
 	public List<Table> reverseEngineerTables(Sql sql,String tablePattern, String tableTypes,String sourceSchemaFilterPattern,String catalog=null) {
