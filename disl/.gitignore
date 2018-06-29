@@ -6,6 +6,7 @@ gradlew
 gradlew.bat
 /.classpath
 /.project
+/.idea
 /gradle-app.setting
 /lib/*.jar
 /disl.iml
