@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -442,12 +442,20 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	String findSourceAlias(String columnName) {
 		String sourceAlias='src'
 		getSources().each {
-			def c = it.columns.find { it.name.equals(columnName) }
+			def c = it.columns.find { equals(columnName,it) }
 			if (c) {
 				sourceAlias=it.sourceAlias
 			}
 		}
 		return sourceAlias
+	}
+
+	boolean equals(String columnName,Column column) {
+		columnName.equals(column.name)
+	}
+
+	boolean  equals(String columnName,ColumnMapping columnMapping) {
+		columnName.equals(columnMapping.alias)
 	}
 
 
