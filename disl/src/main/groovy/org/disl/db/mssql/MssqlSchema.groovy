@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -39,17 +39,17 @@ class MssqlSchema extends PhysicalSchema {
 	@Override
 	public void init() {
 		super.init();
-		host=getSchemaProperty('host')
-		port=Integer.parseInt(getSchemaProperty('port','1433'))
-		databaseName=getSchemaProperty('databaseName')
-		instance=getSchemaProperty('instance')
-	}
-
-	public String getJdbcUrl() {
-		if (getInstance()==null) {
-			return "jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};user=${getUser()};password=${getPassword()};"	
+		if (!getJdbcUrl()) {
+			host=getSchemaProperty('host')
+			port=Integer.parseInt(getSchemaProperty('port','1433'))
+			databaseName=getSchemaProperty('databaseName')
+			instance=getSchemaProperty('instance')
+			if (getInstance()==null) {
+				setJdbcUrl("jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};user=${getUser()};password=${getPassword()};".toString())
+			} else {
+				setJdbcUrl("jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};instance=${getInstance()};user=${getUser()};password=${getPassword()};".toString())
+			}
 		}
-		"jdbc:jtds:sqlserver://${getHost()}:${getPort()}/${getDatabaseName()};instance=${getInstance()};user=${getUser()};password=${getPassword()};"		
 	}
 
 	@Override

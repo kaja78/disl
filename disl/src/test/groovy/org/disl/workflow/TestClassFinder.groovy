@@ -39,9 +39,9 @@ class TestClassFinder {
 		Class typeInOtherPackage=org.junit.validator.AnnotationValidator
 
 		ClassFinder jarFinder=ClassFinder.createClassFinder('org.junit.runner')
-		Assert.assertEquals(0,jarFinder.findTypes({false}).size())
+		Assert.assertEquals(0,jarFinder.findTypes(Object,{false}).size())
 		
-		Collection<Class> types=jarFinder.findTypes {true}
+		Collection<Class<Object>> types=jarFinder.findTypes (Object,{true})
 		
 		Assert.assertTrue(types.contains(sourceClass))
 		Assert.assertTrue(types.contains(typeInSubpackage))
@@ -58,9 +58,9 @@ class TestClassFinder {
 		Class typeInOtherPackage=org.disl.workflow.Job
 
 		
-		Assert.assertEquals(0,fsFinder.findTypes({false}).size())
+		Assert.assertEquals(0,fsFinder.findTypes(Object,{false}).size())
 		
-		Collection<Class> types=fsFinder.findTypes {true}
+		Collection<Class<Object>> types=fsFinder.findTypes (Object,{true})
 		
 		Assert.assertTrue(types.contains(testingClass))
 		Assert.assertTrue(types.contains(typeInSamePackage))

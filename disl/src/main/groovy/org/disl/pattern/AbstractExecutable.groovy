@@ -59,6 +59,8 @@ abstract class AbstractExecutable extends Base implements Executable {
 		if (!isIgnoreErrors()) {
 			log.error("${e.class.name} executing $this: ${e.message}",e)
 			throw e
+		} else {
+			log.warn("Ignored ${e.class.name} executing $this: ${e.message}",e)
 		}
 	}
 	

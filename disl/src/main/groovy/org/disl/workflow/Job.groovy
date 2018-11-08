@@ -23,7 +23,9 @@ import org.disl.pattern.AbstractExecutable
 import org.disl.pattern.Executable
 
 import groovy.transform.CompileStatic;
-import groovy.util.logging.Slf4j;
+import groovy.util.logging.Slf4j
+import org.disl.pattern.Status
+
 /**
  * Job executes list of job entries in serial order.
  * */
@@ -32,6 +34,8 @@ import groovy.util.logging.Slf4j;
 abstract class Job extends AbstractExecutable {
 
 	List<JobEntry> jobEntries=[]
+	Exception lastException
+	boolean continueOnError=false
 
 	/**
 	 * Add executable instance to job entry list.
@@ -84,30 +88,55 @@ abstract class Job extends AbstractExecutable {
 		addAll(MetaFactory.createAll(rootPackage,assignableType));
 	}
 
-	protected int executeInternal() {
-		int processedRows=0
+    @Override
+    void beforeExecute() {
+        super.beforeExecute()
+        log.info("Starting execution of job ${getName()}. (${getJobEntries().size()} entries.)")
+    }
+
+    protected int executeInternal() {
 		jobEntries.each {
-			it.execute(); processedRows+=it.executionInfo.processedRows
+			execute(it)
 		}
-		return processedRows
+		if (lastException) {
+			throw lastException
+		}
+		return executionInfo.processedRows
+	}
+
+	protected void execute(JobEntry entry) {
+		if (this.executionInfo.status==Status.ERROR) {
+			return
+		}
+		try {
+			entry.execute()
+		}
+		catch (Exception e) {
+			lastException=e
+			if (!continueOnError) {
+				executionInfo.status=Status.ERROR
+			}
+		}
 	}
 
 	@Override
 	public void postExecute() {
 		super.postExecute();
+		updateExecutionInfo()
 		traceStatus()
 	}
+
+    void updateExecutionInfo() {
+        executionInfo.processedRows=0
+        jobEntries.each {
+            executionInfo.processedRows+=it.executionInfo.processedRows
+        }
+    }
 
 	public void simulate() {
 		jobEntries.each { it.simulate() }
 	}
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName()
-	}
-
-	
 	public void traceStatus() {
 		if (log.infoEnabled) {
 				log.info(getExecutionSummaryMessage())

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -69,8 +69,8 @@ class MetaFactory {
 	 * //Generate all tables defined in disl model for your data warehouse.
 	 * MetaFactory.createAll(com.yourDw.AbstractDwTable,"com.yourDw",AbstractDwTable).each({it.generate})
 	 * */
-	static List createAll(String rootPackage,Class assignableType) {
-		Collection<Class> typesToCreate=findTypes(rootPackage, assignableType)
+	static <T> List<T> createAll(String rootPackage,Class<T> assignableType) {
+		List<Class<T>> typesToCreate=findTypes(rootPackage, assignableType)
 		if (typesToCreate.size()==0) {
 			throw new RuntimeException('No classes found!')
 		}
@@ -80,7 +80,7 @@ class MetaFactory {
 	/**
 	 * Returns classes in given rootPackage (including subpackages) which are assignable to assignableType.
 	 * */
-	static List<Class> findTypes(String rootPackage,Class assignableType) {
+	static <T> List<Class<T>> findTypes(String rootPackage,Class<T> assignableType) {
 		ClassFinder.createClassFinder(rootPackage).findNonAbstractTypes(rootPackage,assignableType)
 	}
 	

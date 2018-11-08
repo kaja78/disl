@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -83,7 +83,7 @@ class TestJobJUnitFormat extends DislTestCase {
 *********************************************************************************************
 *  Name                                              *   Status   *  Time (ms)*        Rows *
 *********************************************************************************************
-* SampleJob                                          *      ERROR *       3000 *          0 *
+* SampleJob                                          *      ERROR *       3000 *          2 *
 *********************************************************************************************
 * SampleExecutable1                                  *   FINISHED *       2000 *          2 *
 * SampleExecutable2                                  *      ERROR *       1000 *          0 *

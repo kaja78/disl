@@ -28,7 +28,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 project.group='com.github.kaja78'
-project.version="1.0.2-SNAPSHOT"
+project.version="1.0.3-SNAPSHOT"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7

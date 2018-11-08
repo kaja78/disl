@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -71,26 +71,25 @@ abstract class ClassFinder {
 		findNonAbstractTypes(rootDir,assignableType)		
 	}
 	
-	public List<Class> findNonAbstractTypes(String rootDir,Class assignableType) {
-		findTypes(rootDir,{assignableType.isAssignableFrom(((Class)it)) && !Modifier.isAbstract(((Class)it).getModifiers())})
+	public <T> List<Class<T>> findNonAbstractTypes(String rootDir,Class<T> assignableType) {
+		findTypes(assignableType,rootDir,{assignableType.isAssignableFrom(((Class)it)) && !Modifier.isAbstract(((Class)it).getModifiers())})
 	}
 
-	public List<Class> findTypes(Closure classFilter) {
-		return findTypes(rootDir,classFilter);
+	public <T> List<Class<T>> findTypes(Class<T> assignableType,Closure classFilter) {
+		return findTypes(assignableType,rootDir,classFilter);
 	}
 	
-	public abstract List<Class> findTypes(String rootPackage,Closure classFilter);
+	public abstract <T> List<Class<T>> findTypes(Class<T> assignableType,String rootPackage,Closure classFilter);
 
 	static class FileSystemFinder extends ClassFinder {
 			
-		public List<Class> findTypes(String rootDir,Closure classFilter) {
-			
+		public <T> List<Class<T>> findTypes(Class<T> assignableType,String rootDir,Closure classFilter) {
 			File traverseDir = new File (sourceURL.toURI())
 			Pattern filterClassFiles = ~/.*\.class$/
-			List<Class> types=[]
+			List<Class<T>> types=[]
 			traverseDir.traverse ((Map)[type: FileType.FILES, nameFilter: filterClassFiles]) {
 				String classFile=rootDir+'/'+it.absolutePath.substring(traverseDir.absolutePath.length()+1)				
-				Class type=Class.forName(getClassName(classFile))
+				Class<T> type=(Class<T>)Class.forName(getClassName(classFile))
 				types.add(type)
 			}
 			types.findAll(classFilter).toList()
@@ -99,10 +98,12 @@ abstract class ClassFinder {
 	}
 
 	static class JarFinder extends ClassFinder {
+
 		JarFile getJarFile() {
 			((JarURLConnection)sourceURL.openConnection()).getJarFile()			
 		}
-		public List<Class> findTypes(String rootPackage,Closure classFilter) {
+
+		public <T> List<Class<T>> findTypes(Class<T> assignableType,String rootPackage,Closure classFilter) {
 			String rootDir=rootPackage.replace('.','/')
 			JarFile jarFile=getJarFile()
 			
@@ -111,7 +112,7 @@ abstract class ClassFinder {
 				String name=((JarEntry)it).getName()
 				(name.startsWith(rootDir) && name.endsWith('.class'))})
 			
-			return entries.collect({Class.forName(getClassName(it.name))}).findAll(classFilter).toList()
+			return entries.collect({(Class<T>)Class.forName(getClassName(it.name))}).findAll(classFilter).toList()
 		}
 
 	}
@@ -120,10 +121,10 @@ abstract class ClassFinder {
 		
 		List<ClassFinder> finders
 		
-		public List<Class> findTypes(String rootPackage,Closure classFilter) {
-			List<Class> types=[]
+		public <T> List<Class<T>> findTypes(Class<T> assignableType,String rootPackage,Closure classFilter) {
+			List<Class<T>> types=[]
 			finders.each {
-				types.addAll(it.findTypes(rootPackage,classFilter))
+				types.addAll(it.findTypes(assignableType,rootPackage,classFilter))
 			}
 			return types
 		}

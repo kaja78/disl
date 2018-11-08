@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -32,13 +32,11 @@ class VerticaSchema extends PhysicalSchema {
 	@Override
 	public void init() {
 		super.init();
-		host=getSchemaProperty("host", host)
-		port=getSchemaProperty("port", port)
-	}
-	
-	@Override
-	public String getJdbcUrl() {
-		"jdbc:vertica://${host}:${port}/${databaseName}"
+		if (!getJdbcUrl()) {
+			host=getSchemaProperty("host", host)
+			port=getSchemaProperty("port", port)
+			setJdbcUrl("jdbc:vertica://${host}:${port}/${databaseName}")
+		}
 	}
 	
 	@Override

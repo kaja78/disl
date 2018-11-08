@@ -42,16 +42,16 @@ public abstract class PhysicalSchema {
 	String password
 	String schema
 	String databaseName
+	String jdbcUrl
 	SqlProxy sqlProxy
 	
 	abstract void setJdbcDriver(String driver)
 	abstract String getJdbcDriver()
-	abstract String getJdbcUrl()
-	
+
 	abstract String evaluateExpressionQuery(String expression)
 	abstract String evaluateConditionQuery(String expression)
 	abstract getRecordQuery(int index,String expressions);
-	
+
 	/**
 	 * Evaluate value of SQL expression.
 	 * */
@@ -97,9 +97,9 @@ public abstract class PhysicalSchema {
 	public void init() {
 		Context context=Context.getContext();
 		user=getSchemaProperty("user",user)		
-		jdbcDriver=getSchemaProperty("jdbcDriver",jdbcDriver)
 		schema=getSchemaProperty("schema",schema)
 		databaseName=getSchemaProperty("databaseName", databaseName)
+		jdbcUrl=getSchemaProperty('jdbcUrl',jdbcUrl)
 		initPassword()
 	}
 	
@@ -132,11 +132,14 @@ public abstract class PhysicalSchema {
 	}
 	
 	protected Sql createSql() {
-		def sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
+		Sql sql
+		try {
+			sql=Sql.newInstance(getJdbcUrl(), getUser(), getPassword(), getJdbcDriver())
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to create database connection for jdbcUrl: ${getJdbcUrl()}, user: ${getUser()}, password: ${getPassword()?'*'.multiply(getPassword().length()):null}.",e)
+		}
 		sql.getConnection().setAutoCommit(false)
-		sql.cacheConnection=true
-		sql.cacheStatements=false
-		log.info("${name} - Created new jdbcConnection for url: ${getJdbcUrl()}")
+		log.info("${name} - Created new jdbcConnection for url: ${getJdbcUrl()}, user: ${getUser()}.")
 		return sql
 	}
 	
@@ -177,7 +180,7 @@ ${joinCondition}"""
 			String key=it.key.toString()
 			return key.startsWith("${sourceAlias}.") || (includeMissingSourceAliasColumns && !key.contains('.'))
 		}
-		sourceAliasRow=sourceAliasRow.collectEntries {key, value ->
+		sourceAliasRow=sourceAliasRow.collectEntries {String key, value ->
 			if (key.startsWith("${sourceAlias}.")) {
 				key=key.substring(key.indexOf('.')+1)
 			}
@@ -263,8 +266,9 @@ ${joinCondition}"""
 	
 	@Override
 	protected void finalize() throws Throwable {
-		if (sql!=null) {
-			sql.close()
+		if (sqlProxy!=null) {
+			log.debug("${name} - Closing jdbcConnection for url: ${getJdbcUrl()}, user: ${getUser()}.")
+			sqlProxy.close()
 			setSqlProxy(null)
 		}
 	}

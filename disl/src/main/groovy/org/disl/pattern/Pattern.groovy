@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -64,10 +64,10 @@ public abstract class Pattern extends AbstractExecutable implements Initializabl
 	@Override
 	public int executeInternal() {
 		long timestamp=System.currentTimeMillis();
-		log.info("Executing pattern $this:")
+		log.debug("Executing pattern $this:")
 		int processedRows=0		
 		steps.each {it.execute();processedRows+=it.executionInfo.processedRows}
-		log.info("${this} processed ${processedRows} rows in ${System.currentTimeMillis()-timestamp} ms.")
+		log.debug("${this} processed ${processedRows} rows in ${System.currentTimeMillis()-timestamp} ms.")
 		return processedRows		
 	}
 	

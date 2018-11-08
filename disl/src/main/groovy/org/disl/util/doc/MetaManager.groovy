@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -55,7 +55,7 @@ class MetaManager {
 	void addRootPackage(String rootPackage) {
 		log.info("Searching for DISL classes in root package $rootPackage")
 		ClassFinder cf=ClassFinder.createClassFinder(rootPackage)
-		List<Class> classes=cf.findTypes({
+		List<Class<Base>> classes=cf.findTypes(Base,{
 			Class type=(Class)it
 			int modifiers=type.getModifiers()
 			return includeType(type) && !Modifier.isAbstract(modifiers) && ((Modifier.isStatic(modifiers) && type.isLocalClass()) || !type.isLocalClass())

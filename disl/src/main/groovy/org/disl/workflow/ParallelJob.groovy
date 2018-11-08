@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -25,9 +25,10 @@ abstract class ParallelJob extends Job {
 	@Override
 	public int executeInternal() {
 		ParallelJobExecutor.instance.execute(this)
-		int processedRows=0
-		jobEntries.each {processedRows+=it.executionInfo.processedRows}
-		return processedRows
+		if (lastException) {
+			throw lastException
+		}
+		return executionInfo.processedRows
 	}
 
 }

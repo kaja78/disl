@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -34,14 +34,14 @@ class HsqldbSchema extends PhysicalSchema {
 		user="sa"
 	}
 	
-	String getJdbcUrl() {
-		"jdbc:hsqldb:${databaseName}"
-	}
-	
 	@Override
 	public void init() {
 		super.init();
-		databaseName=getSchemaProperty("databaseName", "mem:inmemoryDb")		
+		if (!getJdbcUrl()) {
+			databaseName=getSchemaProperty("databaseName", "mem:inmemoryDb")
+			setJdbcUrl("jdbc:hsqldb:${databaseName}")
+		}
+
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -32,14 +32,13 @@ class OracleSchema extends PhysicalSchema {
 	@Override
 	public void init() {
 		super.init();
-		host=getSchemaProperty("host", host)
-		port=getSchemaProperty("port", port)
-		sid=getSchemaProperty("sid")
-		serviceName=getSchemaProperty("serviceName")
-	}
-
-	public String getJdbcUrl() {
-		"jdbc:oracle:thin:@${getHost()}:${getPort()}${getDatabaseName()}"
+		if (!getJdbcUrl()) {
+			host=getSchemaProperty("host", host)
+			port=getSchemaProperty("port", port)
+			setSid(getSchemaProperty("sid"))
+			setServiceName(getSchemaProperty("serviceName"))
+			setJdbcUrl("jdbc:oracle:thin:@${getHost()}:${getPort()}${getDatabaseName()}")
+		}
 	}
 
 	public void setSid(String sid) {
