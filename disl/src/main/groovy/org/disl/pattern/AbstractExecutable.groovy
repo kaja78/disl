@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -60,7 +60,11 @@ abstract class AbstractExecutable extends Base implements Executable {
 			log.error("${e.class.name} executing $this: ${e.message}",e)
 			throw e
 		} else {
-			log.warn("Ignored ${e.class.name} executing $this: ${e.message}",e)
+			if (log.isDebugEnabled()) {
+				log.debug("Ignored ${e.class.name} executing $this: ${e.message}",e)
+			} else {
+				log.warn("Ignored ${e.class.name} executing $this: ${e.message}")
+			}
 		}
 	}
 	

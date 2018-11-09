@@ -2,6 +2,7 @@
 /bin/
 /build/
 /gradle/
+/out/
 gradlew
 gradlew.bat
 /.classpath
