@@ -70,7 +70,7 @@ class OracleSchema extends PhysicalSchema {
 	
 	@Override
 	protected String getValidationQuery(String sqlQuery) {
-		"select * from (${sqlQuery}) where 1=2"
+		"explain plan for ${sqlQuery}"
 	}
 
 	@Override
