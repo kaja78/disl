@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -57,16 +57,19 @@ import org.disl.db.reverseEngineering.ReverseEngineeringService
  * */
 @CompileStatic
 public class Context implements Cloneable {
-	public static final String CONTEXT_PROPERTY="disl.context"
+
 	public static final String CONTEXT_DEFAULT="default"
-	public static final String DISL_HOME_PROPERTY="disl.home"
 	public static final String EXECUTION_MODE_DEFAULT="default"
 	public static final String GLOBAL_CONTEXT_CONFIG_FILENAME = 'global.context.properties'
+
+	public static final String DISL_HOME_PROPERTY="disl.home"
+	public static final String CONTEXT_PROPERTY="disl.context"
+	public static final String EXECUTION_MODE_PROPERTY="disl.executionMode"
 
 	public static String contextClassName='org.disl.meta.Context'
 
 	String name
-	String executionMode=EXECUTION_MODE_DEFAULT
+	String executionMode
 	Properties config
 	Map<String,PhysicalSchema> schemaMap=new HashMap<String, PhysicalSchema>();
 
@@ -111,6 +114,7 @@ public class Context implements Cloneable {
 	private static Context createContext() {
 		Context context=(Context)Class.forName(contextClassName).newInstance()
 		context.setName(getContextName())
+		context.setExecutionMode(context.getProperty(EXECUTION_MODE_PROPERTY,EXECUTION_MODE_DEFAULT))
 		return context
 	}
 
