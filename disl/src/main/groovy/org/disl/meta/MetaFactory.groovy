@@ -22,6 +22,7 @@ import groovy.io.FileType
 import groovy.transform.CompileStatic
 
 import java.lang.reflect.Constructor
+import java.lang.reflect.Modifier
 import java.util.regex.Pattern
 
 import org.disl.workflow.ClassFinder
@@ -45,6 +46,9 @@ class MetaFactory {
 	}
 	
 	public static <T> T newInstance(Class<T> type) {
+		if (Modifier.isAbstract(type.getModifiers())) {
+			throw new RuntimeException("Unable to instantiate abstract type $type.name.")
+		}
 		Constructor<T> constructor=type.getDeclaredConstructor(new Class[0])
 		constructor.setAccessible(true)
 		return constructor.newInstance(new Object[0])
