@@ -19,7 +19,9 @@
 package org.disl.db.oracle
 
 import org.disl.db.reverseEngineering.ReverseEngineeringService;
-import org.disl.meta.PhysicalSchema;
+import org.disl.meta.PhysicalSchema
+
+import java.sql.SQLException;
 
 /**
  *Oracle physical schema implementation.
@@ -67,10 +69,18 @@ class OracleSchema extends PhysicalSchema {
 	public String getRecordQuery(int index,String expressions) {
 		"select ${index} as DUMMY_KEY,${expressions} from dual\n"
 	}
-	
+
+	public void validateQuery(String sqlQuery) throws AssertionError {
+		try {
+			getSql().execute(getValidationQuery(sqlQuery))
+		} catch (SQLException e) {
+			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${sqlQuery}")
+		}
+	}
+
 	@Override
 	protected String getValidationQuery(String sqlQuery) {
-		"explain plan for ${sqlQuery}"
+		"declare cursor c is ${sqlQuery}; begin null; end;"
 	}
 
 	@Override
