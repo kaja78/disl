@@ -216,7 +216,7 @@ public class Context implements Cloneable {
 		if (localDislHome.isDirectory()) {
 			defaultDislHome=localDislHome.getAbsolutePath()
 		}
-		new File(System.getProperty(DISL_HOME_PROPERTY),defaultDislHome)
+		new File(System.getProperty(DISL_HOME_PROPERTY,defaultDislHome))
 	}
 
 	public String getProperty(String key) {
