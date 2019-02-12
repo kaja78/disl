@@ -237,7 +237,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 		orderBy=clause
 	}
 
-	public void union(Mapping source) {
+	public void union(MappingSource source) {
 		setOperations.add(new SetOperation.UNION(source: source))
 	}
 
