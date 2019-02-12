@@ -95,7 +95,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			Field patternField=getFieldByName('pattern')
 			if (patternField) {
 				patternField.setAccessible(true)
-				patternField.set(this, MetaFactory.create(patternField.getType(),{((MappingPattern)it).setMapping(this)}))
+				patternField.set(this, MetaFactory.create((Class<MappingPattern>)patternField.getType(),{((MappingPattern)it).setMapping(this)}))
 			}
 		}
 	}
