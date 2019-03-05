@@ -44,26 +44,27 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	/**
 	 * Since this is first field in this class definition, it ensures doEarlyInit() method is called before next fields are intialized.
 	 * */
-	private boolean earlyInitialized=doEarlyInit()
+	private boolean earlyInitialized = doEarlyInit()
 	private String groupBy
 	private String orderBy
 
-	List<ColumnMapping> columns=[]
-	List<MappingSource> sources=[]
-	List<SetOperation> setOperations=[]
-	String filter="1=1"
+	List<ColumnMapping> columns = []
+	List<MappingSource> sources = []
+	List<MappingSource> withSources = []
+	List<SetOperation> setOperations = []
+	String filter = "1=1"
 
 	public boolean isEarlyInitialized() {
 		return earlyInitialized
 	}
-	
+
 	public MappingPattern getPattern() {
 		return null
 	}
 
 	public String getSchema() {
 		'default'
-	}	
+	}
 
 	protected Mapping(){}
 
@@ -92,17 +93,19 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 
 	private initPatternField() {
 		if (!getPattern()) {
-			Field patternField=getFieldByName('pattern')
+			Field patternField =getFieldByName('pattern')
 			if (patternField) {
 				patternField.setAccessible(true)
-				patternField.set(this, MetaFactory.create((Class<MappingPattern>)patternField.getType(),{((MappingPattern)it).setMapping(this)}))
+				patternField.set(this, MetaFactory.create((Class<MappingPattern>)patternField.getType(),
+						{((MappingPattern)it).setMapping(this
+						)}))
 			}
 		}
 	}
 
 	protected void initColumnDescription() {
 		getFieldsByType(ColumnMapping).each {
-			Description desc=it.getAnnotation(Description)
+			Description desc =it.getAnnotation(Description)
 			if (desc) {
 				((ColumnMapping)this[it.getName()]).setDescription(desc.value())
 			}
@@ -115,91 +118,105 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 
 	@Override
 	public String getRefference() {
-		if (sourceAlias!=null) {
+		if (sourceWithClause) {
+			return sourceAlias
+		}
+		if (sourceAlias != null) {
 			return "(\n${getSQLQuery()}) $sourceAlias"
 		}
 		return "(${getSQLQuery()})"
 	}
 
 	Closure getHaving() {
-		return {null}
+		return {null }
 	}
 
 	protected void initColumnAliases() {
-		getFieldsByType(ColumnMapping).each { initColumnMapping(it)}
+		getFieldsByType(ColumnMapping).each { initColumnMapping(it) }
 	}
 
 	protected void initColumnMapping(Field field) {
-		((ColumnMapping)this[field.name]).alias=field.name
+		((ColumnMapping) this[field.name]).alias = field.name
 	}
 
 	void initSourceAliases() {
-		getPropertyNamesByType(MappingSource).each {initSourceAlias(it)}
+		getPropertyNamesByType(MappingSource).each { initSourceAlias(it) }
 	}
 
 	void initSourceAlias(String property) {
-		MetaProperty metaProperty=this.getMetaClass().getProperties().find {it.name==property}
-		MappingSource p=(MappingSource)MetaFactory.create(metaProperty.getType())
-		p.sourceAlias=property
-		this[property]=p
+		MetaProperty metaProperty = this.getMetaClass().getProperties().find { it.name == property }
+		MappingSource p = (MappingSource) MetaFactory.create(metaProperty.getType())
+		p.sourceAlias = property
+		this[property] = p
 	}
 
 	abstract void initMapping();
 
-	public void from (MappingSource source) {
+	public void with(MappingSource... src) {
+		src.each { MappingSource s ->
+			if (s instanceof Table) {
+				throw new IllegalArgumentException('Table not allowed in with clause. Use Mapping or Lookup.')
+			}
+			s.setSourceWithClause(true)
+			withSources.add(s)
+		}
+	}
+
+	public void from(MappingSource source) {
 		sources.add(source)
 	}
-	public MappingSource innerJoin (MappingSource source) {
-		source.join=new Join.INNER(source:source)
+
+	public MappingSource innerJoin(MappingSource source) {
+		source.join = new Join.INNER(source: source)
 		sources.add(source)
 		source
 	}
 
-	public MappingSource leftOuterJoin (MappingSource source) {
-		source.join=new Join.LEFT(source:source)
+	public MappingSource leftOuterJoin(MappingSource source) {
+		source.join = new Join.LEFT(source: source)
 		sources.add(source)
 		source
 	}
 
-	public MappingSource rightOuterJoin (MappingSource source) {
-		source.join=new Join.RIGHT(source:source)
+	public MappingSource rightOuterJoin(MappingSource source) {
+		source.join = new Join.RIGHT(source: source)
 		sources.add(source)
 		source
 	}
 
-	public MappingSource fullOuterJoin (MappingSource source) {
-		source.join=new Join.FULL(source:source)
+	public MappingSource fullOuterJoin(MappingSource source) {
+		source.join = new Join.FULL(source: source)
 		sources.add(source)
 		source
 	}
 
-	public MappingSource cartesianJoin (MappingSource source) {
-		source.join=new Join.CARTESIAN(source:source)
+	public MappingSource cartesianJoin(MappingSource source) {
+		source.join = new Join.CARTESIAN(source: source)
 		sources.add(source)
 		source
 	}
 
 	public void where(String condition) {
-		filter=condition
+		filter = condition
 	}
 
 	/**
 	 * Explicitly generate groupBy clause for all expression mappings.
 	 * */
 	public void groupBy() {
-		groupBy(getColumns().findAll {it instanceof ExpressionColumnMapping})
+		groupBy(getColumns().findAll { it instanceof ExpressionColumnMapping })
 	}
-	
+
 	public void groupBy(Object... expressions) {
-		ArrayList l=new ArrayList(expressions.length)
+		ArrayList l = new ArrayList(expressions.length)
 		l.addAll(expressions)
 		groupBy(l)
 	}
-	
+
 	public void groupBy(Collection expressions) {
-		String clause=expressions.collect({
+		String clause = expressions.collect({
 			if (it instanceof ExpressionColumnMapping) {
-				it=it.expression
+				it = it.expression
 			}
 			it.toString()
 		}).join(',')
@@ -207,26 +224,26 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	public void groupBy(String clause) {
-		groupBy=clause
+		groupBy = clause
 	}
-	
+
 	/**
 	 * Explicitly generate orderBy clause for all expression mappings.
 	 * */
 	public void orderBy() {
-		orderBy(getColumns().findAll {it instanceof ExpressionColumnMapping})
+		orderBy(getColumns().findAll { it instanceof ExpressionColumnMapping })
 	}
-	
+
 	public void orderBy(Object... expressions) {
-		ArrayList l=new ArrayList(expressions.length)
+		ArrayList l = new ArrayList(expressions.length)
 		l.addAll(expressions)
 		orderBy(l)
 	}
-	
+
 	public void orderBy(Collection expressions) {
-		String clause=expressions.collect({
+		String clause = expressions.collect({
 			if (it instanceof ExpressionColumnMapping) {
-				it=it.expression
+				it = it.expression
 			}
 			it.toString()
 		}).join(',')
@@ -234,7 +251,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	public void orderBy(String clause) {
-		orderBy=clause
+		orderBy = clause
 	}
 
 	public void union(MappingSource source) {
@@ -259,11 +276,10 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 
 	SqlExpression createConstant(Object value) {
 		if (value instanceof String || value instanceof GString) {
-			value="'${value}'"
+			value = "'${value}'"
 		}
-		return new SqlExpression(expression:value)
+		return new SqlExpression(expression: value)
 	}
-
 
 	/**
 	 * Shorthand for createExpressionColumnMapping.
@@ -285,7 +301,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	ColumnMapping createExpressionColumnMapping(String expression) {
-		addColumnMapping new ExpressionColumnMapping(expression: expression,parent: this)
+		addColumnMapping new ExpressionColumnMapping(expression: expression, parent: this)
 	}
 
 	ColumnMapping addColumnMapping(ColumnMapping columnMapping) {
@@ -313,16 +329,16 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	ColumnMapping createAggregateColumnMapping(String aggregateFunction) {
-		addColumnMapping new AggregateColumnMapping(expression: aggregateFunction,parent: this)
+		addColumnMapping new AggregateColumnMapping(expression: aggregateFunction, parent: this)
 	}
 
 	String getSQLQuery() {
 		"""\
-	/*Mapping ${name}*/
+	/*Mapping ${name}*/${getWithClause()}
 		SELECT
 			${getQueryColumnList()}
 		FROM
-			${getSources().collect({it.fromClause}).join("\n			")}
+			${getSources().collect({ it.fromClause }).join("\n			")}
 		WHERE
 			${filter}
 		${getGroupByClause()}${getOrderByClause()}${getSetOperationClause()}
@@ -330,27 +346,27 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	String getQueryColumnList() {
-		getColumns().collect {"${it.getAliasedMappingExpression()}"}.join(",\n			")
+		getColumns().collect { "${it.getAliasedMappingExpression()}" }.join(",\n			")
 	}
-	
+
 	String getRefferenceColumnList() {
-		getColumns().collect {"${it.alias}"}.join(",")
+		getColumns().collect { "${it.alias}" }.join(",")
 	}
 
 	Collection<String> getTargetColumnNames() {
-		getColumns().collect({it.alias})
+		getColumns().collect({ it.alias })
 	}
 
 	String getGroupByClause() {
-		if  (groupBy!=null) {
+		if (groupBy != null) {
 			return """GROUP BY
 			${groupBy}"""
 		}
 		return ""
 	}
-	
+
 	String getOrderByClause() {
-		if (orderBy!=null) {
+		if (orderBy != null) {
 			return """
 		ORDER BY
 			${orderBy}"""
@@ -359,8 +375,8 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	String getSetOperationClause() {
-		if (setOperations.size()>0) {
-			return "\n\t"+setOperations.collect {it.getSetOperationClause()}.join("\n\t")
+		if (setOperations.size() > 0) {
+			return "\n\t" + setOperations.collect { it.getSetOperationClause() }.join("\n\t")
 		}
 		return ""
 	}
@@ -369,21 +385,21 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	 * Validate sql query in database. This is processed by preparing jdbc statement containing mapping sql query.
 	 * */
 	public void validate() {
-		PhysicalSchema physicalSchema=Context.getContext().getPhysicalSchema(getSchema())
+		PhysicalSchema physicalSchema = Context.getContext().getPhysicalSchema(getSchema())
 		physicalSchema.validateQuery(getSQLQuery())
 	}
 
 	public Sql getSql() {
 		Context.getSql(getSchema())
 	}
-	
+
 	@Override
 	public void execute() {
 		if (pattern) {
 			pattern.execute()
 		} else {
 			println exportToCSV(100)
-		}		
+		}
 	}
 
 	@Override
@@ -411,25 +427,25 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	
 	private String getCSVHeader(ResultSetMetaData metaData) {
 		List l=[]
-		for (int i=1;i<=metaData.getColumnCount();i++) {
+		for (int i= 1; i <= metaData.getColumnCount(); i++) {
 			l.add(metaData.getColumnName(i))
 		}
-		l.join('\t')+'\n'
+		l.join('\t') + '\n'
 	}
-	
+
 	public void copySqlQueryToClipboard() {
 		StringSelection ss = new StringSelection(getSQLQuery());
 		try {
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,null);
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
 		} catch (Exception e) {
 		}
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
 	public void traceInitialColumnMapping() {
-		if (columns.size()==0) {
+		if (columns.size() == 0) {
 			sources.each {
-				it.columns.each {println getInitialMapping(it.name)}
+				it.columns.each { println getInitialMapping(it.name) }
 			}
 		}
 	}
@@ -440,23 +456,33 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 
 	@CompileStatic(TypeCheckingMode.SKIP)
 	String findSourceAlias(String columnName) {
-		String sourceAlias='src'
+		String sourceAlias = 'src'
 		getSources().each {
-			def c = it.columns.find { equals(columnName,it) }
+			def c = it.columns.find { equals(columnName, it) }
 			if (c) {
-				sourceAlias=it.sourceAlias
+				sourceAlias = it.sourceAlias
 			}
 		}
 		return sourceAlias
 	}
 
-	boolean equals(String columnName,Column column) {
+	boolean equals(String columnName, Column column) {
 		columnName.equals(column.name)
 	}
 
-	boolean  equals(String columnName,ColumnMapping columnMapping) {
+	boolean equals(String columnName, ColumnMapping columnMapping) {
 		columnName.equals(columnMapping.alias)
 	}
 
+	@Override
+	String getWithReference() {
+		return "${sourceAlias} as (${getSQLQuery()})"
+	}
 
+	String getWithClause() {
+		if (withSources.isEmpty()) {
+			return ''
+		}
+		"\n\twith${withSources.collect({"\n\t${it.withReference}"}).join(',')}"
+	}
 }

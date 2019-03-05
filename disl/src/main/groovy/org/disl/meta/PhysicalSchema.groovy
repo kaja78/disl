@@ -150,15 +150,13 @@ public abstract class PhysicalSchema {
 		String sourceList=aliases.collect {
 			String alias=it
 			int index=0
-			String innerQuery=records.collect {index++; mapToQuery(it,alias,index,firstSource)}.join("union all\n")
+			String innerQuery=records.collect {index++; mapToQuery(it,alias,index,firstSource)}.join("\n\t\tunion all\n\t\t")
 			firstSource=false
 			return "(${innerQuery}) $alias"
-		}.join(",\n")
-		joinCondition=aliases.collect({"AND ${it}.DUMMY_KEY=${aliases[0]}.DUMMY_KEY"}).join("\n")
+		}.join(",\n\t\t")
+		joinCondition=aliases.collect({"AND ${it}.DUMMY_KEY=${aliases[0]}.DUMMY_KEY"}).join("\n\t\t")
 		return """${sourceList}
-where
-1=1
-${joinCondition}"""
+	where 1=1 ${joinCondition}"""
 	}
 
 	private List findAliases(List<Map> records) {

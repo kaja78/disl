@@ -26,9 +26,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class MappingSource extends Base {
 	String sourceAlias
-	Join join=new Join.NONE(source:this)	
+	boolean sourceWithClause
+	Join join=new Join.NONE(source:this)
+
 
 	public abstract String getRefference();
+
+	public abstract String getWithReference();
 	
 	public abstract String getRefferenceColumnList();
 	

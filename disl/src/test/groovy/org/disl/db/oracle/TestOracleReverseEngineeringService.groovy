@@ -44,7 +44,7 @@ import org.junit.Test
 
  * */
 @Ignore
-class TestOracleReverseEngineeringService extends ChangedContextTest {
+class TestOracleReverseEngineeringService extends OracleTest {
 
     OracleReverseEngineeringService s
 
@@ -52,10 +52,6 @@ class TestOracleReverseEngineeringService extends ChangedContextTest {
     void init() {
         super.init()
         s=Context.getReverseEngineeringService('default')
-    }
-
-    public String getContextName() {
-        'oracle.db.test'
     }
 
     @Test

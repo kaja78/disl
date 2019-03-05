@@ -64,6 +64,9 @@ abstract class Lookup extends MappingSource {
 
 
 	public String getRefference(){
+		if (sourceWithClause) {
+			return sourceAlias
+		}
 		if (sourceAlias!=null) {
 			return "(\n${getLookupQuery()}) $sourceAlias"
 		}
@@ -71,7 +74,12 @@ abstract class Lookup extends MappingSource {
 	}
 
 	public String getLookupQuery() {
-		"select * from ${physicalSchema.recordsToSubquery(createRecordsFromList())}"
+		"""\
+	/*Lookup $name*/
+	select * from 
+		${physicalSchema.recordsToSubquery(createRecordsFromList())}
+	/*End of lookup $name*/"""
+
 	}
 	
 	String getRefferenceColumnList() {
@@ -90,4 +98,8 @@ abstract class Lookup extends MappingSource {
 		return result
 	}
 
+	@Override
+	String getWithReference() {
+		"$sourceAlias as (${getLookupQuery()})"
+	}
 }

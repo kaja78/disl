@@ -36,18 +36,22 @@ import org.junit.Test
  */
 abstract class ChangedContextTest {
 
-    String originalContextName
-
     @Before
     void init() {
-        originalContextName=Context.getContext().getName()
-        Context.setContextName(getContextName())
+        ChangedContextTest.setContext(getContextName())
+    }
+
+    /**
+     * Set con
+     * */
+    static void setContext(String name) {
+        System.setProperty('disl.context',name)
+        if (Context.getContext().getName().equals(name)) {
+            return
+        }
+        Context.setContextName(name)
     }
 
     abstract String getContextName();
 
-    @After
-    void cleanup() {
-        Context.setContextName(originalContextName)
-    }
 }

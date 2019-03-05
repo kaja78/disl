@@ -56,7 +56,7 @@ class HsqldbSchema extends PhysicalSchema {
 	
 	@Override
 	public String getRecordQuery(int index,String expressions) {
-		"select ${index} as DUMMY_KEY,${expressions} from (VALUES(0))\n"
+		"select ${index} as DUMMY_KEY,${expressions} from (VALUES(0))"
 	}
 
 }

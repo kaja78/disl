@@ -26,19 +26,14 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class TestOracleSchema extends ChangedContextTest {
+class TestOracleSchema extends OracleTest {
 
     PhysicalSchema s
 
-    @Before
+    @Override
     void init() {
         super.init()
-        s=Context.getContext().getPhysicalSchema('default')
-    }
-
-    @Override
-    String getContextName() {
-        'oracle.db.test'
+        s= Context.getContext().getPhysicalSchema('default')
     }
 
     @Test

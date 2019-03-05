@@ -19,6 +19,7 @@
 package org.disl.pattern
 
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -41,6 +42,7 @@ class TestExecuteShellStep {
     }
 
     @Test
+    @Ignore
     void testExecute() {
         ExecuteShellStep t=getTestingStep()
         String expected

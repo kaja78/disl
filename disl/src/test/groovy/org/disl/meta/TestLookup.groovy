@@ -36,40 +36,39 @@ class TestLookup {
 	
 	@Test
 	public void testMapToQuery() {
-		assertEquals("select 1 as DUMMY_KEY,1 as A,2 as B from (VALUES(0))\n",l.getPhysicalSchema().mapToQuery(["A.A":1,"B":2], "A",1, true))
-		assertEquals("select 2 as DUMMY_KEY,1 as A from (VALUES(0))\n",l.getPhysicalSchema().mapToQuery(["A.A":1,"B":2], "A", 2,false))
+		assertEquals("select 1 as DUMMY_KEY,1 as A,2 as B from (VALUES(0))",l.getPhysicalSchema().mapToQuery(["A.A":1,"B":2], "A",1, true))
+		assertEquals("select 2 as DUMMY_KEY,1 as A from (VALUES(0))",l.getPhysicalSchema().mapToQuery(["A.A":1,"B":2], "A", 2,false))
 	}
 	
 	@Test
 	public void testGetQuery() {
-		assertEquals("""\
-	/*Mapping TestingLookupMapping*/
-		SELECT
-			l.A+l.B as C
-		FROM
-			(
-select * from (select 1 as DUMMY_KEY,1 as A,2 as B from (VALUES(0))
-union all
-select 2 as DUMMY_KEY,2 as A,4 as B from (VALUES(0))
-) SRC
-where
-1=1
-AND SRC.DUMMY_KEY=SRC.DUMMY_KEY) l
-		WHERE
-			1=1
-		
-	/*End of mapping TestingLookupMapping*/""",m.getSQLQuery())
+		assertEquals("""\t/*Mapping TestingLookupMapping*/
+\t\tSELECT
+\t\t\tl.A+l.B as C
+\t\tFROM
+\t\t\t(
+\t/*Lookup TestingLookup*/
+\tselect * from 
+\t\t(select 1 as DUMMY_KEY,1 as A,2 as B from (VALUES(0))
+\t\tunion all
+\t\tselect 2 as DUMMY_KEY,2 as A,4 as B from (VALUES(0))) SRC
+\twhere 1=1 AND SRC.DUMMY_KEY=SRC.DUMMY_KEY
+\t/*End of lookup TestingLookup*/) l
+\t\tWHERE
+\t\t\t1=1
+\t\t
+\t/*End of mapping TestingLookupMapping*/""",m.getSQLQuery())
 	}
 	
 	@Test
 	public void testGetRefference() {
-		assertEquals("""(select * from (select 1 as DUMMY_KEY,1 as A,2 as B from (VALUES(0))
-union all
-select 2 as DUMMY_KEY,2 as A,4 as B from (VALUES(0))
-) SRC
-where
-1=1
-AND SRC.DUMMY_KEY=SRC.DUMMY_KEY)""",l.getRefference())
+		assertEquals("""(\t/*Lookup TestingLookup*/
+\tselect * from 
+\t\t(select 1 as DUMMY_KEY,1 as A,2 as B from (VALUES(0))
+\t\tunion all
+\t\tselect 2 as DUMMY_KEY,2 as A,4 as B from (VALUES(0))) SRC
+\twhere 1=1 AND SRC.DUMMY_KEY=SRC.DUMMY_KEY
+\t/*End of lookup TestingLookup*/)""",l.getRefference())
 	}
 	
 	@Test

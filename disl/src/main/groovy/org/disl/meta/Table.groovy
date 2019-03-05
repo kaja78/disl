@@ -58,6 +58,9 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	
 	@Override
 	public String getRefference() {
+		if (sourceWithClause) {
+			return sourceAlias
+		}
 		String alias=""
 		if (sourceAlias!=null) {
 			alias=" ${sourceAlias}"
@@ -193,5 +196,10 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 	
 	public List<Column> getPrimaryKeyColumns() {
 		(List<Column>)columns.findAll {it.isPrimaryKey()}
+	}
+
+	@Override
+	String getWithReference() {
+		throw new UnsupportedOperationException()
 	}
 }

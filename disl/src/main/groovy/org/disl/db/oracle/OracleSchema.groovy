@@ -67,7 +67,7 @@ class OracleSchema extends PhysicalSchema {
 	
 	@Override
 	public String getRecordQuery(int index,String expressions) {
-		"select ${index} as DUMMY_KEY,${expressions} from dual\n"
+		"select ${index} as DUMMY_KEY,${expressions} from dual"
 	}
 
 	public void validateQuery(String sqlQuery) throws AssertionError {
