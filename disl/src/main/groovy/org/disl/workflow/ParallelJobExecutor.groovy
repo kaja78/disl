@@ -37,7 +37,12 @@ class ParallelJobExecutor {
 	private ExecutorService executorService
 	private ExecutorService parallelJobExecutorService
 	
-	private synchronized ExecutorService getParallelJobExecutorService() {
+	protected ParallelJobExecutor() {
+        addShutdownHook {shutdownExecutors()}
+    }
+
+
+    private synchronized ExecutorService getParallelJobExecutorService() {
 		if (parallelJobExecutorService==null) {
 			parallelJobExecutorService=Executors.newCachedThreadPool()
 		}
@@ -78,8 +83,8 @@ class ParallelJobExecutor {
 		def service=getExecutorService()
 		return tasks.collect({service.submit(it)})		
 	}
-	
-	public void shutdownExecutors() {
+
+    public void shutdownExecutors() {
 			if (executorService!=null) {
 				executorService.shutdown()
 				executorService=null
