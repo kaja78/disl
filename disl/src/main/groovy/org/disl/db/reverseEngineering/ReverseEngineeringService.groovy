@@ -98,7 +98,7 @@ class ReverseEngineeringService {
 					if ('null'.equals(description)) {
 						description=null
 					}
-					table.columns.add(new Column(name: it.COLUMN_NAME,description: description,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE),parent: table))})
+					table.columns.add(new Column(name: it.COLUMN_NAME,description: description,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE,it.CHAR_OCTET_LENGTH),parent: table))})
 			} catch (Exception e) {
 				log.error("Exception reverse engineering table ${table.name}.",e)
 			} finally {
@@ -108,7 +108,7 @@ class ReverseEngineeringService {
 		return tables
 	}
 	
-	protected String getDataType(String dataTypeName,BigDecimal size, BigDecimal decimalDigits,BigDecimal sqlDataType) {
+	protected String getDataType(String dataTypeName,BigDecimal size, BigDecimal decimalDigits,BigDecimal sqlDataType,BigDecimal charOctetLength) {
 		if (size==null || size==0 || isIgnoreSize(sqlDataType.intValue())) {
 			return "${dataTypeName}"
 		}

@@ -24,6 +24,7 @@ import org.disl.meta.Context
 import org.disl.meta.PhysicalSchema
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 class TestOracleSchema extends OracleTest {
@@ -43,16 +44,19 @@ class TestOracleSchema extends OracleTest {
     }
 
     @Test
+    @Ignore
     void testEvaluateExpression() {
         Assert.assertEquals(3,s.evaluateExpression('1+2'),0)
     }
 
     @Test
+    @Ignore
     void testEvaluateAggregateExpression() {
         Assert.assertEquals(3,s.evaluateAggregateExpression("sum(a)",[[a:1],[a:2]]),0)
     }
 
     @Test
+    @Ignore
     void testEvaluateExpressionOnProxy() {
         PhysicalSchema proxySchema=Context.getContext().getPhysicalSchema('oracleProxy')
         String proxyUser=Context.getContextProperty('default.user')

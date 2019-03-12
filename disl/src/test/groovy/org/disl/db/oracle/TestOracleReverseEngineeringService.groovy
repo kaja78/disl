@@ -18,9 +18,12 @@
  */
 package org.disl.db.oracle
 
+import groovy.sql.GroovyResultSetProxy
+import groovy.sql.Sql
 import org.disl.db.ChangedContextTest
 import org.disl.meta.Context
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -47,18 +50,47 @@ import org.junit.Test
 class TestOracleReverseEngineeringService extends OracleTest {
 
     OracleReverseEngineeringService s
+    Sql sql
+
 
     @Before
     void init() {
         super.init()
         s=Context.getReverseEngineeringService('default')
+        sql=Context.getSql('default')
+        sql.execute'create table DISL_TEST_ORA_REVERSE (C32CHAR char(32 char),C32 char(32))'
+        sql.execute 'comment on table DISL_TEST_ORA_REVERSE is \'DISL reverse engineering testing table.\''
+        sql.execute 'comment on column DISL_TEST_ORA_REVERSE.C32CHAR is \'Data type is CHAR(32 CHAR).\''
+        sql.execute 'comment on column DISL_TEST_ORA_REVERSE.C32 is \'Data type is CHAR(32).\''
     }
 
     @Test
     void testReverseEngineerSchema() {
-        new File("build/test/oracle/USER_TABLES.groovy").delete()
-        s.reverseSchemaTables('oracle','USER_TABLES','SYS',new File('build/test'))
-        assert new File("build/test/oracle/USER_TABLES.groovy").exists()
+        new File("build/test/oracle/DISL_TEST_ORA_REVERSE.groovy").delete()
+        s.reverseSchemaTables('oracle','DISL_TEST_ORA_REVERSE',Context.getPhysicalSchemaName('default'),new File('build/test'))
+        String expected='''\
+package oracle
+
+import org.disl.meta.*
+
+@Description("""DISL reverse engineering testing table.""")
+@groovy.transform.CompileStatic
+class DISL_TEST_ORA_REVERSE extends AbstractOracleTable {
+
+\t\t@Description("""Data type is CHAR(32 CHAR).""")
+\t\t@DataType("CHAR(32 CHAR)")
+\t\tColumn C32CHAR
+
+\t\t@Description("""Data type is CHAR(32).""")
+\t\t@DataType("CHAR(32)")
+\t\tColumn C32
+}'''
+        Assert.assertEquals(expected, new File("build/test/oracle/DISL_TEST_ORA_REVERSE.groovy").getText())
+    }
+
+    @After
+    void after() {
+        sql.execute('drop table DISL_TEST_ORA_REVERSE')
     }
 
 }
