@@ -62,24 +62,12 @@ class ParallelJobExecutor {
 			checkResults(job,futures)
 		} catch (Exception e) {
 			throw new RuntimeException("Exception in asynchronous execution.",e)
-		} finally {
-			releaseParallelJob()
-		}
-	}
-	
-	synchronized void releaseParallelJob() {
-		parallelJobsInProgress--
-		if (parallelJobsInProgress==0) {
-			shutdownExecutors()
 		}
 	}
 	
 	List<Future> submitParallelJobTasks(Job job) {
 		Collection<Executable> executables=job.getJobEntries()
 		Collection<Callable> parallelJobTasks=executables.findAll({isParallelJobEntry(it)}).collect({createCallable(job,it)})
-		synchronized (this) {
-			parallelJobsInProgress++
-		}
 		def service=getParallelJobExecutorService()
 		return parallelJobTasks.collect({service.submit(it)})
 	}
@@ -91,7 +79,7 @@ class ParallelJobExecutor {
 		return tasks.collect({service.submit(it)})		
 	}
 	
-	protected void shutdownExecutors() {
+	public void shutdownExecutors() {
 			if (executorService!=null) {
 				executorService.shutdown()
 				executorService=null
