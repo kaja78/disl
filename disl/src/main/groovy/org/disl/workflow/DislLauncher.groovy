@@ -39,6 +39,7 @@ class DislLauncher {
 	 * */
 	public static void main(String[] args) {
 		new DislLauncher(arguments: args).execute()
+		System.exit(0)
 	}
 	
 	public void execute() {

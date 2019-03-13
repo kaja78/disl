@@ -47,13 +47,13 @@ abstract class DislScript extends Script implements Executable{
 	String schema='default'
 	ExecutionInfo executionInfo=new ExecutionInfo()
 
-	/*@Override
-	public Object run() {
-		execute()
+	abstract def runScript()
+
+	def run() {
+		runScript()
+		System.exit(0)
 	}
-	
-	public abstract Object runScript();*/
-	
+
 	@Override
 	void execute(){
 		executionInfo.start()
