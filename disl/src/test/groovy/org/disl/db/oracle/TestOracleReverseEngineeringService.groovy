@@ -58,7 +58,7 @@ class TestOracleReverseEngineeringService extends OracleTest {
         super.init()
         s=Context.getReverseEngineeringService('default')
         sql=Context.getSql('default')
-        sql.execute'create table DISL_TEST_ORA_REVERSE (C32CHAR char(32 char),C32 char(32))'
+        //sql.execute'create table DISL_TEST_ORA_REVERSE (C32CHAR char(32 char),C32 char(32),VC4000 varchar2(4000),VC4000CHAR varchar2(4000 CHAR),CDATE DATE,CTIMESTAMP TIMESTAMP,CTIMESTAMP_9 TIMESTAMP(9),CN NUMBER,CN38 NUMBER(38),CN38_2 NUMBER(38,2))'
         sql.execute 'comment on table DISL_TEST_ORA_REVERSE is \'DISL reverse engineering testing table.\''
         sql.execute 'comment on column DISL_TEST_ORA_REVERSE.C32CHAR is \'Data type is CHAR(32 CHAR).\''
         sql.execute 'comment on column DISL_TEST_ORA_REVERSE.C32 is \'Data type is CHAR(32).\''
@@ -84,13 +84,45 @@ class DISL_TEST_ORA_REVERSE extends AbstractOracleTable {
 \t\t@Description("""Data type is CHAR(32).""")
 \t\t@DataType("CHAR(32)")
 \t\tColumn C32
+
+\t\t
+\t\t@DataType("VARCHAR2(4000)")
+\t\tColumn VC4000
+
+\t\t
+\t\t@DataType("VARCHAR2(4000 CHAR)")
+\t\tColumn VC4000CHAR
+
+\t\t
+\t\t@DataType("DATE")
+\t\tColumn CDATE
+
+\t\t
+\t\t@DataType("TIMESTAMP(6)")
+\t\tColumn CTIMESTAMP
+
+\t\t
+\t\t@DataType("TIMESTAMP(9)")
+\t\tColumn CTIMESTAMP_9
+
+\t\t
+\t\t@DataType("NUMBER")
+\t\tColumn CN
+
+\t\t
+\t\t@DataType("NUMBER(38)")
+\t\tColumn CN38
+
+\t\t
+\t\t@DataType("NUMBER(38,2)")
+\t\tColumn CN38_2
 }'''
         Assert.assertEquals(expected, new File("build/test/oracle/DISL_TEST_ORA_REVERSE.groovy").getText())
     }
 
     @After
     void after() {
-        sql.execute('drop table DISL_TEST_ORA_REVERSE')
+    //        sql.execute('drop table DISL_TEST_ORA_REVERSE')
     }
 
 }

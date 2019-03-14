@@ -92,23 +92,28 @@ class ReverseEngineeringService {
 		tables.each {
 			Table table=it
 			try {
-				res=sql.getConnection().getMetaData().getColumns(null, sourceSchemaFilterPattern, table.getName(), null)
+				res= getColumnsMetadata(sql,table)
 				eachRow(res,{
 					String description=it.REMARKS
 					if ('null'.equals(description)) {
 						description=null
 					}
-					table.columns.add(new Column(name: it.COLUMN_NAME,description: description,dataType: getDataType(it.TYPE_NAME,it.COLUMN_SIZE,it.DECIMAL_DIGITS,it.DATA_TYPE,it.CHAR_OCTET_LENGTH),parent: table))})
+					table.columns.add(new Column(name: it.COLUMN_NAME,description: description,dataType: getDataType(it.TYPE_NAME, it.COLUMN_SIZE?.toString(),it.DECIMAL_DIGITS,it.DATA_TYPE,it.CHAR_OCTET_LENGTH),parent: table))})
 			} catch (Exception e) {
 				log.error("Exception reverse engineering table ${table.name}.",e)
 			} finally {
+                res.getStatement().close()
 				res.close()
 			}
 		}
 		return tables
 	}
-	
-	protected String getDataType(String dataTypeName,BigDecimal size, BigDecimal decimalDigits,BigDecimal sqlDataType,BigDecimal charOctetLength) {
+
+	protected ResultSet getColumnsMetadata(Sql sql,Table table) {
+		sql.getConnection().getMetaData().getColumns(null, table.getPhysicalSchema(), table.getName(), null)
+	}
+
+	protected String getDataType(String dataTypeName,String size, BigDecimal decimalDigits,BigDecimal sqlDataType,BigDecimal charOctetLength) {
 		if (size==null || size==0 || isIgnoreSize(sqlDataType.intValue())) {
 			return "${dataTypeName}"
 		}
