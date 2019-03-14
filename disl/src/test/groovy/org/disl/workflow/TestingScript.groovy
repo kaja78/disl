@@ -24,5 +24,7 @@ import org.disl.pattern.ExecutionInfo;
 @BaseScript(org.disl.workflow.DislScript)
 import groovy.transform.BaseScript
 
+setExitOnFinish(false)
+
 simulate TestDimensionTable
 simulate TestingScript

@@ -45,13 +45,20 @@ import org.disl.util.sqlDep.SqlDepService
 abstract class DislScript extends Script implements Executable{
 	
 	String schema='default'
+	boolean exitOnFinish=true
 	ExecutionInfo executionInfo=new ExecutionInfo()
 
 	abstract def runScript()
 
+	void setExitOnFinish(boolean  exitOnFinish) {
+		this.exitOnFinish=exitOnFinish
+	}
+
 	def run() {
 		runScript()
-		System.exit(0)
+		if (exitOnFinish) {
+			System.exit(0)
+		}
 	}
 
 	@Override
