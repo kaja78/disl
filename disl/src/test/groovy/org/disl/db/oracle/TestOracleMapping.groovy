@@ -1,3 +1,21 @@
+/*
+ * Copyright 2015 - 2019 Karel Hübl <karel.huebl@gmail.com>.
+ *
+ * This file is part of disl.
+ *
+ * Disl is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Disl is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Disl.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.disl.db.oracle
 
 import org.disl.meta.Column
@@ -12,7 +30,10 @@ import org.junit.Test
 
 import static org.junit.Assert.assertEquals
 
-class TestMappingWithClause extends OracleTest {
+/**
+ * Test Oracle mapping including with clause and bind variables.
+ * */
+class TestOracleMapping extends OracleTest {
 
     TestingMapping t= MetaFactory.create(TestingMapping)
 
@@ -20,6 +41,12 @@ class TestMappingWithClause extends OracleTest {
     @Ignore
     void testValidate() {
         t.validate()
+    }
+
+    @Test
+    @Ignore
+    void testCopyToClipboard() {
+        t.copySqlQueryToClipboard()
     }
 
 
@@ -60,7 +87,7 @@ class TestMappingWithClause extends OracleTest {
 \t\t\tlookup.B as C5
 \t\tFROM
 \t\t\tSYS.DUAL t
-\t\t\tINNER JOIN s1  ON (t.DUMMY=s1.B)
+\t\t\tINNER JOIN s1  ON (t.DUMMY=s1.B and 1=/*BIND*/p1)
 \t\t\tINNER JOIN s2  ON (s1.B=s2.B)
 \t\t\tINNER JOIN lookup  ON (t.DUMMY=lookup.A)
 \t\tWHERE
@@ -97,7 +124,7 @@ class TestMappingWithClause extends OracleTest {
         void initMapping() {
             with s1,s2,lookup
             from t
-            innerJoin s1 on "$t.DUMMY=$s1.B"
+            innerJoin s1 on "$t.DUMMY=$s1.B and 1=${bind('p1','NUMBER',1)}"
             innerJoin s2 on "$s1.B=$s2.B"
             innerJoin lookup on "$t.DUMMY=$lookup.A"
         }

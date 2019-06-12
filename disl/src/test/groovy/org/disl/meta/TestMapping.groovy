@@ -43,6 +43,7 @@ class TestMapping extends DislTestCase {
 		
 		SqlExpression CONSTANT=constant 1
 
+
 		void initMapping() {
 			from s1
 			innerJoin s2 on (s1.A,s2.A)
@@ -50,7 +51,7 @@ class TestMapping extends DislTestCase {
 			rightOuterJoin s4 on "$s2.A=$s4.A"
 			fullOuterJoin s5 on "$s2.A=$s5.A"
 			cartesianJoin s6
-			where "$s1.A=$s1.A"
+			where "$s1.A=$s1.A and 1=${bind('p1','NUMBER',1)}"
 			groupBy()
 		}
 		
@@ -88,12 +89,34 @@ class TestMapping extends DislTestCase {
 			FULL OUTER JOIN PUBLIC.TESTING_TABLE s5  ON (s2.A=s5.A)
 			CROSS JOIN PUBLIC.TESTING_TABLE s6
 		WHERE
-			s1.A=s1.A
+			s1.A=s1.A and 1=/*BIND*/p1
 		GROUP BY
 			s1.A,C,REPEAT(s2.B,3)
 	/*End of mapping TestingMapping*/""".toString(),mapping.getSQLQuery())
 	}
-	
+
+	@Test
+	void testGetClipboardQuery() {
+		TestingMapping mapping=MetaFactory.create(TestingMapping)
+		assertEquals ("""	/*Mapping TestingMapping*/
+		SELECT
+			s1.A as A,
+			C as c,
+			REPEAT(s2.B,3) as B
+		FROM
+			PUBLIC.TESTING_TABLE s1
+			INNER JOIN PUBLIC.TESTING_TABLE s2  ON (s1.A=s2.A)
+			LEFT OUTER JOIN PUBLIC.TESTING_TABLE s3  ON (s2.A=s3.A)
+			RIGHT OUTER JOIN PUBLIC.TESTING_TABLE s4  ON (s2.A=s4.A)
+			FULL OUTER JOIN PUBLIC.TESTING_TABLE s5  ON (s2.A=s5.A)
+			CROSS JOIN PUBLIC.TESTING_TABLE s6
+		WHERE
+			s1.A=s1.A and 1=/*p1*/1
+		GROUP BY
+			s1.A,C,REPEAT(s2.B,3)
+	/*End of mapping TestingMapping*/""".toString(),mapping.getClipboardQuery())
+	}
+
 	@Test
 	void testConstant() {
 		TestingMapping mapping=MetaFactory.create(TestingMapping)

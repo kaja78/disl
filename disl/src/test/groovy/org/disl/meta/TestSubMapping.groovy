@@ -62,7 +62,7 @@ class TestSubMapping extends DislTestCase {
 			FULL OUTER JOIN PUBLIC.TESTING_TABLE s5  ON (s2.A=s5.A)
 			CROSS JOIN PUBLIC.TESTING_TABLE s6
 		WHERE
-			s1.A=s1.A
+			s1.A=s1.A and 1=/*BIND*/p1
 		GROUP BY
 			s1.A,C,REPEAT(s2.B,3)
 	/*End of mapping TestingMapping*/) subquery

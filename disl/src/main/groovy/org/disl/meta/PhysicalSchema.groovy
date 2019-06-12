@@ -81,16 +81,16 @@ public abstract class PhysicalSchema {
 	/**
 	 * Validate SQL query. Throw exception for invalid query
 	 * */
-	public void validateQuery(String sqlQuery) throws AssertionError {
+	public void validateQuery(Mapping mapping) throws AssertionError {
 		try {
-			getSql().rows(getValidationQuery(sqlQuery))
+			getSql().rows(getValidationQuery(mapping))
 		} catch (SQLException e) {
-			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${sqlQuery}")
+			throw new AssertionError("Validation failed with message: ${e.getMessage()} for query:\n${getValidationQuery(mapping)}")
 		}
 	}
 	
-	protected String getValidationQuery(String sqlQuery) {
-		"select * from (${sqlQuery}) as s where 1=2"
+	protected String getValidationQuery(Mapping mapping) {
+		"select * from (${mapping.getSQLQuery()}) as s where 1=2"
 	}
 
 	

@@ -32,6 +32,8 @@ import org.disl.pattern.Executable
 import org.disl.pattern.ExecutionInfo
 import org.disl.pattern.MappingPattern
 
+import java.util.regex.Pattern
+
 
 /**
  * Defines data transformation which can be executed as SQL query.
@@ -52,6 +54,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	List<MappingSource> sources = []
 	List<MappingSource> withSources = []
 	List<SetOperation> setOperations = []
+	List<BindVariable> bindVariables=[]
 	String filter = "1=1"
 
 	public boolean isEarlyInitialized() {
@@ -386,7 +389,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	 * */
 	public void validate() {
 		PhysicalSchema physicalSchema = Context.getContext().getPhysicalSchema(getSchema())
-		physicalSchema.validateQuery(getSQLQuery())
+		physicalSchema.validateQuery(this)
 	}
 
 	public Sql getSql() {
@@ -434,11 +437,20 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	public void copySqlQueryToClipboard() {
-		StringSelection ss = new StringSelection(getSQLQuery());
+		StringSelection ss = new StringSelection(getClipboardQuery());
 		try {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
 		} catch (Exception e) {
 		}
+	}
+
+	protected String getClipboardQuery() {
+		replaceBindVariables(getSQLQuery())
+	}
+
+	protected String replaceBindVariables(String sqlQuery) {
+		bindVariables.each {sqlQuery=sqlQuery.replaceAll("/\\*BIND\\*\\/$it.name","/*$it.name*/$it.value")}
+		return sqlQuery
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
@@ -484,5 +496,30 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 			return ''
 		}
 		"\n\twith${withSources.collect({"\n\t${it.withReference}"}).join(',')}"
+	}
+
+	BindVariable bind(String bindVariableName, String dataType, def value) {
+		BindVariable bindValue=new BindVariable(bindVariableName,dataType,value)
+		bindVariables.add(bindValue)
+		return bindValue
+	}
+
+
+
+	class BindVariable {
+		String name
+		def dataType
+		def value
+
+		BindVariable(String name, String dataType, def value) {
+			this.name=name
+			this.dataType=dataType
+			this.value=value
+		}
+
+		@Override
+		String toString() {
+			return "/*BIND*/$name"
+		}
 	}
 }
