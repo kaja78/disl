@@ -32,6 +32,7 @@ import org.disl.pattern.Executable
 import org.disl.pattern.ExecutionInfo
 import org.disl.pattern.MappingPattern
 
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
@@ -449,7 +450,7 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	protected String replaceBindVariables(String sqlQuery) {
-		bindVariables.each {sqlQuery=sqlQuery.replaceAll("/\\*BIND\\*\\/$it.name","/*$it.name*/$it.value")}
+		bindVariables.each {sqlQuery=sqlQuery.replaceAll("/\\*BIND\\*/$it.name", Matcher.quoteReplacement("/*$it.name*/$it.value"))}
 		return sqlQuery
 	}
 
