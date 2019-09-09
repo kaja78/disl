@@ -1,15 +1,10 @@
-/.*/
 /bin/
 /build/
-/gradle/
 /out/
-gradlew
-gradlew.bat
 /.classpath
 /.project
 /.idea
 /.disl
-/gradle-app.setting
+/.gradle
 /lib/*.jar
-/disl.iml
 /src/test/resources/*.db.test.context.properties
