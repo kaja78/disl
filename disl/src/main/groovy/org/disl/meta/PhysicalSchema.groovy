@@ -43,6 +43,7 @@ public abstract class PhysicalSchema {
 	String schema
 	String databaseName
 	String jdbcUrl
+	int connectionValidationTimeout
 	SqlProxy sqlProxy
 	
 	abstract void setJdbcDriver(String driver)
@@ -100,6 +101,7 @@ public abstract class PhysicalSchema {
 		schema=getSchemaProperty("schema",schema)
 		databaseName=getSchemaProperty("databaseName", databaseName)
 		jdbcUrl=getSchemaProperty('jdbcUrl',jdbcUrl)
+		connectionValidationTimeout=Integer.parseInt(getSchemaProperty('connectionValidationTimeout','5000'))
 		initPassword()
 	}
 	
@@ -120,7 +122,7 @@ public abstract class PhysicalSchema {
 	}
 	
 	public Sql getSql(){
-		if (sqlProxy==null || (sqlProxy.sql.connection==null || sqlProxy.sql.connection.isClosed())) {
+		if (sqlProxy==null || (sqlProxy.sql.connection==null || !sqlProxy.sql.connection.isValid(connectionValidationTimeout))) {
 			sqlProxy=createSqlProxy()	
 		}
 		sqlProxy.sql
