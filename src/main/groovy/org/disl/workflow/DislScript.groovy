@@ -20,7 +20,7 @@ package org.disl.workflow
 
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
-
+import groovy.util.logging.Slf4j
 import org.disl.meta.Context
 import org.disl.meta.Mapping
 import org.disl.meta.MetaFactory
@@ -41,6 +41,7 @@ import org.disl.util.sqlDep.SqlDepService
  execute [YOUR_DISL_MODEL_CLASS]
  }
  * */
+@Slf4j
 @CompileStatic
 abstract class DislScript extends Script implements Executable{
 	
@@ -69,6 +70,7 @@ abstract class DislScript extends Script implements Executable{
 			executionInfo.finish()
 		} catch (Exception e) {
 			executionInfo.error(e)
+			log.error("${e.class.name} executing $this: ${e.message}",e)
 			throw e
 		}
 	}
