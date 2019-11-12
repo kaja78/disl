@@ -104,7 +104,7 @@ abstract class ClassFinder {
 		}
 
 		public <T> List<Class<T>> findTypes(Class<T> assignableType,String rootPackage,Closure classFilter) {
-			String rootDir=rootPackage.replace('.','/')
+			String rootDir=rootPackage.replace('.','/')+'/'
 			JarFile jarFile=getJarFile()
 			
 			Collection<JarEntry> entries=getJarFile().entries().findAll()
