@@ -38,7 +38,7 @@ class Node {
 
     Node(Table t) {
         id = t.class.name
-        label = t.name
+        label = t.toString()
         title = t.description
         targetUrl = WikiHelper.url(t)
         try {
@@ -58,7 +58,7 @@ class Node {
 
     Node(Mapping m) {
         id = m.class.name
-        label = m.name
+        label = m.toString()
         title = m.description
         color = 'LightGreen'
         shape = 'ellipse'
@@ -67,7 +67,7 @@ class Node {
 
     Node(Lookup l) {
         id = l.class.name
-        label = l.name
+        label = l.toString()
         title = l.description
         color = 'DarkGreen'
         shape = 'ellipse'
