@@ -40,7 +40,7 @@ class Edge {
                 to: fk.targetTable.class.name,
                 from: table.class.name,
                 label: fk.name,
-                title: "${fk.toString()}.${fk.sourceColumns}=${fk.targetTable.toString()}.${fk.targetColumns}")
+                title: "${table}.${fk.sourceColumns}=${fk.targetTable.toString()}.${fk.targetColumns}")
     }
 
     static Edge mappingSource(MappingSource src, MappingSource target) {
