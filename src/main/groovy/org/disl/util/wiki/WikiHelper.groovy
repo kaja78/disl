@@ -24,6 +24,7 @@ import org.disl.meta.*
 import org.disl.util.doc.MetaManager
 import org.disl.util.wiki.visjs.Edge
 import org.disl.util.wiki.visjs.LineageNode
+import org.disl.workflow.Job
 
 class WikiHelper extends MetaManager {
 
@@ -50,9 +51,13 @@ class WikiHelper extends MetaManager {
         "/perspective/${fileName(p)}"
     }
 
+    static String url(Job j) {
+        "/job/${fileName(j)}"
+    }
+
     @Override
     protected boolean includeType(Class type) {
-        (MappingSource.isAssignableFrom(type) || Perspective.isAssignableFrom(type))
+        (MappingSource.isAssignableFrom(type) || Perspective.isAssignableFrom(type) || Job.isAssignableFrom(type))
     }
 
 
@@ -91,6 +96,10 @@ class WikiHelper extends MetaManager {
         new File("${wikiRootDir}/content/perspective/${fileName(perspective.class.name)}.md")
     }
 
+    static File getWikiPageFile(Job job) {
+        new File("${wikiRootDir}/content/job/${fileName(job.class.name)}.md")
+    }
+
     void generate(Table table) {
         new TablePageStep(table:table).execute()
         new TableDataModelData(table:table).execute()
@@ -111,6 +120,10 @@ class WikiHelper extends MetaManager {
         new PerspectiveWikiPageStep(perspective: perspective).execute()
     }
 
+    void generate(Job job) {
+        new JobPageStep(job:job).execute()
+    }
+
      static String renderDataModel(Table table) {
         if (table.foreignKeys.isEmpty()) {
             return ''
@@ -128,7 +141,7 @@ class WikiHelper extends MetaManager {
 
     void generateWiki() {
         process {
-            if (it instanceof Table || it instanceof Mapping || it instanceof Lookup || it instanceof Perspective) {
+            if (it instanceof Table || it instanceof Mapping || it instanceof Lookup || it instanceof Perspective || it instanceof Job) {
                 generate(it)
             }
         }
