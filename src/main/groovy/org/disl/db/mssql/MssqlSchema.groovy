@@ -21,13 +21,14 @@ package org.disl.db.mssql
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
-
+import groovy.util.logging.Slf4j
 import org.disl.meta.Mapping
 import org.disl.meta.PhysicalSchema
 import org.junit.Assert
 /**
  * Implementation of MS SQL Server PhysicalSchema based on JTDS JDBC driver (groupId: net.sourceforge.jtds, artifactId: jtds). 
  * */
+@Slf4j
 @CompileStatic
 class MssqlSchema extends PhysicalSchema {
 	String host
@@ -54,10 +55,16 @@ class MssqlSchema extends PhysicalSchema {
 
 	@Override
 	protected Sql createSql() {
-		//Pass username & password to jdbcUrl to prevent SSO error when ntlmauth.dll is not on path.
-		def sql=Sql.newInstance(getJdbcUrl(),getJdbcDriver());
+		Sql sql
+		try {
+			//Pass username & password to jdbcUrl to prevent SSO error when ntlmauth.dll is not on path.
+			sql=Sql.newInstance(getJdbcUrl(),getJdbcDriver());
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to create database connection for jdbcUrl: ${getJdbcUrl()}, user: ${getUser()}, password: ${getPassword()?'*'.multiply(getPassword().length()):null}.",e)
+		}
 		sql.getConnection().setAutoCommit(false)
-		sql
+		log.info("${name} - Created new jdbcConnection for url: ${getJdbcUrl()}, user: ${getUser()}.")
+		return sql
 	}
 	
 	@Override
