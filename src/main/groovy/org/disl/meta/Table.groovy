@@ -147,7 +147,14 @@ abstract class Table extends MappingSource implements  Executable, IndexOwner, I
 			this[f.getName()]=column
 			columns.add(column)
 		}
-		column.setName(f.getName());
+
+
+		Name name=f.getAnnotation(Name)
+		if (name) {
+			column.setName(name.value())
+		} else {
+			column.setName(f.getName());
+		}
 
 		Description desc=f.getAnnotation(Description)
 		if (desc) {

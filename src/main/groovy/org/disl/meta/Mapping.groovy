@@ -140,7 +140,12 @@ abstract class Mapping  extends MappingSource implements Initializable,Executabl
 	}
 
 	protected void initColumnMapping(Field field) {
-		((ColumnMapping) this[field.name]).alias = field.name
+		Name name=field.getAnnotation(Name)
+		if (name) {
+			((ColumnMapping) this[field.name]).alias = name.value()
+		} else {
+			((ColumnMapping) this[field.name]).alias = field.name
+		}
 	}
 
 	void initSourceAliases() {
