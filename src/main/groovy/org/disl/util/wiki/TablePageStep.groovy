@@ -57,7 +57,7 @@ ${WikiHelper.renderDataModel(table)}
 
 <H2>Columns</H2>
 <table>
-<tr><th>Name</th><th>Data type</th><th>Decription</th></tr>
+<tr><th>Name</th><th>Data type</th><th>Description</th></tr>
 ${table.columns.collect({"""<tr><td class="nowrap">$it.name</td><td class="nowrap">$it.dataType</td><td>${WikiHelper.renderColumnDescription(it.description)}</td></tr>\n"""}).join()}
 </table>
 
