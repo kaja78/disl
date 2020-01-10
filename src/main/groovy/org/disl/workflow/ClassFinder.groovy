@@ -67,7 +67,7 @@ abstract class ClassFinder {
 		return new CompositeFinder(finders:finders,rootDir:rootDir)		
 	}
 	
-	public List<Class> findNonAbstractTypes(Class assignableType) {
+	public <T> List<Class<T>> findNonAbstractTypes(Class<T> assignableType) {
 		findNonAbstractTypes(rootDir,assignableType)		
 	}
 	
@@ -78,21 +78,28 @@ abstract class ClassFinder {
 	public <T> List<Class<T>> findTypes(Class<T> assignableType,Closure classFilter) {
 		return findTypes(assignableType,rootDir,classFilter);
 	}
-	
+
+	public abstract Collection<String> listClassNames(String rootPackage)
 	public abstract <T> List<Class<T>> findTypes(Class<T> assignableType,String rootPackage,Closure classFilter);
 
 	static class FileSystemFinder extends ClassFinder {
 			
 		public <T> List<Class<T>> findTypes(Class<T> assignableType,String rootDir,Closure classFilter) {
+			listClassNames(rootDir).collect({
+				Class<T> type=(Class<T>)Class.forName(it)
+			}).findAll(classFilter).toList()
+		}
+
+		public Collection<String> listClassNames(String rootPackage) {
 			File traverseDir = new File (sourceURL.toURI())
 			Pattern filterClassFiles = ~/.*\.class$/
-			List<Class<T>> types=[]
+			List<String> classNames=[]
 			traverseDir.traverse ((Map)[type: FileType.FILES, nameFilter: filterClassFiles]) {
-				String classFile=rootDir+'/'+it.absolutePath.substring(traverseDir.absolutePath.length()+1)				
-				Class<T> type=(Class<T>)Class.forName(getClassName(classFile))
-				types.add(type)
+				String classFile=rootDir+'/'+it.absolutePath.substring(traverseDir.absolutePath.length()+1)
+				classNames.add(getClassName(classFile))
 			}
-			types.findAll(classFilter).toList()
+			return classNames
+
 		}
 
 	}
@@ -104,17 +111,17 @@ abstract class ClassFinder {
 		}
 
 		public <T> List<Class<T>> findTypes(Class<T> assignableType,String rootPackage,Closure classFilter) {
-			String rootDir=rootPackage.replace('.','/')+'/'
-			JarFile jarFile=getJarFile()
-			
-			Collection<JarEntry> entries=getJarFile().entries().findAll()
-			entries=entries.findAll({
-				String name=((JarEntry)it).getName()
-				(name.startsWith(rootDir) && name.endsWith('.class'))})
-			
-			return entries.collect({(Class<T>)Class.forName(getClassName(it.name))}).findAll(classFilter).toList()
+			return listClassNames(rootPackage).collect({(Class<T>)Class.forName(it)}).findAll(classFilter).toList()
 		}
 
+		@Override
+		Collection<String> listClassNames(String rootPackage) {
+			String rootDir=rootPackage.replace('.','/')+'/'
+			JarFile jarFile=getJarFile()
+			Collection<JarEntry> entries=(Collection<JarEntry>)getJarFile().entries().findAll()
+			List<String> classNames=[]
+			return entries.findAll({(it.getName().startsWith(rootDir) && it.getName().endsWith('.class'))}).collect({getClassName(it.getName())})
+		}
 	}
 	
 	static class CompositeFinder extends ClassFinder {
@@ -128,7 +135,16 @@ abstract class ClassFinder {
 			}
 			return types
 		}
-		
+
+		@Override
+		Collection<String> listClassNames(String rootPackage) {
+			List<String> classNames=[]
+			finders.each {
+				classNames.addAll(it.listClassNames(rootPackage))
+			}
+			return classNames.unique()
+		}
+
 		@Override
 		public String toString() {
 			"${getClass().getName()}: ${finders.join(',\n')}"

@@ -38,10 +38,10 @@ class TestClassFinder {
 		Class typeInParentPackage=org.junit.ComparisonFailure
 		Class typeInOtherPackage=org.junit.validator.AnnotationValidator
 
-		ClassFinder jarFinder=ClassFinder.createClassFinder('org.junit.runner')
 		Assert.assertEquals(0,jarFinder.findTypes(Object,{false}).size())
 		
 		Collection<Class<Object>> types=jarFinder.findTypes (Object,{true})
+		println jarFinder.listClassNames('org.junit.runner')
 		
 		Assert.assertTrue(types.contains(sourceClass))
 		Assert.assertTrue(types.contains(typeInSubpackage))
@@ -61,6 +61,7 @@ class TestClassFinder {
 		Assert.assertEquals(0,fsFinder.findTypes(Object,{false}).size())
 		
 		Collection<Class<Object>> types=fsFinder.findTypes (Object,{true})
+		println fsFinder.listClassNames('org.disl.meta')
 		
 		Assert.assertTrue(types.contains(testingClass))
 		Assert.assertTrue(types.contains(typeInSamePackage))
