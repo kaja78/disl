@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 Karel HÃ¼bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -104,9 +104,9 @@ uploadArchives {
 				}
 				developers {
 					developer {
-						name 'Karel Hübl'
+						name 'Karel HÃ¼bl'
 						email 'karel.huebl@gmail.com'
-						organization 'Karel Hübl'
+						organization 'Karel HÃ¼bl'
 						organizationUrl 'https://github.com/kaja78'						
 					}
 				}
