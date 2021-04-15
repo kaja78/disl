@@ -59,15 +59,15 @@ class ReverseEngineeringService {
 	 * @param tablePattern Database object name like filter pattern. Default null.
 	 * @param sourceSchemaFilterPattern Source scheme like filter pattern. Default null.
 	 * @param outputDir Output directory.  Default SRC_FLDER.
-	 * @param tableTypes  @see java.sql.DatabaseMetaData#getTables Default null.
+	 * @param tableType  @see java.sql.DatabaseMetaData#getTableTypes Default null.
 	 * @parentClassName Parent class name for generated data model objects. Default @see getAbstractParentTableClassSimpleName. 
 	 * */
-	public Collection<Table> reverseSchemaTables(String targetPackage,String tablePattern=null,String sourceSchemaFilterPattern=null,File outputDir=new File(SRC_FOLDER),String[] tableTypes=null,String parentClassName=getAbstractParentTableClassSimpleName(targetPackage)){
+	public Collection<Table> reverseSchemaTables(String targetPackage,String tablePattern=null,String sourceSchemaFilterPattern=null,File outputDir=new File(SRC_FOLDER),String tableType=null,String parentClassName=getAbstractParentTableClassSimpleName(targetPackage)){
 		if (sourceSchemaFilterPattern==null) {
 			sourceSchemaFilterPattern=Context.getContext().getPhysicalSchema(getLogicalSchemaName()).getSchema()
 		}
 		checkAbstractParentTableExist(targetPackage,outputDir)
-		List<Table> tables=reverseEngineerTables(sql,tablePattern,tableTypes,sourceSchemaFilterPattern)
+		List<Table> tables=reverseEngineerTables(sql,tablePattern,tableType,sourceSchemaFilterPattern)
 		tables.each {
 			Table t=it
 			ReverseTablePattern reverseTablePattern=createReverseTablePattern()
@@ -84,7 +84,8 @@ class ReverseEngineeringService {
 		return new ReverseTablePattern()
 	}
 
-	public List<Table> reverseEngineerTables(Sql sql,String tablePattern, String tableTypes,String sourceSchemaFilterPattern,String catalog=null) {
+	public List<Table> reverseEngineerTables(Sql sql,String tablePattern, String tableType,String sourceSchemaFilterPattern,String catalog=null) {
+		String[] tableTypes = tableType ? (String[]) [tableType] : null
 		ResultSet res=sql.getConnection().getMetaData().getTables(catalog, sourceSchemaFilterPattern, tablePattern, tableTypes)
 		GroovyResultSet gRes=new GroovyResultSetProxy(res).getImpl()
 		List<Table> tables=collectRows(res,{new ReverseEngineeredTable(name: it.TABLE_NAME,description: it.REMARKS, schema:logicalSchemaName, physicalSchema: it.TABLE_SCHEM)})
