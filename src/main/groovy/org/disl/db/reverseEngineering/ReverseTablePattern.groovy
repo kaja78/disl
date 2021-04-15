@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 - 2016 Karel Hübl <karel.huebl@gmail.com>.
+ * Copyright 2015 - 2016 Karel Hï¿½bl <karel.huebl@gmail.com>.
  *
  * This file is part of disl.
  *
@@ -106,7 +106,7 @@ $columnDefinitions
 		
 		"""\
 		${description(column.description)}
-		@DataType("$column.dataType")$primaryKey$notNull
+		@DataType(\"\"\"$column.dataType\"\"\")$primaryKey$notNull
 		Column $column.name"""
 		}
 	
