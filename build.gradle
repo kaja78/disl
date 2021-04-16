@@ -69,9 +69,10 @@ artifacts {
 	archives groovydocJar, sourcesJar
 }
 
-
-signing {
-	sign configurations.archives
+if (dislSigning) {
+	signing {
+		sign configurations.archives
+	}
 }
 
 String getVersionName() {
