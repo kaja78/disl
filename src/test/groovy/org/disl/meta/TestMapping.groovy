@@ -122,7 +122,7 @@ class TestMapping extends DislTestCase {
 	void testConstant() {
 		TestingMapping mapping=MetaFactory.create(TestingMapping)
 		assertEquals("1",(String)mapping.CONSTANT)
-		assertEquals("1+1",(String)mapping.CONSTANT+1)
+		assertEquals("1+1",(String)(mapping.CONSTANT+1))
 	}
 
 	@Test

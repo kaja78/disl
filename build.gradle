@@ -17,51 +17,44 @@
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- plugins {
-	 id "com.github.hierynomus.license" version "0.11.0"
- }
- 
-apply plugin: 'eclipse'
+//License plugin temporarily disabled due to https://github.com/hierynomus/license-gradle-plugin/issues/191
+//TODO: Enable once fixed.
+ /*plugins {
+	 id "com.github.hierynomus.license" version "0.15.0"
+ }*/
+
+apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'java-library-distribution'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 project.group='com.github.kaja78'
 project.version="1.1.3-SNAPSHOT"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories { mavenCentral() }
 
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:2.3.10'
-	compile 'org.slf4j:slf4j-api:1.7.21'
-	compile 'junit:junit:4.12'
-	testCompile 'org.hsqldb:hsqldb:2.3.2'
-	testRuntime 'org.slf4j:slf4j-simple:1.7.21'
-	testRuntime fileTree(dir: 'lib', include: '*.jar')
+	api 'org.codehaus.groovy:groovy-all:3.0.7'
+	api 'org.slf4j:slf4j-api:1.7.21'
+	implementation 'junit:junit'
+	testImplementation 'org.hsqldb:hsqldb:2.3.2'
+	testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.21'
+	testRuntimeOnly fileTree(dir: 'lib', include: '*.jar')
 }
 
-license { 
-	header rootProject.file('HEADER.txt')
-	ext.year = Calendar.getInstance().get(Calendar.YEAR)
-	skipExistingHeaders = true
-}
+
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier 'sources'
 	from sourceSets.main.allSource
 }
 
-groovydoc {
-	//exclude files causing groovydoc to fail
-	exclude 'org/disl/db/oracle/OracleReverseEngineeringService.groovy'
-}
-
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
-	classifier = 'javadoc'
+	archiveClassifier = 'javadoc'
 	from groovydoc
 }
  
@@ -79,48 +72,65 @@ String getVersionName() {
 	'git describe --tags'.execute(null,project.projectDir).text.trim()
 }
 
+java {
+	withSourcesJar()
+}
 
-uploadArchives {
+publishing {
 	repositories {
-		mavenDeployer {
-			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-				authentication(userName: sonatypeUser, password: sonatypePassword)
+		maven {
+			def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+			def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+			url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+			credentials {
+				username = sonatypeUser
+				password = sonatypePassword
 			}
-			
-			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: sonatypeUser, password: sonatypePassword)
+		}
+	}
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			artifact(groovydocJar) {
+				classifier = 'javadoc'
 			}
-		
-			pom.project {
-				name 'disl'
-				description 'disl = data integration specific language. Goal of this project is to implement groovy based domain specific language supporting modelling of data integration projects. Disl will support data modeling and data mapping including support for MDA transformations and unit testing.'
-				url 'https://github.com/kaja78/disl'
+			pom {
+				name = 'disl'
+				description = 'disl = data integration specific language. Goal of this project is to implement groovy based domain specific language supporting modelling of data integration projects. Disl will support data modeling and data mapping including support for MDA transformations and unit testing.'
+				url = 'https://github.com/kaja78/disl'
 				licenses {
 					license {
-						name 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
-						url 'http://www.gnu.org/licenses/gpl.txt'
-						distribution 'repo'
+						name = 'GNU GENERAL PUBLIC LICENSE, Version 3.0'
+						url = 'http://www.gnu.org/licenses/gpl.txt'
+						distribution = 'repo'
 					}
 				}
 				developers {
 					developer {
-						name 'Karel Hübl'
-						email 'karel.huebl@gmail.com'
-						organization 'Karel Hübl'
-						organizationUrl 'https://github.com/kaja78'						
+						name = 'Karel Hübl'
+						email = 'karel.huebl@gmail.com'
+						organization = 'Karel Hübl'
+						organizationUrl = 'https://github.com/kaja78'
 					}
 				}
 				issueManagement {
-					system 'Github'
-					url 'https://github.com/kaja78/disl/issues'					
+					system = 'Github'
+					url = 'https://github.com/kaja78/disl/issues'
 				}
 				scm {
-					connection 'scm:git:git@github.com:kaja78/disl.git'
-					developerConnection 'scm:git:git@github.com:kaja78/disl.git'
-					url 'git:git@github.com:kaja78/disl.git'
+					connection = 'scm:git:git@github.com:kaja78/disl.git'
+					developerConnection = 'scm:git:git@github.com:kaja78/disl.git'
+					url = 'git:git@github.com:kaja78/disl.git'
 				}
 			}
 		}
 	}
 }
+
+//License plugin temporarily disabled due to https://github.com/hierynomus/license-gradle-plugin/issues/191
+/*
+license {
+	header rootProject.file('HEADER.txt')
+	ext.year = Calendar.getInstance().get(Calendar.YEAR)
+	skipExistingHeaders = true
+}*/

@@ -62,17 +62,17 @@ import org.disl.meta.*
 class TestDimensionTable extends AbstractL2Table {
 
 		@Description(\"""Surrogate key.\""")
-		@DataType("INTEGER")
+		@DataType(\"""INTEGER\""")
 		@PrimaryKey
 		Column KEY
 
 		@Description(\"""Natural key\""")
-		@DataType("INTEGER")
+		@DataType(\"""INTEGER\""")
 		@NotNull
 		Column ID
 
 		@Description(\"""Dimension name.\""")
-		@DataType("VARCHAR(200)")
+		@DataType(\"""VARCHAR(200)\""")
 		@NotNull
 		Column NAME
 }"""

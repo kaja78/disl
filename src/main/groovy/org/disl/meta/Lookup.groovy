@@ -90,7 +90,7 @@ abstract class Lookup extends MappingSource {
 	protected List<Map> createRecordsFromList() {
 		List<List> recordList=getRecords()
 		List<Map> result=(List<Map>)recordList.collect { values->
-			Map record=new LinkedHashMap()
+			Map record=(Map)new LinkedHashMap()
 			columns.each {column ->
 				record.put(column.name, values[columns.indexOf(column)])
 			}

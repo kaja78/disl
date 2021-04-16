@@ -7,4 +7,3 @@
 /.disl
 /.gradle
 /lib/*.jar
-/src/test/resources/*.db.test.context.properties
