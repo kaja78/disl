@@ -38,10 +38,15 @@ targetCompatibility = 1.8
 repositories { mavenCentral() }
 
 dependencies {
-	api 'org.codehaus.groovy:groovy-all:3.0.7'
-	api 'org.slf4j:slf4j-api:1.7.21'
-	implementation 'junit:junit'
+	implementation 'org.codehaus.groovy:groovy:3.0.7'
+	implementation 'org.codehaus.groovy:groovy-json:3.0.7'
+	implementation 'org.codehaus.groovy:groovy-sql:3.0.7'
+	implementation 'org.slf4j:slf4j-api:1.7.21'
+	implementation 'junit:junit:4.13.2'
+
+	testImplementation 'org.codehaus.groovy:groovy-test:3.0.7'
 	testImplementation 'org.hsqldb:hsqldb:2.3.2'
+
 	testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.21'
 	testRuntimeOnly fileTree(dir: 'lib', include: '*.jar')
 }

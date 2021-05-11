@@ -20,11 +20,11 @@
 package org.disl.util.test
 
 import groovy.sql.Sql
-import groovy.test.GroovyAssert
 import groovy.transform.CompileStatic;
 
 import org.disl.meta.Context
 import org.disl.meta.PhysicalSchema
+import org.junit.Assert
 
 /**
  * Abstract parent for Disl test cases. 
@@ -56,17 +56,17 @@ abstract class AbstractDislTestCase {
 
 	public void assertRowCount(long expectedCount,String sqlQuery) {
 		long actualCount=physicalSchema.evaluateRowCount(sqlQuery)
-		GroovyAssert.assertEquals("""Invalid rowcount returned from query:
+		Assert.assertEquals("""Invalid rowcount returned from query:
 ${sqlQuery}
 """,expectedCount,actualCount)
 	}
 
 	public void assertExpressionEquals(expectedExpression,actualExpression) {
-		GroovyAssert.assertEquals(physicalSchema.evaluateExpression(expectedExpression).toString(),physicalSchema.evaluateExpression(actualExpression).toString())
+		Assert.assertEquals(physicalSchema.evaluateExpression(expectedExpression).toString(),physicalSchema.evaluateExpression(actualExpression).toString())
 	}
 
 	public void assertExpressionEquals(expectedExpression,actualExpression,List<Map> records) {
-		GroovyAssert.assertEquals(physicalSchema.evaluateExpression(expectedExpression).toString(),physicalSchema.evaluateAggregateExpression(actualExpression,records).toString())
+		Assert.assertEquals(physicalSchema.evaluateExpression(expectedExpression).toString(),physicalSchema.evaluateAggregateExpression(actualExpression,records).toString())
 	}
 
 

@@ -70,7 +70,7 @@ abstract class AbstractDislTestSuite {
 	protected void addTestSuite(String name,Class assignableType) {
 		TestSuite suite=new TestSuite(name)
 		getClassFinder().findNonAbstractTypes(assignableType).each {
-			suite.addTest(new JUnit4TestAdapter(it))
+			suite.addTest(new JUnit4TestAdapter((Class)it))
 		}
 		this.testSuite.addTest(suite)		
 	}
