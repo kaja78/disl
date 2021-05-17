@@ -21,38 +21,39 @@ package org.disl.meta
 
 import groovy.transform.CompileStatic
 
-import org.disl.pattern.Executable
-
 /**
- * Abstract parent for Mappings defining loading of target table using pattern. 
+ * Interface for Mappings defining load of target table.
+ * The mapping column names are expected to exactly match target table column names.
  * */
 @CompileStatic
-abstract class TableMapping<T extends Table> extends Mapping implements Executable {
+interface TableMapping<T extends Table> {
 	
-	public abstract T getTarget()
+	T getTarget()
+	List<ColumnMapping> getColumns()
+	String getInitialMapping(String columnName)
 	
-	public void checkUnmappedTargetColumns() {
+	default void checkUnmappedTargetColumns() {
 		if (getUnmappedTargetColumns().size()>0) {
 			traceUnmappedColumns()
-			throw new AssertionError("Found unmapped columns: ${getUnmappedTargetColumns().collect({it.name}).join(',')}")
+			throw new AssertionError("Found unmapped columns: ${getUnmappedTargetColumns().collect({it.name}).join(',')}",null)
 		}
 	}
-	
-	public void checkColumnsMissingInTarget() {
+
+	default void checkColumnsMissingInTarget() {
 		if (getColumnsMissingInTarget().size()>0) {
-			throw new AssertionError("Found columns missing in target: ${getColumnsMissingInTarget().join(',')}")
+			throw new AssertionError("Found columns missing in target: ${getColumnsMissingInTarget().join(',')}",null)
 		}
 	}
-	
-	public void traceUnmappedColumns() {
+
+	default void traceUnmappedColumns() {
 		getUnmappedTargetColumns().each {println getInitialMapping(it.name)}
 	}
-	
-	Collection<Column> getUnmappedTargetColumns() {
+
+	default Collection<Column> getUnmappedTargetColumns() {
 		return getTarget().getColumns().findAll {
 			Column targetColumn=it
 			boolean unmapped=true
-			this.columns.each {  
+			columns.each {
 				if (it.getAlias().equals(targetColumn.name)) {
 					unmapped=false
 					return
@@ -61,8 +62,8 @@ abstract class TableMapping<T extends Table> extends Mapping implements Executab
 			return unmapped
 		}
 	}
-	
-	Collection<ColumnMapping> getColumnsMissingInTarget() {
+
+	default Collection<ColumnMapping> getColumnsMissingInTarget() {
 		return getColumns().findAll {
 			ColumnMapping columnMapping=it
 			boolean missing=true

@@ -21,6 +21,7 @@ package org.disl.db.hsqldb.pattern
 
 import org.disl.meta.Column
 import org.disl.meta.ColumnMapping
+import org.disl.meta.Mapping
 import org.disl.meta.MetaFactory
 import org.disl.meta.Table
 import org.disl.meta.TableMapping
@@ -34,7 +35,7 @@ import org.junit.Test
 class TestTruncateInsertMapping extends DislTestCase {
 	
 	
-	static class TestMapping extends TableMapping {
+	static class TestMapping extends Mapping implements TableMapping {
 		TruncateInsertPattern pattern
 		
 		TEST_TABLE target
