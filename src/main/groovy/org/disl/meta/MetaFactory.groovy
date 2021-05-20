@@ -86,7 +86,7 @@ class MetaFactory {
 	 * Returns classes in given rootPackage (including subpackages) which are assignable to assignableType.
 	 * */
 	static <T> List<Class<T>> findTypes(String rootPackage,Class<T> assignableType) {
-		ClassFinder.createClassFinder(rootPackage).findNonAbstractTypes(rootPackage,assignableType)
+		ClassFinder.createClassFinder(rootPackage).findNonAbstractTypes(rootPackage,assignableType).unique()
 	}
 	
 
